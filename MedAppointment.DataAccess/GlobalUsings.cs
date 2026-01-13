@@ -16,6 +16,7 @@ global using MedAppointment.DataAccess.Repositories;
 global using MedAppointment.DataAccess.Repositories.Classifier;
 global using MedAppointment.DataAccess.Repositories.Client;
 global using MedAppointment.DataAccess.Repositories.Communication;
+global using MedAppointment.DataAccess.Repositories.Composition;
 global using MedAppointment.DataAccess.Repositories.File;
 global using MedAppointment.DataAccess.Repositories.Payment;
 global using MedAppointment.DataAccess.Repositories.Security;
