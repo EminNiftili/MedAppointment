@@ -58,7 +58,7 @@
         private static void AddDbContext(IServiceCollection services, IConfiguration configuration)
         {
             services.AddDbContext<MedicalAppointmentContext>(options =>
-                options.UseSqlServer(configuration.GetConnectionString("DefaultConnection")));
+                options.UseSqlServer(configuration.GetConnectionString("MedicalAppointmentContext")));
         }
     }
 }
