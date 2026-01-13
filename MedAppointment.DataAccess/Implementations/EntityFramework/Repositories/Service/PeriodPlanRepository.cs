@@ -9,7 +9,19 @@
 
         protected override IQueryable<PeriodPlanEntity> IncludeQuery(IQueryable<PeriodPlanEntity> query)
         {
-            throw new NotImplementedException();
+            return query
+                .Include(periodPlan => periodPlan.DayPlan)
+                    .ThenInclude(dayPlan => dayPlan.Doctor)
+                    .ThenInclude(doctor => doctor.User)
+                .Include(periodPlan => periodPlan.DayPlan)
+                    .ThenInclude(dayPlan => dayPlan.Doctor)
+                    .ThenInclude(doctor => doctor.Specialties)
+                    .ThenInclude(specialty => specialty.Specialty)
+                .Include(periodPlan => periodPlan.DayPlan)
+                    .ThenInclude(dayPlan => dayPlan.Specialty)
+                .Include(periodPlan => periodPlan.DayPlan)
+                    .ThenInclude(dayPlan => dayPlan.Period)
+                .Include(periodPlan => periodPlan.Currency);
         }
     }
 }

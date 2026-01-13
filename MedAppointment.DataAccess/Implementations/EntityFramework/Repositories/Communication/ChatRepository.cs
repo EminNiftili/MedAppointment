@@ -9,7 +9,33 @@
 
         protected override IQueryable<ChatEntity> IncludeQuery(IQueryable<ChatEntity> query)
         {
-            throw new NotImplementedException();
+            return query
+                .Include(chat => chat.SenderUser)
+                    .ThenInclude(user => user.Admin)
+                .Include(chat => chat.SenderUser)
+                    .ThenInclude(user => user.Doctor)
+                    .ThenInclude(doctor => doctor.Specialties)
+                    .ThenInclude(specialty => specialty.Specialty)
+                .Include(chat => chat.SenderUser)
+                    .ThenInclude(user => user.Person)
+                    .ThenInclude(person => person.Image)
+                .Include(chat => chat.SenderUser)
+                    .ThenInclude(user => user.TraditionalUser)
+                .Include(chat => chat.ReceiverUser)
+                    .ThenInclude(user => user.Admin)
+                .Include(chat => chat.ReceiverUser)
+                    .ThenInclude(user => user.Doctor)
+                    .ThenInclude(doctor => doctor.Specialties)
+                    .ThenInclude(specialty => specialty.Specialty)
+                .Include(chat => chat.ReceiverUser)
+                    .ThenInclude(user => user.Person)
+                    .ThenInclude(person => person.Image)
+                .Include(chat => chat.ReceiverUser)
+                    .ThenInclude(user => user.TraditionalUser)
+                .Include(chat => chat.Histories)
+                    .ThenInclude(history => history.User)
+                    .ThenInclude(user => user.Person)
+                    .ThenInclude(person => person.Image);
         }
     }
 }
