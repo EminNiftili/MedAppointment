@@ -1,0 +1,15 @@
+﻿namespace MedAppointment.DataAccess.Implementations.EntityFramework.Repositories.Classifier
+{
+    internal class CurrencyRepository : EfGenericRepository<CurrencyEntity>, ICurrencyRepository
+    {
+        internal CurrencyRepository(MedicalAppointmentContext medicalAppointmentContext) 
+            : base(medicalAppointmentContext, medicalAppointmentContext.Set<CurrencyEntity>(), false)
+        {
+        }
+
+        protected override IQueryable<CurrencyEntity> IncludeQuery(IQueryable<CurrencyEntity> query)
+        {
+            throw new NotImplementedException();
+        }
+    }
+}
