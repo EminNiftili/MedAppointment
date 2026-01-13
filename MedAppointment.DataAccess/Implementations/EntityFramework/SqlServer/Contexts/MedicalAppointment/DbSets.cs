@@ -13,12 +13,18 @@
         internal DbSet<DoctorEntity> Doctors { get; private set; }
         internal DbSet<PersonEntity> People { get; private set; }
         internal DbSet<UserEntity> Users { get; private set; }
+        internal DbSet<OrganizationEntity> Organizations { get; private set; }
 
 
 
         internal DbSet<ChatHistoryEntity> ChatHistories { get; private set; }
         internal DbSet<ChatEntity> Chats { get; private set; }
         internal DbSet<MeetEntity> Meets { get; private set; }
+
+
+
+        internal DbSet<OrganizationUserEntity> OrganizationUsers { get; private set; }
+        internal DbSet<DoctorSpecialtyEntity> DoctorSpecialties { get; private set; }
 
 
 
