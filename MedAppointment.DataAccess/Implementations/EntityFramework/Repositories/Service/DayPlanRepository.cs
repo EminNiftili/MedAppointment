@@ -11,9 +11,9 @@
         {
             return query
                 .Include(dayPlan => dayPlan.Doctor)
-                    .ThenInclude(doctor => doctor.User)
+                    .ThenInclude(doctor => doctor!.User)
                 .Include(dayPlan => dayPlan.Doctor)
-                    .ThenInclude(doctor => doctor.Specialties)
+                    .ThenInclude(doctor => doctor!.Specialties)
                     .ThenInclude(specialty => specialty.Specialty)
                 .Include(dayPlan => dayPlan.Specialty)
                 .Include(dayPlan => dayPlan.Period);

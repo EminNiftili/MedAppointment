@@ -11,16 +11,16 @@
         {
             return query
                 .Include(periodPlan => periodPlan.DayPlan)
-                    .ThenInclude(dayPlan => dayPlan.Doctor)
-                    .ThenInclude(doctor => doctor.User)
+                    .ThenInclude(dayPlan => dayPlan!.Doctor)
+                    .ThenInclude(doctor => doctor!.User)
                 .Include(periodPlan => periodPlan.DayPlan)
-                    .ThenInclude(dayPlan => dayPlan.Doctor)
-                    .ThenInclude(doctor => doctor.Specialties)
+                    .ThenInclude(dayPlan => dayPlan!.Doctor)
+                    .ThenInclude(doctor => doctor!.Specialties)
                     .ThenInclude(specialty => specialty.Specialty)
                 .Include(periodPlan => periodPlan.DayPlan)
-                    .ThenInclude(dayPlan => dayPlan.Specialty)
+                    .ThenInclude(dayPlan => dayPlan!.Specialty)
                 .Include(periodPlan => periodPlan.DayPlan)
-                    .ThenInclude(dayPlan => dayPlan.Period)
+                    .ThenInclude(dayPlan => dayPlan!.Period)
                 .Include(periodPlan => periodPlan.Currency);
         }
     }

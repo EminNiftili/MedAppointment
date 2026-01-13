@@ -12,10 +12,10 @@
             return query
                 .Include(user => user.Admin)
                 .Include(user => user.Doctor)
-                    .ThenInclude(doctor => doctor.Specialties)
+                    .ThenInclude(doctor => doctor!.Specialties)
                     .ThenInclude(specialty => specialty.Specialty)
                 .Include(user => user.Person)
-                    .ThenInclude(person => person.Image)
+                    .ThenInclude(person => person!.Image)
                 .Include(user => user.TraditionalUser)
                 .Include(user => user.Sessions)
                     .ThenInclude(session => session.Device)
