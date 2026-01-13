@@ -9,7 +9,7 @@
 
         protected override IQueryable<PaymentEntity> IncludeQuery(IQueryable<PaymentEntity> query)
         {
-            throw new NotImplementedException();
+            return query.Include(payment => payment.PaymentType);
         }
     }
 }
