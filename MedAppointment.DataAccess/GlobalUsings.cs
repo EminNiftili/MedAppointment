@@ -38,6 +38,7 @@ global using MedAppointment.DataAccess.Implementations.EntityFramework.Repositor
 global using MedAppointment.DataAccess.Implementations.EntityFramework.Repositories.Classifier;
 global using MedAppointment.DataAccess.Implementations.EntityFramework.Repositories.Client;
 global using MedAppointment.DataAccess.Implementations.EntityFramework.Repositories.Communication;
+global using MedAppointment.DataAccess.Implementations.EntityFramework.Repositories.Compositon;
 global using MedAppointment.DataAccess.Implementations.EntityFramework.Repositories.File;
 global using MedAppointment.DataAccess.Implementations.EntityFramework.Repositories.Payment;
 global using MedAppointment.DataAccess.Implementations.EntityFramework.Repositories.Security;
@@ -49,6 +50,11 @@ global using MedAppointment.DataAccess.Implementations.EntityFramework.UnitOfWor
 #region Entity Framework
 global using Microsoft.EntityFrameworkCore;
 global using Microsoft.EntityFrameworkCore.Metadata.Builders;
+#endregion
+
+#region Microsoft Extensions
+global using Microsoft.Extensions.Configuration;
+global using Microsoft.Extensions.DependencyInjection;
 #endregion
 
 #region System Usings

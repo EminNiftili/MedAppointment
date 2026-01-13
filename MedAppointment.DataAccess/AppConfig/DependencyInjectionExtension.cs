@@ -1,26 +1,64 @@
-﻿using Microsoft.Extensions.Configuration;
-
-namespace MedAppointment.DataAccess.AppConfig
+﻿namespace MedAppointment.DataAccess.AppConfig
 {
     public static class DependencyInjectionExtension
     {
-        public static void AddDataAccess(IServiceProvider serviceProvider, IConfiguration configuration)
+        public static IServiceCollection AddDataAccess(this IServiceCollection services, IConfiguration configuration)
         {
-            AddUnifOfWorks(serviceProvider);
-            AddRepositories(serviceProvider);
-            AddDbContext(serviceProvider, configuration);
+            AddUnifOfWorks(services);
+            AddRepositories(services);
+            AddDbContext(services, configuration);
+
+            return services;
         }
-        private static void AddRepositories(IServiceProvider serviceProvider)
+
+        private static void AddRepositories(IServiceCollection services)
         {
-            throw new NotImplementedException();
+            services.AddScoped<IAdminRepository, AdminRepository>();
+            services.AddScoped<IDoctorRepository, DoctorRepository>();
+            services.AddScoped<IOrganizationRepository, OrganizationRepository>();
+            services.AddScoped<IPersonRepository, PersonRepository>();
+            services.AddScoped<IUserRepository, UserRepository>();
+
+            services.AddScoped<IChatHistoryRepository, ChatHistoryRepository>();
+            services.AddScoped<IChatRepository, ChatRepository>();
+            services.AddScoped<IMeetRepository, MeetRepository>();
+
+            services.AddScoped<IOrganizationUserRepository, OrganizationUserRepository>();
+
+            services.AddScoped<IImageRepository, ImageRepository>();
+
+            services.AddScoped<IPaymentRepository, PaymentRepository>();
+
+            services.AddScoped<IDeviceRepository, DeviceRepository>();
+            services.AddScoped<ISessionRepository, SessionRepository>();
+            services.AddScoped<ITraditionalUserRepository, TraditionalUserRepository>();
+            services.AddScoped<ITokenRepository, TokenRepository>();
+
+            services.AddScoped<IAppointmentRepository, AppointmentRepository>();
+            services.AddScoped<IDayPlanRepository, DayPlanRepository>();
+            services.AddScoped<IPeriodPlanRepository, PeriodPlanRepository>();
+
+            services.AddScoped<ICurrencyRepository, CurrencyRepository>();
+            services.AddScoped<IPaymentTypeRepository, PaymentTypeRepository>();
+            services.AddScoped<IPeriodRepository, PeriodRepository>();
+            services.AddScoped<ISpecialtyRepository, SpecialtyRepository>();
         }
-        private static void AddUnifOfWorks(IServiceProvider serviceProvider)
+
+        private static void AddUnifOfWorks(IServiceCollection services)
         {
-            throw new NotImplementedException();
+            services.AddScoped<IUnitOfClassifier, UnitOfClassifier>();
+            services.AddScoped<IUnitOfClient, UnitOfClient>();
+            services.AddScoped<IUnitOfCommunication, UnitOfCommunication>();
+            services.AddScoped<IUnitOfFile, UnitOfFile>();
+            services.AddScoped<IUnitOfPayment, UnitOfPayment>();
+            services.AddScoped<IUnitOfSecurity, UnitOfSecurity>();
+            services.AddScoped<IUnitOfService, UnitOfService>();
         }
-        private static void AddDbContext(IServiceProvider serviceProvider, IConfiguration configuration)
+
+        private static void AddDbContext(IServiceCollection services, IConfiguration configuration)
         {
-            throw new NotImplementedException();
+            services.AddDbContext<MedicalAppointmentContext>(options =>
+                options.UseSqlServer(configuration.GetConnectionString("DefaultConnection")));
         }
     }
 }
