@@ -1,62 +1,62 @@
-# SQL & Migration Bələdçisi (PMC)
+# SQL & Migration Guide (PMC)
 
-Bu sənəd EF Core migration əmrlərini **Package Manager Console (PMC)** üçün `--project` və `--startup` arqumentləri ilə izah edir.
+This guide documents EF Core migration commands for **Package Manager Console (PMC)** using `--project` and `--startup` arguments.
 
-## Əsas anlayışlar
+## Core concepts
 
-- **`--project`**: Migration-ların saxlanılacağı layihə. Bu həll üçün adətən `MedAppointment.DataAccess` olur.
-- **`--startup`**: `DbContext` üçün runtime konfiqurasiyanı (connection string və s.) yükləyən startup layihə. Bu, adətən API/Host layihəsidir.
+- **`--project`**: The project that stores the migrations. For this solution, it is typically `MedAppointment.DataAccess`.
+- **`--startup`**: The startup project that loads runtime configuration (connection string, etc.). This is usually your API/Host project.
 
-> Qeyd: Hazırkı həll nümunəsində startup layihə ayrıca göstərilməyə bilər. Praktikada `DbContext`-in istifadə olunduğu host layihəni (`API`, `Web`, `Worker` və s.) `--startup` kimi seçin.
+> Note: In this solution, the startup project may not be shown in the repository. In practice, use the host project (`API`, `Web`, `Worker`, etc.) that configures the `DbContext`.
 
-## Əmrlər (PMC)
+## Commands (PMC)
 
-Aşağıdakı nümunələrdə `--project` və `--startup` arqumentləri şərh olunub.
+The examples below explain how `--project` and `--startup` are used.
 
-### 1) Migration yaratmaq
+### 1) Create a migration
 
 ```powershell
 Add-Migration InitialCreate --project MedAppointment.DataAccess --startup MedAppointment.Api
 ```
 
-- `InitialCreate` — migration adı.
-- `--project MedAppointment.DataAccess` — migration faylları bu layihədə saxlanır.
-- `--startup MedAppointment.Api` — connection string və `DbContext` konfiqurasiyası buradan yüklənir.
+- `InitialCreate` — migration name.
+- `--project MedAppointment.DataAccess` — migration files live here.
+- `--startup MedAppointment.Api` — connection string and `DbContext` config are loaded here.
 
-### 2) DB-ni migration-larla yeniləmək
+### 2) Apply migrations to the database
 
 ```powershell
 Update-Database --project MedAppointment.DataAccess --startup MedAppointment.Api
 ```
 
-Bu əmrlə ən son migration-lar DB-yə tətbiq edilir.
+Applies the latest migrations to the database.
 
-### 3) Migration silmək (son migration)
+### 3) Remove the last migration
 
 ```powershell
 Remove-Migration --project MedAppointment.DataAccess --startup MedAppointment.Api
 ```
 
-Ən son migration geri alınır (DB-yə tətbiq edilibsə, əvvəlcə `Update-Database` ilə geri qaytarın).
+Removes the last migration (if applied to the DB, roll back first with `Update-Database`).
 
-### 4) Migration siyahısı
+### 4) List migrations
 
 ```powershell
 Get-Migrations --project MedAppointment.DataAccess --startup MedAppointment.Api
 ```
 
-Əlavə olunmuş bütün migration-ları göstərir.
+Lists all added migrations.
 
-### 5) Script çıxarmaq (SQL)
+### 5) Generate a SQL script
 
 ```powershell
 Script-Migration --project MedAppointment.DataAccess --startup MedAppointment.Api -Output .\migrations.sql
 ```
 
-Migration-ları SQL script kimi ixrac edir.
+Exports migrations as a SQL script.
 
-## Əlavə tövsiyələr
+## Additional notes
 
-- Migration yaradanda konfiqurasiyaların (`Configurations`) düzgün tətbiq olunduğuna əmin olun.
-- `DbContext`-ə bağlı connection string `appsettings.json`-da saxlanılmalıdır.
-- `--startup` layihəsində `AddDbContext`/DI qeydiyyatının işlək olmasına diqqət edin.
+- Ensure configurations under `Configurations` are applied correctly when generating migrations.
+- The connection string should be set in `appsettings.json`.
+- Make sure `AddDbContext`/DI registration is configured in the startup project.

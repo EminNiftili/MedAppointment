@@ -1,14 +1,14 @@
 # EF Core Contexts (SqlServer)
 
-Bu qovluq EF Core `DbContext` və ona bağlı DbSet siyahılarını saxlayır. `MedicalAppointmentContext` tətbiqin bütün entity-lərini bir kontekstdə birləşdirir.
+This folder contains EF Core `DbContext` types and their DbSet declarations. `MedicalAppointmentContext` aggregates all entities in a single context.
 
-## Contextlər
+## Contexts
 
-| Context | Təyinat |
+| Context | Purpose |
 | --- | --- |
-| `MedicalAppointmentContext` | SQL Server üzərində əsas tətbiq konteksti. |
+| `MedicalAppointmentContext` | Primary SQL Server context for the application. |
 
-## DbSet siyahısı
+## DbSet list
 
 | DbSet | Entity |
 | --- | --- |
@@ -36,9 +36,9 @@ Bu qovluq EF Core `DbContext` və ona bağlı DbSet siyahılarını saxlayır. `
 | `DayPlans` | `DayPlanEntity` |
 | `PeriodPlans` | `PeriodPlanEntity` |
 
-## Əlaqəli qatlar (Referanslar)
+## Related layers (References)
 
-| Qat | İstifadə məqsədi |
+| Layer | Purpose |
 | --- | --- |
-| `MedAppointment.DataAccess.Implementations.EntityFramework.SqlServer.Configurations` | Entity mapping konfiqurasiyaları. |
-| `MedAppointment.Entities` | DbSet-lərin saxladığı entity modelləri. |
+| `MedAppointment.DataAccess.Implementations.EntityFramework.SqlServer.Configurations` | Entity mapping configurations. |
+| `MedAppointment.Entities` | Entity models stored by DbSets. |

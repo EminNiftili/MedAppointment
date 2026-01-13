@@ -1,10 +1,10 @@
 # DataAccess.UnitOfWorks
 
-Bu qovluq unit of work interfeyslərini saxlayır. Hər unit of work müəyyən domain repository-lərini birləşdirərək vahid tranzaksiya (SaveChanges) idarəçiliyi təmin edir.
+This folder contains unit-of-work interfaces. Each unit of work groups related repositories and provides a single transaction boundary (`SaveChanges`).
 
-## Unit of work xəritəsi
+## Unit of work map
 
-| Unit of work interfeysi | Repository-lər |
+| Unit of work interface | Repositories |
 | --- | --- |
 | `IUnitOfClassifier` | `ICurrencyRepository`, `IPaymentTypeRepository`, `IPeriodRepository`, `ISpecialtyRepository` |
 | `IUnitOfClient` | `IAdminRepository`, `IDoctorRepository`, `IPersonRepository`, `IUserRepository` |
@@ -14,15 +14,15 @@ Bu qovluq unit of work interfeyslərini saxlayır. Hər unit of work müəyyən 
 | `IUnitOfSecurity` | `IDeviceRepository`, `ISessionRepository`, `ITokenRepository`, `ITraditionalUserRepository` |
 | `IUnitOfService` | `IAppointmentRepository`, `IDayPlanRepository`, `IPeriodPlanRepository` |
 
-## Əsas contract
+## Core contract
 
-| İnterfeys | Metodlar |
+| Interface | Methods |
 | --- | --- |
 | `IUnitOfWork` | `SaveChanges()`, `SaveChangesAsync()` |
 
-## Əlaqəli qatlar (Referanslar)
+## Related layers (References)
 
-| Qat | İstifadə məqsədi |
+| Layer | Purpose |
 | --- | --- |
-| `MedAppointment.DataAccess.Repositories` | Unit of work tərkibindəki repository interfeysləri. |
-| `MedAppointment.DataAccess.Implementations.EntityFramework.UnitOfWorks` | Unit of work interfeyslərinin EF Core implementasiyaları. |
+| `MedAppointment.DataAccess.Repositories` | Repository interfaces used by units of work. |
+| `MedAppointment.DataAccess.Implementations.EntityFramework.UnitOfWorks` | EF Core implementations of unit-of-work interfaces. |

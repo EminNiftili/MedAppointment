@@ -1,10 +1,10 @@
 # DataAccess.Repositories
 
-Bu qovluq DataAccess qatında repository interfeyslərini saxlayır. Repository-lər `IGenericRepository<TEntity>` üzərindən CRUD əməliyyatlarını təqdim edir və EF implementasiyaları `Implementations/EntityFramework/Repositories` altında yerləşir.
+This folder contains DataAccess repository interfaces. Repositories provide CRUD operations via `IGenericRepository<TEntity>`, and EF implementations live under `Implementations/EntityFramework/Repositories`.
 
-## Repository-lər və entity uyğunluğu
+## Repository-to-entity map
 
-| Modul | Repository interfeysi | Entity |
+| Module | Repository interface | Entity |
 | --- | --- | --- |
 | Classifier | `ICurrencyRepository` | `CurrencyEntity` |
 | Classifier | `IPaymentTypeRepository` | `PaymentTypeEntity` |
@@ -29,10 +29,10 @@ Bu qovluq DataAccess qatında repository interfeyslərini saxlayır. Repository-
 | Service | `IDayPlanRepository` | `DayPlanEntity` |
 | Service | `IPeriodPlanRepository` | `PeriodPlanEntity` |
 
-## Əlaqəli qatlar (Referanslar)
+## Related layers (References)
 
-| Qat | İstifadə məqsədi |
+| Layer | Purpose |
 | --- | --- |
-| `MedAppointment.DataAccess.UnitOfWorks` | Repository-ləri qruplaşdıran unit of work interfeysləri. |
-| `MedAppointment.DataAccess.Implementations.EntityFramework.Repositories` | Repository interfeyslərinin EF Core implementasiyaları. |
-| `MedAppointment.Entities` | Repository-lərin işlədiyi entity modelləri. |
+| `MedAppointment.DataAccess.UnitOfWorks` | Unit-of-work interfaces that group repositories. |
+| `MedAppointment.DataAccess.Implementations.EntityFramework.Repositories` | EF Core implementations of repository interfaces. |
+| `MedAppointment.Entities` | Entity models used by repositories. |

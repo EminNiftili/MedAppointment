@@ -1,51 +1,51 @@
 # Entities Layer
 
-Bu qat domen obyektlərini (entity) saxlayır. Aşağıdakı cədvəllərdə mövcud entity-lər, onların aid olduğu modul və əsas əlaqələr göstərilir.
+This layer contains the domain entities. The tables below list the entities, their modules, and key relationships.
 
-## Entity-lər üzrə baxış
+## Entity overview
 
-| Modul | Entity | Qısa təsvir |
+| Module | Entity | Description |
 | --- | --- | --- |
-| Classifier | `CurrencyEntity` | Valyuta siyahısı. |
-| Classifier | `PaymentTypeEntity` | Ödəniş növü məlumatları. |
-| Classifier | `PeriodEntity` | Görüş aralığı (dəqiqə ilə). |
-| Classifier | `SpecialtyEntity` | Həkim ixtisasları. |
-| Client | `AdminEntity` | Admin məlumatları. |
-| Client | `DoctorEntity` | Həkim məlumatları. |
-| Client | `OrganizationEntity` | Tibb müəssisəsi məlumatları. |
-| Client | `PersonEntity` | Şəxsi məlumatlar. |
-| Client | `UserEntity` | İstifadəçi əsas məlumatları. |
-| Communication | `ChatEntity` | Çat mesajı. |
-| Communication | `ChatHistoryEntity` | Çat tarixçəsi. |
-| Communication | `MeetEntity` | Görüş/söhbət sessiyası. |
-| Composition | `OrganizationUserEntity` | İstifadəçinin təşkilata bağlılığı. |
-| Composition | `DoctorSpecialtyEntity` | Həkim-ixtisas əlaqəsi. |
-| File | `ImageEntity` | Fayl/şəkil metadatası. |
-| Payment | `PaymentEntity` | Ödəniş məlumatları. |
-| Security | `DeviceEntity` | Cihaz məlumatları. |
-| Security | `SessionEntity` | Sessiya məlumatları. |
-| Security | `TokenEntity` | Token məlumatları. |
-| Security | `TraditionalUserEntity` | Ənənəvi login məlumatları. |
-| Service | `AppointmentEntity` | Qəbul (appointment). |
-| Service | `DayPlanEntity` | Həftəlik plan (gün üzrə). |
-| Service | `PeriodPlanEntity` | Müəyyən gün üçün period planı. |
+| Classifier | `CurrencyEntity` | Currency list. |
+| Classifier | `PaymentTypeEntity` | Payment type data. |
+| Classifier | `PeriodEntity` | Appointment interval (minutes). |
+| Classifier | `SpecialtyEntity` | Doctor specialties. |
+| Client | `AdminEntity` | Admin data. |
+| Client | `DoctorEntity` | Doctor data. |
+| Client | `OrganizationEntity` | Medical organization data. |
+| Client | `PersonEntity` | Personal data. |
+| Client | `UserEntity` | User core data. |
+| Communication | `ChatEntity` | Chat message. |
+| Communication | `ChatHistoryEntity` | Chat history. |
+| Communication | `MeetEntity` | Meeting/session record. |
+| Composition | `OrganizationUserEntity` | Organization-user relation. |
+| Composition | `DoctorSpecialtyEntity` | Doctor-specialty relation. |
+| File | `ImageEntity` | File/image metadata. |
+| Payment | `PaymentEntity` | Payment data. |
+| Security | `DeviceEntity` | Device data. |
+| Security | `SessionEntity` | Session data. |
+| Security | `TokenEntity` | Token data. |
+| Security | `TraditionalUserEntity` | Traditional login data. |
+| Service | `AppointmentEntity` | Appointment. |
+| Service | `DayPlanEntity` | Weekly day plan. |
+| Service | `PeriodPlanEntity` | Period plan for a specific day. |
 
-## Enum kimi istifadə olunan property-lər
+## Enum-like properties
 
-Aşağıdakı property-lər `byte`/`int` olaraq saxlanılır və kodda enum məntiqi ilə istifadə olunur.
+The following properties are stored as `byte`/`int` and are used as enums in code.
 
-| Entity | Property | Dəyərlər | İzah |
+| Entity | Property | Values | Description |
 | --- | --- | --- | --- |
-| `UserEntity` | `Provider` | `0` = Traditional, `1` = Google, `2` = Facebook, `3` = Apple | İstifadəçi qeydiyyat provayderi. |
-| `PaymentEntity` | `Status` | `0` = Canceled, `1` = Pending, `2` = Partially Paid, `3` = Paid, `4` = Refund | Ödəniş statusu. |
-| `DeviceEntity` | `DeviceType` | `0` = Android, `1` = iOS, `2` = Windows, `3` = Mac, `4` = Linux | Cihazın əməliyyat sistemi. |
-| `DeviceEntity` | `AppType` | `0` = Web, `1` = Mobile | Cihazın tətbiq tipi. |
-| `AppointmentEntity` | `SelectedServiceType` | `0` = OnSite, `1` = Online | Qəbulun xidmət tipi. |
-| `DayPlanEntity` | `DayOfWeek` | `1` = Monday, `2` = Tuesday, `3` = Wednesday, `4` = Thursday, `5` = Friday, `6` = Saturday, `7` = Sunday | Həftənin günü. |
+| `UserEntity` | `Provider` | `0` = Traditional, `1` = Google, `2` = Facebook, `3` = Apple | User registration provider. |
+| `PaymentEntity` | `Status` | `0` = Canceled, `1` = Pending, `2` = Partially Paid, `3` = Paid, `4` = Refund | Payment status. |
+| `DeviceEntity` | `DeviceType` | `0` = Android, `1` = iOS, `2` = Windows, `3` = Mac, `4` = Linux | Device OS type. |
+| `DeviceEntity` | `AppType` | `0` = Web, `1` = Mobile | Application type. |
+| `AppointmentEntity` | `SelectedServiceType` | `0` = OnSite, `1` = Online | Appointment service type. |
+| `DayPlanEntity` | `DayOfWeek` | `1` = Monday, `2` = Tuesday, `3` = Wednesday, `4` = Thursday, `5` = Friday, `6` = Saturday, `7` = Sunday | Day of week. |
 
-## Əsas referanslar (FK)
+## Key references (FK)
 
-| Entity | Foreign Key | İstinad edilən entity | Naviqasiya property-si |
+| Entity | Foreign Key | Referenced entity | Navigation property |
 | --- | --- | --- | --- |
 | `UserEntity` | `PersonId` | `PersonEntity` | `Person` |
 | `PaymentEntity` | `PaymentTypeId` | `PaymentTypeEntity` | `PaymentType` |

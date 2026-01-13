@@ -1,13 +1,13 @@
 # EF Core Configurations (SqlServer)
 
-Bu qovluq EF Core model konfigurasiya siniflərini saxlayır. Hər konfigurasiya `IEntityTypeConfiguration<TEntity>` üzərindən entity-lərin xəritələnməsini (mappings) müəyyən edir.
+This folder holds EF Core model configuration classes. Each configuration maps entities via `IEntityTypeConfiguration<TEntity>`.
 
-## Konfiqurasiya xəritəsi
+## Configuration map
 
-| Modul | Konfiqurasiya sinfi | Entity |
+| Module | Configuration class | Entity |
 | --- | --- | --- |
-| Base | `BaseConfig<TEntity>` | `BaseEntity` törəmələri üçün ümumi qaydalar |
-| Classifier | `BaseClassfierConfig<TEntity>` | `BaseClassfierEntity` törəmələri |
+| Base | `BaseConfig<TEntity>` | Common rules for `BaseEntity` descendants |
+| Classifier | `BaseClassfierConfig<TEntity>` | Rules for `BaseClassfierEntity` descendants |
 | Classifier | `CurrencyConfig` | `CurrencyEntity` |
 | Classifier | `PaymentTypeConfig` | `PaymentTypeEntity` |
 | Classifier | `PeriodConfig` | `PeriodEntity` |
@@ -32,9 +32,9 @@ Bu qovluq EF Core model konfigurasiya siniflərini saxlayır. Hər konfigurasiya
 | Service | `DayPlanConfig` | `DayPlanEntity` |
 | Service | `PeriodPlanConfig` | `PeriodPlanEntity` |
 
-## Əlaqəli qatlar (Referanslar)
+## Related layers (References)
 
-| Qat | İstifadə məqsədi |
+| Layer | Purpose |
 | --- | --- |
-| `MedAppointment.DataAccess.Implementations.EntityFramework.SqlServer.Contexts` | Konfiqurasiyalar `DbContext` daxilində tətbiq edilir. |
-| `MedAppointment.Entities` | Konfiqurasiyalar entity modellərinə aiddir. |
+| `MedAppointment.DataAccess.Implementations.EntityFramework.SqlServer.Contexts` | Configurations are applied inside the `DbContext`. |
+| `MedAppointment.Entities` | Entity models that these configurations map. |
