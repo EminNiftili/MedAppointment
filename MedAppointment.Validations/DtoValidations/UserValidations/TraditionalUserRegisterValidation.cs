@@ -1,4 +1,4 @@
-﻿namespace MedAppointment.Validations.UserValidations
+﻿namespace MedAppointment.Validations.DtoValidations.UserValidations
 {
     public class TraditionalUserRegisterValidation : BaseValidator<TraditionalUserRegisterDto>
     {

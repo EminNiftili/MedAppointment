@@ -1,4 +1,4 @@
-﻿namespace MedAppointment.Validations
+﻿namespace MedAppointment.Validations.DtoValidations
 {
     public abstract class BaseValidator<TModel> : AbstractValidator<TModel>
     {
