@@ -14,8 +14,4 @@
     <ProjectReference Include="..\MedAppointment.DataTransferObjects\MedAppointment.DataTransferObjects.csproj" />
   </ItemGroup>
 
-  <ItemGroup>
-    <Folder Include="ValidationRules\" />
-  </ItemGroup>
-
 </Project>

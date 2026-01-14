@@ -2,7 +2,28 @@
 {
     public abstract class BaseValidator<TModel> : AbstractValidator<TModel>
     {
-        protected static bool IsValidEmail(string? s)
+        private static Dictionary<string, string> PhonePatternByCountries = new Dictionary<string, string>()
+        {
+            { "AZ" , @"^(?:\+994)(10|50|51|55|60|70|77|99)\d{7}$" }
+        };
+        protected static bool BeValidPhone(string phone)
+        {
+            if (string.IsNullOrWhiteSpace(phone))
+                return false;
+
+            bool isValid = false;
+            foreach(var phonePattern in PhonePatternByCountries)
+            {
+                if(System.Text.RegularExpressions.Regex.IsMatch(phone, phonePattern.Value))
+                {
+                    isValid = true;
+                    break;
+                }
+            }
+            return isValid;
+        }
+
+        protected static bool BeValidEmail(string? s)
         {
             s = s?.Trim();
             if (string.IsNullOrWhiteSpace(s)) return false;
