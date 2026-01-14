@@ -13,6 +13,18 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MedAppointment.Logics", "Me
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MedAppointment.Validations", "MedAppointment.Validations\MedAppointment.Validations.csproj", "{86B74399-7FB9-4329-A04F-7FB9DA8A700E}"
 EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Documentation", "Documentation", "{02EA681E-C7D8-13C7-8484-4AC65E1B71E8}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "SQL", "SQL", "{57673996-7E91-42DF-A6A0-C10D985A7F69}"
+	ProjectSection(SolutionItems) = preProject
+		SQL\README.md = SQL\README.md
+	EndProjectSection
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Localizations", "Localizations", "{078DA1A7-2094-4939-9BB4-10C9E0B0448D}"
+	ProjectSection(SolutionItems) = preProject
+		Localizations\readme.md = Localizations\readme.md
+	EndProjectSection
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -42,6 +54,10 @@ Global
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(NestedProjects) = preSolution
+		{57673996-7E91-42DF-A6A0-C10D985A7F69} = {02EA681E-C7D8-13C7-8484-4AC65E1B71E8}
+		{078DA1A7-2094-4939-9BB4-10C9E0B0448D} = {02EA681E-C7D8-13C7-8484-4AC65E1B71E8}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {9B0C8503-34CF-4379-8B05-91B19F3223D3}
