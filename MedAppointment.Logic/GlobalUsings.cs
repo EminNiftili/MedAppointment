@@ -1,0 +1,38 @@
+﻿#region Entities
+global using MedAppointment.Entities;
+global using MedAppointment.Entities.Classifier;
+global using MedAppointment.Entities.Client;
+global using MedAppointment.Entities.Communication;
+global using MedAppointment.Entities.Composition;
+global using MedAppointment.Entities.File;
+global using MedAppointment.Entities.Payment;
+global using MedAppointment.Entities.Security;
+global using MedAppointment.Entities.Service;
+#endregion
+
+#region Abstract DataAccess
+global using MedAppointment.DataAccess.UnitOfWorks;
+global using MedAppointment.DataAccess.Repositories;
+global using MedAppointment.DataAccess.Repositories.Classifier;
+global using MedAppointment.DataAccess.Repositories.Client;
+global using MedAppointment.DataAccess.Repositories.Communication;
+global using MedAppointment.DataAccess.Repositories.Composition;
+global using MedAppointment.DataAccess.Repositories.File;
+global using MedAppointment.DataAccess.Repositories.Payment;
+global using MedAppointment.DataAccess.Repositories.Security;
+global using MedAppointment.DataAccess.Repositories.Service;
+#endregion
+
+#region System Usings
+global using Microsoft.Extensions.Logging;
+#endregion
+
+#region Data Transfer Objects
+global using MedAppointment.DataTransferObjects.UserDtos;
+#endregion
+
+
+#region Services
+global using MedAppointment.Logics.Services.ClientServices;
+global using MedAppointment.Logics.Implementations.ClientServices;
+#endregion
