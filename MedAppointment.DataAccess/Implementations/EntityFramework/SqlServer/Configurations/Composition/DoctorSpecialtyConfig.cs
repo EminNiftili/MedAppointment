@@ -16,7 +16,7 @@ namespace MedAppointment.DataAccess.Implementations.EntityFramework.SqlServer.Co
                 .IsRequired();
 
             builder.HasOne(x => x.Doctor)
-                .WithMany()
+                .WithMany(x => x.Specialties)
                 .HasForeignKey(x => x.DoctorId);
 
             builder.HasOne(x => x.Specialty)

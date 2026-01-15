@@ -16,7 +16,7 @@
                 .HasMaxLength(500);
 
             builder.HasOne(x => x.Session)
-                .WithMany()
+                .WithMany(x => x.Tokens)
                 .HasForeignKey(x => x.SessionId);
 
         }

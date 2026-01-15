@@ -30,7 +30,7 @@ namespace MedAppointment.DataAccess.Implementations.EntityFramework.SqlServer.Co
                 .HasForeignKey(x => x.UserId);
 
             builder.HasOne(x => x.Chat)
-                .WithMany()
+                .WithMany(x => x.Histories)
                 .HasForeignKey(x => x.ChatId);
         }
     }
