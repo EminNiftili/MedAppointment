@@ -1,5 +1,4 @@
-﻿
-namespace MedAppointment.DataAccess.Implementations.EntityFramework.SqlServer.Configurations.Security
+﻿namespace MedAppointment.DataAccess.Implementations.EntityFramework.SqlServer.Configurations.Security
 {
     public class TraditionalUserConfig : BaseConfig<TraditionalUserEntity>
     {
@@ -14,7 +13,7 @@ namespace MedAppointment.DataAccess.Implementations.EntityFramework.SqlServer.Co
                 .HasMaxLength(350);
 
             builder.HasOne(x => x.User)
-                .WithOne()
+                .WithOne(x => x.TraditionalUser)
                 .HasForeignKey<TraditionalUserEntity>(x => x.UserId);
 
         }
