@@ -2,6 +2,6 @@
 {
     public interface IPersonRepository : IGenericRepository<PersonEntity>
     {
-        PersonEntity? FindByUsername(string name, bool calIncludeAll = false);
+        Task<PersonEntity?> FindByUsernameAsync(string name, bool calIncludeAll = false);
     }
 }

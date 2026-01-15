@@ -7,10 +7,10 @@
         {
         }
 
-        public PersonEntity? FindByUsername(string username, bool canIncludeAll = false)
+        public async Task<PersonEntity?> FindByUsernameAsync(string username, bool canIncludeAll = false)
         {
             var query = IncludeQuery(Query, canIncludeAll);
-            return query.SingleOrDefault(x => x.Email == username || x.PhoneNumber == username);
+            return await query.SingleOrDefaultAsync(x => x.Email == username || x.PhoneNumber == username);
 
         }
 
