@@ -110,7 +110,7 @@
             Entities.Update(entity);
         }
 
-        private IQueryable<TEntity> IncludeQuery(IQueryable<TEntity> query, bool canIncludeAll)
+        protected IQueryable<TEntity> IncludeQuery(IQueryable<TEntity> query, bool canIncludeAll)
         {
             if (CanIncludeAll && canIncludeAll)
             {

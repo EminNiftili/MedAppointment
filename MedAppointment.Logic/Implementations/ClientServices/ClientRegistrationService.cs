@@ -25,7 +25,7 @@
             if (validatorResult == null)
             {
                 _logger.Log(LogLevel.Error, "Validation result is null");
-                result.AddMessage("ERR00100", "Unexpected error contact with admin");
+                result.AddMessage("ERR00100", "Unexpected error contact with admin", HttpStatusCode.BadRequest);
                 return result;
             }
             else if (!validatorResult.IsValid)
@@ -34,6 +34,22 @@
                 result.CheckFluentValidation(validatorResult);
                 return result;
             }
+
+            var existedPersonByEmail = unitOfClient.Person.FindByUsername(traditionalUserRegister.Email);
+            if (existedPersonByEmail != null)
+            {
+                _logger.Log(LogLevel.Information, "Founded existing email for registration");
+                result.AddMessage("ERR00022", "Email already registered!", HttpStatusCode.BadRequest);
+                return result;
+            }
+            var existedPersonByPhoneNumber = unitOfClient.Person.FindByUsername(traditionalUserRegister.PhoneNumber);
+            if (existedPersonByPhoneNumber != null)
+            {
+                _logger.Log(LogLevel.Information, "Founded existing phone number for registration");
+                result.AddMessage("ERR00023", "Phone Number already registered!", HttpStatusCode.BadRequest);
+                return result;
+            }
+
 
             PersonEntity person = new PersonEntity
             {

@@ -7,6 +7,13 @@
         {
         }
 
+        public PersonEntity? FindByUsername(string username, bool canIncludeAll = false)
+        {
+            var query = IncludeQuery(Query, canIncludeAll);
+            return query.SingleOrDefault(x => x.Email == username || x.PhoneNumber == username);
+
+        }
+
         protected override IQueryable<PersonEntity> IncludeQuery(IQueryable<PersonEntity> query)
         {
             return query
