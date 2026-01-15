@@ -383,15 +383,10 @@ namespace MedAppointment.DataAccess.Implementations.EntityFramework.SqlServer.Mi
                         .HasColumnType("tinyint")
                         .HasComment("0 -> Traditional\n1 -> Google\n2 -> Facebook\n3 -> Apple");
 
-                    b.Property<long?>("TraditionalUserId")
-                        .HasColumnType("bigint");
-
                     b.HasKey("Id");
 
                     b.HasIndex("PersonId")
                         .IsUnique();
-
-                    b.HasIndex("TraditionalUserId");
 
                     b.ToTable("Users", "Client");
                 });
@@ -437,9 +432,6 @@ namespace MedAppointment.DataAccess.Implementations.EntityFramework.SqlServer.Mi
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<long>("Id"));
 
-                    b.Property<long?>("ChatEntityId")
-                        .HasColumnType("bigint");
-
                     b.Property<long>("ChatId")
                         .HasColumnType("bigint");
 
@@ -473,8 +465,6 @@ namespace MedAppointment.DataAccess.Implementations.EntityFramework.SqlServer.Mi
                         .HasColumnType("bigint");
 
                     b.HasKey("Id");
-
-                    b.HasIndex("ChatEntityId");
 
                     b.HasIndex("ChatId");
 
@@ -529,9 +519,6 @@ namespace MedAppointment.DataAccess.Implementations.EntityFramework.SqlServer.Mi
                         .HasColumnType("datetime2")
                         .HasDefaultValueSql("GETUTCDATE()");
 
-                    b.Property<long?>("DoctorEntityId")
-                        .HasColumnType("bigint");
-
                     b.Property<long>("DoctorId")
                         .HasColumnType("bigint");
 
@@ -549,8 +536,6 @@ namespace MedAppointment.DataAccess.Implementations.EntityFramework.SqlServer.Mi
                         .HasColumnType("bigint");
 
                     b.HasKey("Id");
-
-                    b.HasIndex("DoctorEntityId");
 
                     b.HasIndex("DoctorId");
 
@@ -779,15 +764,10 @@ namespace MedAppointment.DataAccess.Implementations.EntityFramework.SqlServer.Mi
                         .HasMaxLength(500)
                         .HasColumnType("nvarchar(500)");
 
-                    b.Property<long?>("SessionEntityId")
-                        .HasColumnType("bigint");
-
                     b.Property<long>("SessionId")
                         .HasColumnType("bigint");
 
                     b.HasKey("Id");
-
-                    b.HasIndex("SessionEntityId");
 
                     b.HasIndex("SessionId");
 
@@ -1015,13 +995,7 @@ namespace MedAppointment.DataAccess.Implementations.EntityFramework.SqlServer.Mi
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.HasOne("MedAppointment.Entities.Security.TraditionalUserEntity", "TraditionalUser")
-                        .WithMany()
-                        .HasForeignKey("TraditionalUserId");
-
                     b.Navigation("Person");
-
-                    b.Navigation("TraditionalUser");
                 });
 
             modelBuilder.Entity("MedAppointment.Entities.Communication.ChatEntity", b =>
@@ -1045,12 +1019,8 @@ namespace MedAppointment.DataAccess.Implementations.EntityFramework.SqlServer.Mi
 
             modelBuilder.Entity("MedAppointment.Entities.Communication.ChatHistoryEntity", b =>
                 {
-                    b.HasOne("MedAppointment.Entities.Communication.ChatEntity", null)
-                        .WithMany("Histories")
-                        .HasForeignKey("ChatEntityId");
-
                     b.HasOne("MedAppointment.Entities.Communication.ChatEntity", "Chat")
-                        .WithMany()
+                        .WithMany("Histories")
                         .HasForeignKey("ChatId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
@@ -1087,12 +1057,8 @@ namespace MedAppointment.DataAccess.Implementations.EntityFramework.SqlServer.Mi
 
             modelBuilder.Entity("MedAppointment.Entities.Composition.DoctorSpecialtyEntity", b =>
                 {
-                    b.HasOne("MedAppointment.Entities.Client.DoctorEntity", null)
-                        .WithMany("Specialties")
-                        .HasForeignKey("DoctorEntityId");
-
                     b.HasOne("MedAppointment.Entities.Client.DoctorEntity", "Doctor")
-                        .WithMany()
+                        .WithMany("Specialties")
                         .HasForeignKey("DoctorId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
@@ -1159,12 +1125,8 @@ namespace MedAppointment.DataAccess.Implementations.EntityFramework.SqlServer.Mi
 
             modelBuilder.Entity("MedAppointment.Entities.Security.TokenEntity", b =>
                 {
-                    b.HasOne("MedAppointment.Entities.Security.SessionEntity", null)
-                        .WithMany("Tokens")
-                        .HasForeignKey("SessionEntityId");
-
                     b.HasOne("MedAppointment.Entities.Security.SessionEntity", "Session")
-                        .WithMany()
+                        .WithMany("Tokens")
                         .HasForeignKey("SessionId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
@@ -1175,7 +1137,7 @@ namespace MedAppointment.DataAccess.Implementations.EntityFramework.SqlServer.Mi
             modelBuilder.Entity("MedAppointment.Entities.Security.TraditionalUserEntity", b =>
                 {
                     b.HasOne("MedAppointment.Entities.Client.UserEntity", "User")
-                        .WithOne()
+                        .WithOne("TraditionalUser")
                         .HasForeignKey("MedAppointment.Entities.Security.TraditionalUserEntity", "UserId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
@@ -1274,6 +1236,8 @@ namespace MedAppointment.DataAccess.Implementations.EntityFramework.SqlServer.Mi
                     b.Navigation("SentChats");
 
                     b.Navigation("Sessions");
+
+                    b.Navigation("TraditionalUser");
                 });
 
             modelBuilder.Entity("MedAppointment.Entities.Communication.ChatEntity", b =>

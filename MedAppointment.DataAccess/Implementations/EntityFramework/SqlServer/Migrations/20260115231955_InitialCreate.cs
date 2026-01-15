@@ -218,6 +218,30 @@ namespace MedAppointment.DataAccess.Implementations.EntityFramework.SqlServer.Mi
                 });
 
             migrationBuilder.CreateTable(
+                name: "Users",
+                schema: "Client",
+                columns: table => new
+                {
+                    Id = table.Column<long>(type: "bigint", nullable: false)
+                        .Annotation("SqlServer:Identity", "1, 1"),
+                    PersonId = table.Column<long>(type: "bigint", nullable: false),
+                    Provider = table.Column<byte>(type: "tinyint", nullable: false, comment: "0 -> Traditional\n1 -> Google\n2 -> Facebook\n3 -> Apple"),
+                    CreatedAt = table.Column<DateTime>(type: "datetime2", nullable: false, defaultValueSql: "GETUTCDATE()"),
+                    IsDeleted = table.Column<bool>(type: "bit", nullable: false, defaultValueSql: "0")
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_Users", x => x.Id);
+                    table.ForeignKey(
+                        name: "FK_Users_People_PersonId",
+                        column: x => x.PersonId,
+                        principalSchema: "Client",
+                        principalTable: "People",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
+                });
+
+            migrationBuilder.CreateTable(
                 name: "Admins",
                 schema: "Client",
                 columns: table => new
@@ -231,52 +255,13 @@ namespace MedAppointment.DataAccess.Implementations.EntityFramework.SqlServer.Mi
                 constraints: table =>
                 {
                     table.PrimaryKey("PK_Admins", x => x.Id);
-                });
-
-            migrationBuilder.CreateTable(
-                name: "Appointments",
-                schema: "Service",
-                columns: table => new
-                {
-                    Id = table.Column<long>(type: "bigint", nullable: false)
-                        .Annotation("SqlServer:Identity", "1, 1"),
-                    PeriodPlanId = table.Column<long>(type: "bigint", nullable: false),
-                    SelectedServiceType = table.Column<byte>(type: "tinyint", nullable: false, comment: "0 -> OnSite\n1 -> Online"),
-                    PaymentId = table.Column<long>(type: "bigint", nullable: false),
-                    CreatedAt = table.Column<DateTime>(type: "datetime2", nullable: false, defaultValueSql: "GETUTCDATE()"),
-                    IsDeleted = table.Column<bool>(type: "bit", nullable: false, defaultValueSql: "0")
-                },
-                constraints: table =>
-                {
-                    table.PrimaryKey("PK_Appointments", x => x.Id);
                     table.ForeignKey(
-                        name: "FK_Appointments_Payments_PaymentId",
-                        column: x => x.PaymentId,
-                        principalSchema: "Payment",
-                        principalTable: "Payments",
+                        name: "FK_Admins_Users_UserId",
+                        column: x => x.UserId,
+                        principalSchema: "Client",
+                        principalTable: "Users",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Cascade);
-                });
-
-            migrationBuilder.CreateTable(
-                name: "ChatHistories",
-                schema: "Communication",
-                columns: table => new
-                {
-                    Id = table.Column<long>(type: "bigint", nullable: false)
-                        .Annotation("SqlServer:Identity", "1, 1"),
-                    ChatId = table.Column<long>(type: "bigint", nullable: false),
-                    UserId = table.Column<long>(type: "bigint", nullable: false),
-                    Message = table.Column<string>(type: "nvarchar(500)", maxLength: 500, nullable: false),
-                    IsSeen = table.Column<bool>(type: "bit", nullable: false, defaultValueSql: "0"),
-                    IsSent = table.Column<bool>(type: "bit", nullable: false, defaultValueSql: "0"),
-                    ChatEntityId = table.Column<long>(type: "bigint", nullable: true),
-                    CreatedAt = table.Column<DateTime>(type: "datetime2", nullable: false, defaultValueSql: "GETUTCDATE()"),
-                    IsDeleted = table.Column<bool>(type: "bit", nullable: false, defaultValueSql: "0")
-                },
-                constraints: table =>
-                {
-                    table.PrimaryKey("PK_ChatHistories", x => x.Id);
                 });
 
             migrationBuilder.CreateTable(
@@ -294,6 +279,198 @@ namespace MedAppointment.DataAccess.Implementations.EntityFramework.SqlServer.Mi
                 constraints: table =>
                 {
                     table.PrimaryKey("PK_Chats", x => x.Id);
+                    table.ForeignKey(
+                        name: "FK_Chats_Users_ReceiverUserId",
+                        column: x => x.ReceiverUserId,
+                        principalSchema: "Client",
+                        principalTable: "Users",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Restrict);
+                    table.ForeignKey(
+                        name: "FK_Chats_Users_SenderUserId",
+                        column: x => x.SenderUserId,
+                        principalSchema: "Client",
+                        principalTable: "Users",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Restrict);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "Doctors",
+                schema: "Client",
+                columns: table => new
+                {
+                    Id = table.Column<long>(type: "bigint", nullable: false)
+                        .Annotation("SqlServer:Identity", "1, 1"),
+                    UserId = table.Column<long>(type: "bigint", nullable: false),
+                    IsConfirm = table.Column<bool>(type: "bit", nullable: false, defaultValueSql: "0"),
+                    Title = table.Column<string>(type: "nvarchar(150)", maxLength: 150, nullable: false),
+                    Description = table.Column<string>(type: "nvarchar(1000)", maxLength: 1000, nullable: false),
+                    CreatedAt = table.Column<DateTime>(type: "datetime2", nullable: false, defaultValueSql: "GETUTCDATE()"),
+                    IsDeleted = table.Column<bool>(type: "bit", nullable: false, defaultValueSql: "0")
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_Doctors", x => x.Id);
+                    table.ForeignKey(
+                        name: "FK_Doctors_Users_UserId",
+                        column: x => x.UserId,
+                        principalSchema: "Client",
+                        principalTable: "Users",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "Meets",
+                schema: "Communication",
+                columns: table => new
+                {
+                    Id = table.Column<long>(type: "bigint", nullable: false)
+                        .Annotation("SqlServer:Identity", "1, 1"),
+                    SenderUserId = table.Column<long>(type: "bigint", nullable: false),
+                    ReceiverUserId = table.Column<long>(type: "bigint", nullable: false),
+                    CreatedAt = table.Column<DateTime>(type: "datetime2", nullable: false, defaultValueSql: "GETUTCDATE()"),
+                    IsDeleted = table.Column<bool>(type: "bit", nullable: false, defaultValueSql: "0")
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_Meets", x => x.Id);
+                    table.ForeignKey(
+                        name: "FK_Meets_Users_ReceiverUserId",
+                        column: x => x.ReceiverUserId,
+                        principalSchema: "Client",
+                        principalTable: "Users",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Restrict);
+                    table.ForeignKey(
+                        name: "FK_Meets_Users_SenderUserId",
+                        column: x => x.SenderUserId,
+                        principalSchema: "Client",
+                        principalTable: "Users",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Restrict);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "OrganizationUsers",
+                schema: "Composition",
+                columns: table => new
+                {
+                    Id = table.Column<long>(type: "bigint", nullable: false)
+                        .Annotation("SqlServer:Identity", "1, 1"),
+                    UserId = table.Column<long>(type: "bigint", nullable: false),
+                    OrganizationId = table.Column<long>(type: "bigint", nullable: false),
+                    IsAdmin = table.Column<bool>(type: "bit", nullable: false, defaultValueSql: "0"),
+                    CreatedAt = table.Column<DateTime>(type: "datetime2", nullable: false, defaultValueSql: "GETUTCDATE()"),
+                    IsDeleted = table.Column<bool>(type: "bit", nullable: false, defaultValueSql: "0")
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_OrganizationUsers", x => x.Id);
+                    table.ForeignKey(
+                        name: "FK_OrganizationUsers_Organizations_OrganizationId",
+                        column: x => x.OrganizationId,
+                        principalSchema: "Client",
+                        principalTable: "Organizations",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
+                    table.ForeignKey(
+                        name: "FK_OrganizationUsers_Users_UserId",
+                        column: x => x.UserId,
+                        principalSchema: "Client",
+                        principalTable: "Users",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "Sessions",
+                schema: "Security",
+                columns: table => new
+                {
+                    Id = table.Column<long>(type: "bigint", nullable: false)
+                        .Annotation("SqlServer:Identity", "1, 1"),
+                    UserId = table.Column<long>(type: "bigint", nullable: false),
+                    DeviceId = table.Column<long>(type: "bigint", nullable: false),
+                    CreatedAt = table.Column<DateTime>(type: "datetime2", nullable: false, defaultValueSql: "GETUTCDATE()"),
+                    IsDeleted = table.Column<bool>(type: "bit", nullable: false, defaultValueSql: "0")
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_Sessions", x => x.Id);
+                    table.ForeignKey(
+                        name: "FK_Sessions_Devices_DeviceId",
+                        column: x => x.DeviceId,
+                        principalSchema: "Security",
+                        principalTable: "Devices",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
+                    table.ForeignKey(
+                        name: "FK_Sessions_Users_UserId",
+                        column: x => x.UserId,
+                        principalSchema: "Client",
+                        principalTable: "Users",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "TraditionalUsers",
+                schema: "Security",
+                columns: table => new
+                {
+                    Id = table.Column<long>(type: "bigint", nullable: false)
+                        .Annotation("SqlServer:Identity", "1, 1"),
+                    UserId = table.Column<long>(type: "bigint", nullable: false),
+                    PasswordHash = table.Column<string>(type: "nvarchar(350)", maxLength: 350, nullable: false),
+                    CreatedAt = table.Column<DateTime>(type: "datetime2", nullable: false, defaultValueSql: "GETUTCDATE()"),
+                    IsDeleted = table.Column<bool>(type: "bit", nullable: false, defaultValueSql: "0")
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_TraditionalUsers", x => x.Id);
+                    table.ForeignKey(
+                        name: "FK_TraditionalUsers_Users_UserId",
+                        column: x => x.UserId,
+                        principalSchema: "Client",
+                        principalTable: "Users",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "ChatHistories",
+                schema: "Communication",
+                columns: table => new
+                {
+                    Id = table.Column<long>(type: "bigint", nullable: false)
+                        .Annotation("SqlServer:Identity", "1, 1"),
+                    ChatId = table.Column<long>(type: "bigint", nullable: false),
+                    UserId = table.Column<long>(type: "bigint", nullable: false),
+                    Message = table.Column<string>(type: "nvarchar(500)", maxLength: 500, nullable: false),
+                    IsSeen = table.Column<bool>(type: "bit", nullable: false, defaultValueSql: "0"),
+                    IsSent = table.Column<bool>(type: "bit", nullable: false, defaultValueSql: "0"),
+                    CreatedAt = table.Column<DateTime>(type: "datetime2", nullable: false, defaultValueSql: "GETUTCDATE()"),
+                    IsDeleted = table.Column<bool>(type: "bit", nullable: false, defaultValueSql: "0")
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_ChatHistories", x => x.Id);
+                    table.ForeignKey(
+                        name: "FK_ChatHistories_Chats_ChatId",
+                        column: x => x.ChatId,
+                        principalSchema: "Communication",
+                        principalTable: "Chats",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
+                    table.ForeignKey(
+                        name: "FK_ChatHistories_Users_UserId",
+                        column: x => x.UserId,
+                        principalSchema: "Client",
+                        principalTable: "Users",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
                 });
 
             migrationBuilder.CreateTable(
@@ -317,6 +494,13 @@ namespace MedAppointment.DataAccess.Implementations.EntityFramework.SqlServer.Mi
                 {
                     table.PrimaryKey("PK_DayPlans", x => x.Id);
                     table.ForeignKey(
+                        name: "FK_DayPlans_Doctors_DoctorId",
+                        column: x => x.DoctorId,
+                        principalSchema: "Client",
+                        principalTable: "Doctors",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
+                    table.ForeignKey(
                         name: "FK_DayPlans_Periods_PeriodId",
                         column: x => x.PeriodId,
                         principalSchema: "Classifier",
@@ -328,6 +512,63 @@ namespace MedAppointment.DataAccess.Implementations.EntityFramework.SqlServer.Mi
                         column: x => x.SpecialtyId,
                         principalSchema: "Classifier",
                         principalTable: "Specialties",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "DoctorSpecialties",
+                schema: "Compositions",
+                columns: table => new
+                {
+                    Id = table.Column<long>(type: "bigint", nullable: false)
+                        .Annotation("SqlServer:Identity", "1, 1"),
+                    IsConfirm = table.Column<bool>(type: "bit", nullable: false, defaultValueSql: "0"),
+                    DoctorId = table.Column<long>(type: "bigint", nullable: false),
+                    SpecialtyId = table.Column<long>(type: "bigint", nullable: false),
+                    CreatedAt = table.Column<DateTime>(type: "datetime2", nullable: false, defaultValueSql: "GETUTCDATE()"),
+                    IsDeleted = table.Column<bool>(type: "bit", nullable: false, defaultValueSql: "0")
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_DoctorSpecialties", x => x.Id);
+                    table.ForeignKey(
+                        name: "FK_DoctorSpecialties_Doctors_DoctorId",
+                        column: x => x.DoctorId,
+                        principalSchema: "Client",
+                        principalTable: "Doctors",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
+                    table.ForeignKey(
+                        name: "FK_DoctorSpecialties_Specialties_SpecialtyId",
+                        column: x => x.SpecialtyId,
+                        principalSchema: "Classifier",
+                        principalTable: "Specialties",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "Tokens",
+                schema: "Security",
+                columns: table => new
+                {
+                    Id = table.Column<long>(type: "bigint", nullable: false)
+                        .Annotation("SqlServer:Identity", "1, 1"),
+                    SessionId = table.Column<long>(type: "bigint", nullable: false),
+                    AccessToken = table.Column<string>(type: "nvarchar(500)", maxLength: 500, nullable: false),
+                    RefreshToken = table.Column<string>(type: "nvarchar(500)", maxLength: 500, nullable: false),
+                    CreatedAt = table.Column<DateTime>(type: "datetime2", nullable: false, defaultValueSql: "GETUTCDATE()"),
+                    IsDeleted = table.Column<bool>(type: "bit", nullable: false, defaultValueSql: "0")
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_Tokens", x => x.Id);
+                    table.ForeignKey(
+                        name: "FK_Tokens_Sessions_SessionId",
+                        column: x => x.SessionId,
+                        principalSchema: "Security",
+                        principalTable: "Sessions",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Cascade);
                 });
@@ -370,207 +611,35 @@ namespace MedAppointment.DataAccess.Implementations.EntityFramework.SqlServer.Mi
                 });
 
             migrationBuilder.CreateTable(
-                name: "Doctors",
-                schema: "Client",
+                name: "Appointments",
+                schema: "Service",
                 columns: table => new
                 {
                     Id = table.Column<long>(type: "bigint", nullable: false)
                         .Annotation("SqlServer:Identity", "1, 1"),
-                    UserId = table.Column<long>(type: "bigint", nullable: false),
-                    IsConfirm = table.Column<bool>(type: "bit", nullable: false, defaultValueSql: "0"),
-                    Title = table.Column<string>(type: "nvarchar(150)", maxLength: 150, nullable: false),
-                    Description = table.Column<string>(type: "nvarchar(1000)", maxLength: 1000, nullable: false),
+                    PeriodPlanId = table.Column<long>(type: "bigint", nullable: false),
+                    SelectedServiceType = table.Column<byte>(type: "tinyint", nullable: false, comment: "0 -> OnSite\n1 -> Online"),
+                    PaymentId = table.Column<long>(type: "bigint", nullable: false),
                     CreatedAt = table.Column<DateTime>(type: "datetime2", nullable: false, defaultValueSql: "GETUTCDATE()"),
                     IsDeleted = table.Column<bool>(type: "bit", nullable: false, defaultValueSql: "0")
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_Doctors", x => x.Id);
-                });
-
-            migrationBuilder.CreateTable(
-                name: "DoctorSpecialties",
-                schema: "Compositions",
-                columns: table => new
-                {
-                    Id = table.Column<long>(type: "bigint", nullable: false)
-                        .Annotation("SqlServer:Identity", "1, 1"),
-                    IsConfirm = table.Column<bool>(type: "bit", nullable: false, defaultValueSql: "0"),
-                    DoctorId = table.Column<long>(type: "bigint", nullable: false),
-                    SpecialtyId = table.Column<long>(type: "bigint", nullable: false),
-                    DoctorEntityId = table.Column<long>(type: "bigint", nullable: true),
-                    CreatedAt = table.Column<DateTime>(type: "datetime2", nullable: false, defaultValueSql: "GETUTCDATE()"),
-                    IsDeleted = table.Column<bool>(type: "bit", nullable: false, defaultValueSql: "0")
-                },
-                constraints: table =>
-                {
-                    table.PrimaryKey("PK_DoctorSpecialties", x => x.Id);
+                    table.PrimaryKey("PK_Appointments", x => x.Id);
                     table.ForeignKey(
-                        name: "FK_DoctorSpecialties_Doctors_DoctorEntityId",
-                        column: x => x.DoctorEntityId,
-                        principalSchema: "Client",
-                        principalTable: "Doctors",
-                        principalColumn: "Id");
-                    table.ForeignKey(
-                        name: "FK_DoctorSpecialties_Doctors_DoctorId",
-                        column: x => x.DoctorId,
-                        principalSchema: "Client",
-                        principalTable: "Doctors",
+                        name: "FK_Appointments_Payments_PaymentId",
+                        column: x => x.PaymentId,
+                        principalSchema: "Payment",
+                        principalTable: "Payments",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Cascade);
                     table.ForeignKey(
-                        name: "FK_DoctorSpecialties_Specialties_SpecialtyId",
-                        column: x => x.SpecialtyId,
-                        principalSchema: "Classifier",
-                        principalTable: "Specialties",
+                        name: "FK_Appointments_PeriodPlans_PeriodPlanId",
+                        column: x => x.PeriodPlanId,
+                        principalSchema: "Service",
+                        principalTable: "PeriodPlans",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Cascade);
-                });
-
-            migrationBuilder.CreateTable(
-                name: "Meets",
-                schema: "Communication",
-                columns: table => new
-                {
-                    Id = table.Column<long>(type: "bigint", nullable: false)
-                        .Annotation("SqlServer:Identity", "1, 1"),
-                    SenderUserId = table.Column<long>(type: "bigint", nullable: false),
-                    ReceiverUserId = table.Column<long>(type: "bigint", nullable: false),
-                    CreatedAt = table.Column<DateTime>(type: "datetime2", nullable: false, defaultValueSql: "GETUTCDATE()"),
-                    IsDeleted = table.Column<bool>(type: "bit", nullable: false, defaultValueSql: "0")
-                },
-                constraints: table =>
-                {
-                    table.PrimaryKey("PK_Meets", x => x.Id);
-                });
-
-            migrationBuilder.CreateTable(
-                name: "OrganizationUsers",
-                schema: "Composition",
-                columns: table => new
-                {
-                    Id = table.Column<long>(type: "bigint", nullable: false)
-                        .Annotation("SqlServer:Identity", "1, 1"),
-                    UserId = table.Column<long>(type: "bigint", nullable: false),
-                    OrganizationId = table.Column<long>(type: "bigint", nullable: false),
-                    IsAdmin = table.Column<bool>(type: "bit", nullable: false, defaultValueSql: "0"),
-                    CreatedAt = table.Column<DateTime>(type: "datetime2", nullable: false, defaultValueSql: "GETUTCDATE()"),
-                    IsDeleted = table.Column<bool>(type: "bit", nullable: false, defaultValueSql: "0")
-                },
-                constraints: table =>
-                {
-                    table.PrimaryKey("PK_OrganizationUsers", x => x.Id);
-                    table.ForeignKey(
-                        name: "FK_OrganizationUsers_Organizations_OrganizationId",
-                        column: x => x.OrganizationId,
-                        principalSchema: "Client",
-                        principalTable: "Organizations",
-                        principalColumn: "Id",
-                        onDelete: ReferentialAction.Cascade);
-                });
-
-            migrationBuilder.CreateTable(
-                name: "Sessions",
-                schema: "Security",
-                columns: table => new
-                {
-                    Id = table.Column<long>(type: "bigint", nullable: false)
-                        .Annotation("SqlServer:Identity", "1, 1"),
-                    UserId = table.Column<long>(type: "bigint", nullable: false),
-                    DeviceId = table.Column<long>(type: "bigint", nullable: false),
-                    CreatedAt = table.Column<DateTime>(type: "datetime2", nullable: false, defaultValueSql: "GETUTCDATE()"),
-                    IsDeleted = table.Column<bool>(type: "bit", nullable: false, defaultValueSql: "0")
-                },
-                constraints: table =>
-                {
-                    table.PrimaryKey("PK_Sessions", x => x.Id);
-                    table.ForeignKey(
-                        name: "FK_Sessions_Devices_DeviceId",
-                        column: x => x.DeviceId,
-                        principalSchema: "Security",
-                        principalTable: "Devices",
-                        principalColumn: "Id",
-                        onDelete: ReferentialAction.Cascade);
-                });
-
-            migrationBuilder.CreateTable(
-                name: "Tokens",
-                schema: "Security",
-                columns: table => new
-                {
-                    Id = table.Column<long>(type: "bigint", nullable: false)
-                        .Annotation("SqlServer:Identity", "1, 1"),
-                    SessionId = table.Column<long>(type: "bigint", nullable: false),
-                    AccessToken = table.Column<string>(type: "nvarchar(500)", maxLength: 500, nullable: false),
-                    RefreshToken = table.Column<string>(type: "nvarchar(500)", maxLength: 500, nullable: false),
-                    SessionEntityId = table.Column<long>(type: "bigint", nullable: true),
-                    CreatedAt = table.Column<DateTime>(type: "datetime2", nullable: false, defaultValueSql: "GETUTCDATE()"),
-                    IsDeleted = table.Column<bool>(type: "bit", nullable: false, defaultValueSql: "0")
-                },
-                constraints: table =>
-                {
-                    table.PrimaryKey("PK_Tokens", x => x.Id);
-                    table.ForeignKey(
-                        name: "FK_Tokens_Sessions_SessionEntityId",
-                        column: x => x.SessionEntityId,
-                        principalSchema: "Security",
-                        principalTable: "Sessions",
-                        principalColumn: "Id");
-                    table.ForeignKey(
-                        name: "FK_Tokens_Sessions_SessionId",
-                        column: x => x.SessionId,
-                        principalSchema: "Security",
-                        principalTable: "Sessions",
-                        principalColumn: "Id",
-                        onDelete: ReferentialAction.Cascade);
-                });
-
-            migrationBuilder.CreateTable(
-                name: "TraditionalUsers",
-                schema: "Security",
-                columns: table => new
-                {
-                    Id = table.Column<long>(type: "bigint", nullable: false)
-                        .Annotation("SqlServer:Identity", "1, 1"),
-                    UserId = table.Column<long>(type: "bigint", nullable: false),
-                    PasswordHash = table.Column<string>(type: "nvarchar(350)", maxLength: 350, nullable: false),
-                    CreatedAt = table.Column<DateTime>(type: "datetime2", nullable: false, defaultValueSql: "GETUTCDATE()"),
-                    IsDeleted = table.Column<bool>(type: "bit", nullable: false, defaultValueSql: "0")
-                },
-                constraints: table =>
-                {
-                    table.PrimaryKey("PK_TraditionalUsers", x => x.Id);
-                });
-
-            migrationBuilder.CreateTable(
-                name: "Users",
-                schema: "Client",
-                columns: table => new
-                {
-                    Id = table.Column<long>(type: "bigint", nullable: false)
-                        .Annotation("SqlServer:Identity", "1, 1"),
-                    PersonId = table.Column<long>(type: "bigint", nullable: false),
-                    Provider = table.Column<byte>(type: "tinyint", nullable: false, comment: "0 -> Traditional\n1 -> Google\n2 -> Facebook\n3 -> Apple"),
-                    TraditionalUserId = table.Column<long>(type: "bigint", nullable: true),
-                    CreatedAt = table.Column<DateTime>(type: "datetime2", nullable: false, defaultValueSql: "GETUTCDATE()"),
-                    IsDeleted = table.Column<bool>(type: "bit", nullable: false, defaultValueSql: "0")
-                },
-                constraints: table =>
-                {
-                    table.PrimaryKey("PK_Users", x => x.Id);
-                    table.ForeignKey(
-                        name: "FK_Users_People_PersonId",
-                        column: x => x.PersonId,
-                        principalSchema: "Client",
-                        principalTable: "People",
-                        principalColumn: "Id",
-                        onDelete: ReferentialAction.Cascade);
-                    table.ForeignKey(
-                        name: "FK_Users_TraditionalUsers_TraditionalUserId",
-                        column: x => x.TraditionalUserId,
-                        principalSchema: "Security",
-                        principalTable: "TraditionalUsers",
-                        principalColumn: "Id");
                 });
 
             migrationBuilder.CreateIndex(
@@ -592,12 +661,6 @@ namespace MedAppointment.DataAccess.Implementations.EntityFramework.SqlServer.Mi
                 schema: "Service",
                 table: "Appointments",
                 column: "PeriodPlanId");
-
-            migrationBuilder.CreateIndex(
-                name: "IX_ChatHistories_ChatEntityId",
-                schema: "Communication",
-                table: "ChatHistories",
-                column: "ChatEntityId");
 
             migrationBuilder.CreateIndex(
                 name: "IX_ChatHistories_ChatId",
@@ -654,12 +717,6 @@ namespace MedAppointment.DataAccess.Implementations.EntityFramework.SqlServer.Mi
                 table: "Doctors",
                 column: "UserId",
                 unique: true);
-
-            migrationBuilder.CreateIndex(
-                name: "IX_DoctorSpecialties_DoctorEntityId",
-                schema: "Compositions",
-                table: "DoctorSpecialties",
-                column: "DoctorEntityId");
 
             migrationBuilder.CreateIndex(
                 name: "IX_DoctorSpecialties_DoctorId",
@@ -759,12 +816,6 @@ namespace MedAppointment.DataAccess.Implementations.EntityFramework.SqlServer.Mi
                 unique: true);
 
             migrationBuilder.CreateIndex(
-                name: "IX_Tokens_SessionEntityId",
-                schema: "Security",
-                table: "Tokens",
-                column: "SessionEntityId");
-
-            migrationBuilder.CreateIndex(
                 name: "IX_Tokens_SessionId",
                 schema: "Security",
                 table: "Tokens",
@@ -783,161 +834,11 @@ namespace MedAppointment.DataAccess.Implementations.EntityFramework.SqlServer.Mi
                 table: "Users",
                 column: "PersonId",
                 unique: true);
-
-            migrationBuilder.CreateIndex(
-                name: "IX_Users_TraditionalUserId",
-                schema: "Client",
-                table: "Users",
-                column: "TraditionalUserId");
-
-            migrationBuilder.AddForeignKey(
-                name: "FK_Admins_Users_UserId",
-                schema: "Client",
-                table: "Admins",
-                column: "UserId",
-                principalSchema: "Client",
-                principalTable: "Users",
-                principalColumn: "Id",
-                onDelete: ReferentialAction.Cascade);
-
-            migrationBuilder.AddForeignKey(
-                name: "FK_Appointments_PeriodPlans_PeriodPlanId",
-                schema: "Service",
-                table: "Appointments",
-                column: "PeriodPlanId",
-                principalSchema: "Service",
-                principalTable: "PeriodPlans",
-                principalColumn: "Id",
-                onDelete: ReferentialAction.Cascade);
-
-            migrationBuilder.AddForeignKey(
-                name: "FK_ChatHistories_Chats_ChatEntityId",
-                schema: "Communication",
-                table: "ChatHistories",
-                column: "ChatEntityId",
-                principalSchema: "Communication",
-                principalTable: "Chats",
-                principalColumn: "Id");
-
-            migrationBuilder.AddForeignKey(
-                name: "FK_ChatHistories_Chats_ChatId",
-                schema: "Communication",
-                table: "ChatHistories",
-                column: "ChatId",
-                principalSchema: "Communication",
-                principalTable: "Chats",
-                principalColumn: "Id",
-                onDelete: ReferentialAction.Cascade);
-
-            migrationBuilder.AddForeignKey(
-                name: "FK_ChatHistories_Users_UserId",
-                schema: "Communication",
-                table: "ChatHistories",
-                column: "UserId",
-                principalSchema: "Client",
-                principalTable: "Users",
-                principalColumn: "Id",
-                onDelete: ReferentialAction.Cascade);
-
-            migrationBuilder.AddForeignKey(
-                name: "FK_Chats_Users_ReceiverUserId",
-                schema: "Communication",
-                table: "Chats",
-                column: "ReceiverUserId",
-                principalSchema: "Client",
-                principalTable: "Users",
-                principalColumn: "Id",
-                onDelete: ReferentialAction.Restrict);
-
-            migrationBuilder.AddForeignKey(
-                name: "FK_Chats_Users_SenderUserId",
-                schema: "Communication",
-                table: "Chats",
-                column: "SenderUserId",
-                principalSchema: "Client",
-                principalTable: "Users",
-                principalColumn: "Id",
-                onDelete: ReferentialAction.Restrict);
-
-            migrationBuilder.AddForeignKey(
-                name: "FK_DayPlans_Doctors_DoctorId",
-                schema: "Service",
-                table: "DayPlans",
-                column: "DoctorId",
-                principalSchema: "Client",
-                principalTable: "Doctors",
-                principalColumn: "Id",
-                onDelete: ReferentialAction.Cascade);
-
-            migrationBuilder.AddForeignKey(
-                name: "FK_Doctors_Users_UserId",
-                schema: "Client",
-                table: "Doctors",
-                column: "UserId",
-                principalSchema: "Client",
-                principalTable: "Users",
-                principalColumn: "Id",
-                onDelete: ReferentialAction.Cascade);
-
-            migrationBuilder.AddForeignKey(
-                name: "FK_Meets_Users_ReceiverUserId",
-                schema: "Communication",
-                table: "Meets",
-                column: "ReceiverUserId",
-                principalSchema: "Client",
-                principalTable: "Users",
-                principalColumn: "Id",
-                onDelete: ReferentialAction.Restrict);
-
-            migrationBuilder.AddForeignKey(
-                name: "FK_Meets_Users_SenderUserId",
-                schema: "Communication",
-                table: "Meets",
-                column: "SenderUserId",
-                principalSchema: "Client",
-                principalTable: "Users",
-                principalColumn: "Id",
-                onDelete: ReferentialAction.Restrict);
-
-            migrationBuilder.AddForeignKey(
-                name: "FK_OrganizationUsers_Users_UserId",
-                schema: "Composition",
-                table: "OrganizationUsers",
-                column: "UserId",
-                principalSchema: "Client",
-                principalTable: "Users",
-                principalColumn: "Id",
-                onDelete: ReferentialAction.Cascade);
-
-            migrationBuilder.AddForeignKey(
-                name: "FK_Sessions_Users_UserId",
-                schema: "Security",
-                table: "Sessions",
-                column: "UserId",
-                principalSchema: "Client",
-                principalTable: "Users",
-                principalColumn: "Id",
-                onDelete: ReferentialAction.Cascade);
-
-            migrationBuilder.AddForeignKey(
-                name: "FK_TraditionalUsers_Users_UserId",
-                schema: "Security",
-                table: "TraditionalUsers",
-                column: "UserId",
-                principalSchema: "Client",
-                principalTable: "Users",
-                principalColumn: "Id",
-                onDelete: ReferentialAction.Cascade);
         }
 
         /// <inheritdoc />
         protected override void Down(MigrationBuilder migrationBuilder)
         {
-            migrationBuilder.DropForeignKey(
-                name: "FK_TraditionalUsers_Users_UserId",
-                schema: "Security",
-                table: "TraditionalUsers");
-
             migrationBuilder.DropTable(
                 name: "Admins",
                 schema: "Client");
@@ -964,6 +865,10 @@ namespace MedAppointment.DataAccess.Implementations.EntityFramework.SqlServer.Mi
 
             migrationBuilder.DropTable(
                 name: "Tokens",
+                schema: "Security");
+
+            migrationBuilder.DropTable(
+                name: "TraditionalUsers",
                 schema: "Security");
 
             migrationBuilder.DropTable(
@@ -1021,10 +926,6 @@ namespace MedAppointment.DataAccess.Implementations.EntityFramework.SqlServer.Mi
             migrationBuilder.DropTable(
                 name: "People",
                 schema: "Client");
-
-            migrationBuilder.DropTable(
-                name: "TraditionalUsers",
-                schema: "Security");
 
             migrationBuilder.DropTable(
                 name: "Images",
