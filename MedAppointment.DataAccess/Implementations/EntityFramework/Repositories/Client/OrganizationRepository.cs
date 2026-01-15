@@ -2,7 +2,7 @@
 {
     internal class OrganizationRepository : EfGenericRepository<OrganizationEntity>, IOrganizationRepository
     {
-        internal OrganizationRepository(MedicalAppointmentContext medicalAppointmentContext) 
+        public OrganizationRepository(MedicalAppointmentContext medicalAppointmentContext) 
             : base(medicalAppointmentContext, medicalAppointmentContext.Set<OrganizationEntity>(), true)
         {
         }

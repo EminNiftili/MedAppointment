@@ -2,7 +2,7 @@
 {
     internal class TraditionalUserRepository : EfGenericRepository<TraditionalUserEntity>, ITraditionalUserRepository
     {
-        internal TraditionalUserRepository(MedicalAppointmentContext medicalAppointmentContext)
+        public TraditionalUserRepository(MedicalAppointmentContext medicalAppointmentContext)
             : base(medicalAppointmentContext, medicalAppointmentContext.Set<TraditionalUserEntity>(), true)
         {
         }

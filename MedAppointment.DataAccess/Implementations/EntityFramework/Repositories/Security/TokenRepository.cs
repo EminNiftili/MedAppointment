@@ -2,7 +2,7 @@
 {
     internal class TokenRepository : EfGenericRepository<TokenEntity>, ITokenRepository
     {
-        internal TokenRepository(MedicalAppointmentContext medicalAppointmentContext)
+        public TokenRepository(MedicalAppointmentContext medicalAppointmentContext)
             : base(medicalAppointmentContext, medicalAppointmentContext.Set<TokenEntity>(), true)
         {
         }

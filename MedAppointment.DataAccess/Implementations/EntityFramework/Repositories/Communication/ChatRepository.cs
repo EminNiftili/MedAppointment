@@ -2,7 +2,7 @@
 {
     internal class ChatRepository : EfGenericRepository<ChatEntity>, IChatRepository
     {
-        internal ChatRepository(MedicalAppointmentContext medicalAppointmentContext)
+        public ChatRepository(MedicalAppointmentContext medicalAppointmentContext)
             : base(medicalAppointmentContext, medicalAppointmentContext.Set<ChatEntity>(), true)
         {
         }

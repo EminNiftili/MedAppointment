@@ -2,7 +2,7 @@
 {
     internal class UnitOfPayment : EfUnitOfWork, IUnitOfPayment
     {
-        internal UnitOfPayment(MedicalAppointmentContext medicalAppointmentContext,
+        public UnitOfPayment(MedicalAppointmentContext medicalAppointmentContext,
             IPaymentRepository payment) : base(medicalAppointmentContext)
         {
             Payment = payment;

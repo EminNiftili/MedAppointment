@@ -2,7 +2,7 @@
 {
     internal class ChatHistoryRepository : EfGenericRepository<ChatHistoryEntity>, IChatHistoryRepository
     {
-        internal ChatHistoryRepository(MedicalAppointmentContext medicalAppointmentContext)
+        public ChatHistoryRepository(MedicalAppointmentContext medicalAppointmentContext)
             : base(medicalAppointmentContext, medicalAppointmentContext.Set<ChatHistoryEntity>(), true)
         {
         }

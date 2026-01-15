@@ -2,7 +2,7 @@
 {
     public static class DependencyInjectionExtension
     {
-        public static IServiceCollection AddDataAccess(this IServiceCollection services, IConfiguration configuration)
+        public static IServiceCollection AddMedAppointmentValidation(this IServiceCollection services, IConfiguration configuration)
         {
             AddFluentValidation(services);
 

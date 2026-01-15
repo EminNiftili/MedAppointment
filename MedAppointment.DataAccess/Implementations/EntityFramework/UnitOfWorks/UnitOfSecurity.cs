@@ -2,7 +2,7 @@
 {
     internal class UnitOfSecurity : EfUnitOfWork, IUnitOfSecurity
     {
-        internal UnitOfSecurity(MedicalAppointmentContext medicalAppointmentContext,
+        public UnitOfSecurity(MedicalAppointmentContext medicalAppointmentContext,
             IDeviceRepository device, 
             ISessionRepository session, 
             ITokenRepository token, 

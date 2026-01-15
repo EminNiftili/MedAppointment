@@ -2,7 +2,7 @@
 {
     internal partial class MedicalAppointmentContext : DbContext
     {
-        internal MedicalAppointmentContext(DbContextOptions<MedicalAppointmentContext> options)
+        public MedicalAppointmentContext(DbContextOptions<MedicalAppointmentContext> options)
             : base(options)
         {
         }

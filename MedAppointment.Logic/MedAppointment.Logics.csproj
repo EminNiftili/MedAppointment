@@ -11,4 +11,9 @@
     <ProjectReference Include="..\MedAppointment.Validations\MedAppointment.Validations.csproj" />
   </ItemGroup>
 
+  <ItemGroup>
+    <Folder Include="Implementations\RequestServices\" />
+    <Folder Include="Services\RequestServices\" />
+  </ItemGroup>
+
 </Project>

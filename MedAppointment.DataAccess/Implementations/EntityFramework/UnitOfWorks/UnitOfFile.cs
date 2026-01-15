@@ -2,7 +2,7 @@
 {
     internal class UnitOfFile : EfUnitOfWork, IUnitOfFile
     {
-        internal UnitOfFile(MedicalAppointmentContext medicalAppointmentContext,
+        public UnitOfFile(MedicalAppointmentContext medicalAppointmentContext,
             IImageRepository image) : base(medicalAppointmentContext)
         {
             Image = image;

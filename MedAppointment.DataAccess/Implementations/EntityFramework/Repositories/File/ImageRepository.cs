@@ -2,7 +2,7 @@
 {
     internal class ImageRepository : EfGenericRepository<ImageEntity>, IImageRepository
     {
-        internal ImageRepository(MedicalAppointmentContext medicalAppointmentContext)
+        public ImageRepository(MedicalAppointmentContext medicalAppointmentContext)
             : base(medicalAppointmentContext, medicalAppointmentContext.Set<ImageEntity>(), false)
         {
         }

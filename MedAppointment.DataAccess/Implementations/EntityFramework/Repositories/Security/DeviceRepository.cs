@@ -2,7 +2,7 @@
 {
     internal class DeviceRepository : EfGenericRepository<DeviceEntity>, IDeviceRepository
     {
-        internal DeviceRepository(MedicalAppointmentContext medicalAppointmentContext)
+        public DeviceRepository(MedicalAppointmentContext medicalAppointmentContext)
             : base(medicalAppointmentContext, medicalAppointmentContext.Set<DeviceEntity>(), false)
         {
         }

@@ -2,7 +2,7 @@
 {
     internal class UnitOfService : EfUnitOfWork, IUnitOfService
     {
-        internal UnitOfService(MedicalAppointmentContext medicalAppointmentContext,
+        public UnitOfService(MedicalAppointmentContext medicalAppointmentContext,
             IAppointmentRepository appointment, 
             IDayPlanRepository dayPlan,
             IPeriodPlanRepository periodPlan) : base(medicalAppointmentContext)

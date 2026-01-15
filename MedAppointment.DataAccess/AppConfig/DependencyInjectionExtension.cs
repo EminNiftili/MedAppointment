@@ -2,11 +2,11 @@
 {
     public static class DependencyInjectionExtension
     {
-        public static IServiceCollection AddDataAccess(this IServiceCollection services, IConfiguration configuration)
+        public static IServiceCollection AddMedAppointmentDataAccess(this IServiceCollection services, IConfiguration configuration)
         {
-            AddUnifOfWorks(services);
-            AddRepositories(services);
             AddDbContext(services, configuration);
+            AddRepositories(services);
+            AddUnifOfWorks(services);
 
             return services;
         }

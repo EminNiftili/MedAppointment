@@ -2,7 +2,7 @@
 {
     internal class MeetRepository : EfGenericRepository<MeetEntity>, IMeetRepository
     {
-        internal MeetRepository(MedicalAppointmentContext medicalAppointmentContext)
+        public MeetRepository(MedicalAppointmentContext medicalAppointmentContext)
             : base(medicalAppointmentContext, medicalAppointmentContext.Set<MeetEntity>(), true)
         {
         }

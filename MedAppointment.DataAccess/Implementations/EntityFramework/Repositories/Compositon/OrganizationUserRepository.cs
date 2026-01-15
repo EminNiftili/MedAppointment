@@ -1,10 +1,8 @@
-﻿using MedAppointment.DataAccess.Repositories.Composition;
-
-namespace MedAppointment.DataAccess.Implementations.EntityFramework.Repositories.Compositon
+﻿namespace MedAppointment.DataAccess.Implementations.EntityFramework.Repositories.Compositon
 {
     internal class OrganizationUserRepository : EfGenericRepository<OrganizationUserEntity>, IOrganizationUserRepository
     {
-        internal OrganizationUserRepository(MedicalAppointmentContext medicalAppointmentContext) 
+        public OrganizationUserRepository(MedicalAppointmentContext medicalAppointmentContext) 
             : base(medicalAppointmentContext, medicalAppointmentContext.Set<OrganizationUserEntity>(), true)
         {
         }

@@ -3,7 +3,7 @@ namespace MedAppointment.DataAccess.Implementations.EntityFramework.UnitOfWorks
 {
     internal class UnitOfClassifier : EfUnitOfWork, IUnitOfClassifier
     {
-        internal UnitOfClassifier(MedicalAppointmentContext medicalAppointmentContext,
+        public UnitOfClassifier(MedicalAppointmentContext medicalAppointmentContext,
             ICurrencyRepository currency, 
             IPaymentTypeRepository paymentType, 
             IPeriodRepository period, 

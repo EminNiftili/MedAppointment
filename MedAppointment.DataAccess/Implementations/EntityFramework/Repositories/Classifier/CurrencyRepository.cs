@@ -2,7 +2,7 @@
 {
     internal class CurrencyRepository : EfGenericRepository<CurrencyEntity>, ICurrencyRepository
     {
-        internal CurrencyRepository(MedicalAppointmentContext medicalAppointmentContext) 
+        public CurrencyRepository(MedicalAppointmentContext medicalAppointmentContext) 
             : base(medicalAppointmentContext, medicalAppointmentContext.Set<CurrencyEntity>(), false)
         {
         }

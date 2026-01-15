@@ -2,7 +2,7 @@
 {
     internal class AdminRepository : EfGenericRepository<AdminEntity>, IAdminRepository
     {
-        internal AdminRepository(MedicalAppointmentContext medicalAppointmentContext)
+        public AdminRepository(MedicalAppointmentContext medicalAppointmentContext)
             : base(medicalAppointmentContext, medicalAppointmentContext.Set<AdminEntity>(), true)
         {
         }

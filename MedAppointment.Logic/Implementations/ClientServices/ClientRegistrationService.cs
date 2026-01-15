@@ -6,7 +6,7 @@
         protected readonly IValidator<TraditionalUserRegisterDto> TraditionalUserRegisterValidator;
         private readonly ILogger<ClientRegistrationService> _logger;
 
-        internal ClientRegistrationService(IUnitOfClient unitOfClient,
+        public ClientRegistrationService(IUnitOfClient unitOfClient,
             ILogger<ClientRegistrationService> logger,
             IValidator<TraditionalUserRegisterDto> traditionalUserRegister)
         {

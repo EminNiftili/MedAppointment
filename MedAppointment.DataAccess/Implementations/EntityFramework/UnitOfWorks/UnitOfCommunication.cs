@@ -3,7 +3,7 @@ namespace MedAppointment.DataAccess.Implementations.EntityFramework.UnitOfWorks
 {
     internal class UnitOfCommunication : EfUnitOfWork, IUnitOfCommunication
     {
-        internal UnitOfCommunication(MedicalAppointmentContext medicalAppointmentContext,
+        public UnitOfCommunication(MedicalAppointmentContext medicalAppointmentContext,
             IChatHistoryRepository chatHistory, 
             IChatRepository chat, 
             IMeetRepository meet) : base(medicalAppointmentContext)

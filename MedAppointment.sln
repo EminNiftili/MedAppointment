@@ -25,6 +25,8 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Localizations", "Localizati
 		Localizations\readme.md = Localizations\readme.md
 	EndProjectSection
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MedAppointment.Api", "MedAppointment.Api\MedAppointment.Api.csproj", "{301ED948-16B3-4FF9-9467-C89A727E81D6}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -51,6 +53,10 @@ Global
 		{86B74399-7FB9-4329-A04F-7FB9DA8A700E}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{86B74399-7FB9-4329-A04F-7FB9DA8A700E}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{86B74399-7FB9-4329-A04F-7FB9DA8A700E}.Release|Any CPU.Build.0 = Release|Any CPU
+		{301ED948-16B3-4FF9-9467-C89A727E81D6}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{301ED948-16B3-4FF9-9467-C89A727E81D6}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{301ED948-16B3-4FF9-9467-C89A727E81D6}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{301ED948-16B3-4FF9-9467-C89A727E81D6}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

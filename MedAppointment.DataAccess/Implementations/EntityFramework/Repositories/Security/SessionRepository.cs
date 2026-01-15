@@ -2,7 +2,7 @@
 {
     internal class SessionRepository : EfGenericRepository<SessionEntity>, ISessionRepository
     {
-        internal SessionRepository(MedicalAppointmentContext medicalAppointmentContext)
+        public SessionRepository(MedicalAppointmentContext medicalAppointmentContext)
             : base(medicalAppointmentContext, medicalAppointmentContext.Set<SessionEntity>(), true)
         {
         }

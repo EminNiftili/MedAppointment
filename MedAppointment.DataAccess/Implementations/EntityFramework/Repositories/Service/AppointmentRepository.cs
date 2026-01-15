@@ -2,7 +2,7 @@
 {
     internal class AppointmentRepository : EfGenericRepository<AppointmentEntity>, IAppointmentRepository
     {
-        internal AppointmentRepository(MedicalAppointmentContext medicalAppointmentContext)
+        public AppointmentRepository(MedicalAppointmentContext medicalAppointmentContext)
             : base(medicalAppointmentContext, medicalAppointmentContext.Set<AppointmentEntity>(), true)
         {
         }

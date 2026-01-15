@@ -3,7 +3,7 @@ namespace MedAppointment.DataAccess.Implementations.EntityFramework.UnitOfWorks
 {
     internal class UnitOfClient : EfUnitOfWork, IUnitOfClient
     {
-        internal UnitOfClient(MedicalAppointmentContext medicalAppointmentContext,
+        public UnitOfClient(MedicalAppointmentContext medicalAppointmentContext,
             IAdminRepository admin, 
             IDoctorRepository doctor, 
             IPersonRepository person, 

@@ -11,6 +11,7 @@ global using MedAppointment.Entities.Service;
 #endregion
 
 #region Abstract DataAccess
+global using MedAppointment.DataAccess.AppConfig;
 global using MedAppointment.DataAccess.UnitOfWorks;
 global using MedAppointment.DataAccess.Repositories;
 global using MedAppointment.DataAccess.Repositories.Classifier;
@@ -27,7 +28,8 @@ global using MedAppointment.DataAccess.Repositories.Service;
 global using MedAppointment.Logics.Patterns.ResultPattern;
 #endregion
 
-#region
+#region Validations
+global using MedAppointment.Validations.AppConfig;
 global using FluentValidation;
 global using FluentValidation.Results;
 #endregion
@@ -35,6 +37,8 @@ global using FluentValidation.Results;
 #region System Usings
 global using Microsoft.Extensions.Logging;
 global using System.Net;
+global using Microsoft.Extensions.DependencyInjection;
+global using Microsoft.Extensions.Configuration;
 #endregion
 
 #region Data Transfer Objects
@@ -42,7 +46,10 @@ global using MedAppointment.DataTransferObjects.UserDtos;
 #endregion
 
 
-#region Services
+#region Abstract Logic Services
 global using MedAppointment.Logics.Services.ClientServices;
+#endregion
+
+#region Implementation Logic Services
 global using MedAppointment.Logics.Implementations.ClientServices;
 #endregion

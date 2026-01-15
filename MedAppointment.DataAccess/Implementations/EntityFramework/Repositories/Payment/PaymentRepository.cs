@@ -2,7 +2,7 @@
 {
     internal class PaymentRepository : EfGenericRepository<PaymentEntity>, IPaymentRepository
     {
-        internal PaymentRepository(MedicalAppointmentContext medicalAppointmentContext)
+        public PaymentRepository(MedicalAppointmentContext medicalAppointmentContext)
             : base(medicalAppointmentContext, medicalAppointmentContext.Set<PaymentEntity>(), true)
         {
         }
