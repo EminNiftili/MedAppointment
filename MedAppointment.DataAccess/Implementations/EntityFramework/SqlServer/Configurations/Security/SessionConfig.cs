@@ -12,8 +12,8 @@
                 .IsRequired();
 
             builder.HasOne(x => x.User)
-                .WithOne()
-                .HasForeignKey<SessionEntity>(x => x.UserId);
+                .WithMany(x => x.Sessions)
+                .HasForeignKey(x => x.UserId);
 
             builder.HasOne(x => x.Device)
                 .WithOne()

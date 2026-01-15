@@ -13,12 +13,14 @@ namespace MedAppointment.DataAccess.Implementations.EntityFramework.SqlServer.Co
                 .IsRequired();
 
             builder.HasOne(x => x.SenderUser)
-                .WithMany()
-                .HasForeignKey(x => x.SenderUserId);
+                .WithMany(x => x.SentChats)
+                .HasForeignKey(x => x.SenderUserId)
+                .OnDelete(DeleteBehavior.Restrict);
 
             builder.HasOne(x => x.ReceiverUser)
-                .WithMany()
-                .HasForeignKey(x => x.ReceiverUserId);
+                .WithMany(x => x.ReceiverChats)
+                .HasForeignKey(x => x.ReceiverUserId)
+                .OnDelete(DeleteBehavior.Restrict);
 
             builder.HasMany(x => x.Histories)
                 .WithOne(x => x.Chat)

@@ -16,7 +16,7 @@ The examples below explain how `--project` and `--startup` are used.
 ### 1) Create a migration
 
 ```powershell
-Add-Migration InitialCreate --project MedAppointment.DataAccess --startup MedAppointment.Api
+Add-Migration InitialCreate -OutputDir Implementations/EntityFramework/SqlServer/Migrations --project MedAppointment.DataAccess --startup MedAppointment.Api
 ```
 
 - `InitialCreate` — migration name.
