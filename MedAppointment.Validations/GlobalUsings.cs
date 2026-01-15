@@ -8,4 +8,6 @@ global using FluentValidation;
 
 #region System Usings
 global using System.Net.Mail;
+global using Microsoft.Extensions.DependencyInjection;
+global using Microsoft.Extensions.Configuration;
 #endregion

@@ -23,8 +23,18 @@ global using MedAppointment.DataAccess.Repositories.Security;
 global using MedAppointment.DataAccess.Repositories.Service;
 #endregion
 
+#region
+global using MedAppointment.Logics.Patterns.ResultPattern;
+#endregion
+
+#region
+global using FluentValidation;
+global using FluentValidation.Results;
+#endregion
+
 #region System Usings
 global using Microsoft.Extensions.Logging;
+global using System.Net;
 #endregion
 
 #region Data Transfer Objects

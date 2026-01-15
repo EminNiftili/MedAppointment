@@ -52,3 +52,6 @@ Return validation errors like:
 | ERR00019 | Password must contain at least one lowercase letter. | `Password` must contain **>= 1 lowercase** character. |
 | ERR00020 | Password must contain at least one digit. | `Password` must contain **>= 1 digit**. |
 | ERR00021 | Password must contain at least one special character. | `Password` must contain **>= 1 special** character (symbol). |
+|||
+|||
+| ERR00100 | Unexpected error contact with admin | |

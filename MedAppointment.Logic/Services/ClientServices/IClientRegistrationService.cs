@@ -2,6 +2,6 @@
 {
     public interface IClientRegistrationService
     {
-        Task RegisterTraditionalUserAsync(TraditionalUserRegisterDto traditionalUserRegister);
+        Task<Result> RegisterTraditionalUserAsync(TraditionalUserRegisterDto traditionalUserRegister);
     }
 }
