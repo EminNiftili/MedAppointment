@@ -45,7 +45,12 @@
             MergeStatusCode(result);
             return this;
         }
-        public bool CheckFluentValidation(ValidationResult validationResult)
+        /// <summary>
+        /// Gets all error from Validation Result, Then setted BadRequest status code.
+        /// </summary>
+        /// <param name="validationResult">Validation result for getting errors</param>
+        /// <returns></returns>
+        public bool SetFluentValidationAndBadRequest(ValidationResult validationResult)
         {
             if (validationResult.IsValid)
             {
@@ -78,6 +83,10 @@
         {
             Messages.Add(new Message(messageCode, message, exception));
             SetStatusCode(httpStatus);
+        }
+        public void Success(HttpStatusCode httpStatusCode = HttpStatusCode.OK)
+        {
+            SetStatusCode(httpStatusCode);
         }
 
         public void SetStatusCode(HttpStatusCode newStatusCode)

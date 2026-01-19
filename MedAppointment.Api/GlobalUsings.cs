@@ -10,6 +10,11 @@ global using MedAppointment.Logics.AppConfig;
 #region Api Usings
 global using Microsoft.AspNetCore.Mvc;
 global using Microsoft.OpenApi.Models;
+global using Microsoft.AspNetCore.Authorization;
+#endregion
+
+#region Logger Usings
+global using Serilog;
 #endregion
 
 

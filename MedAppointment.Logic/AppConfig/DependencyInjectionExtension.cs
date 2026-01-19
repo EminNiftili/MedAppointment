@@ -15,6 +15,12 @@
         private static void AddLogicServices(IServiceCollection services)
         {
             services.AddScoped<IClientRegistrationService, ClientRegistrationService>();
+            services.AddScoped<IPrivateClientInfoService, PrivateClientInfoService>();
+
+
+            services.AddScoped<IHashService, HashService>();
+            services.AddScoped<ILoginService, LoginService>();
+            services.AddScoped<ITokenService, JwtBearerTokenService>();
         }
     }
 }

@@ -54,6 +54,22 @@ Return validation errors like:
 | ERR00021 | Password must contain at least one special character. | `Password` must contain **>= 1 special** character (symbol). |
 | ERR00022 | Email Already Exist!||
 | ERR00023 | Phone Number Already Exist!||
+| ERR00024 | User does not exist||
+| ERR00025 | Password is incorrect |
+| ERR00026 | User found. But used another provider.|
+| ERR00027 | Device name is required. |
+| ERR00028 | Device name must not exceed 150 characters.|
+| ERR00029 | Invalid device type.|
+| ERR00030 | Invalid application type.|
+| ERR00031 | OS name must not exceed 150 characters.|
+| ERR00032 | OS version must not exceed 150 characters.|
+| ERR00033 | UUID is required.|
+| ERR00034 | UUID must not exceed 300 characters. |
+| ERR00035 | Username is required.|
+| ERR00036 | Username must not exceed 300 characters.|
+| ERR00037 | Device information is required.|
+| ERR00038 ||
+| ERR00039 ||
 |||
 |||
 | ERR00100 | Unexpected error contact with admin | |

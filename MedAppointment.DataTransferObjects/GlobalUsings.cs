@@ -1,0 +1,3 @@
+﻿global using MedAppointment.DataTransferObjects.Enums;
+global using MedAppointment.DataTransferObjects.CredentialDtos;
+global using MedAppointment.DataTransferObjects.UserDtos;

@@ -1,4 +1,5 @@
 ﻿#region Data Transfer Objects
+global using MedAppointment.DataTransferObjects.CredentialDtos;
 global using MedAppointment.DataTransferObjects.UserDtos;
 #endregion
 

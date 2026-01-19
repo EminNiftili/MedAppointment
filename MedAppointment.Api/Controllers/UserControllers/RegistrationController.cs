@@ -1,5 +1,6 @@
 ﻿namespace MedAppointment.Api.Controllers.UserControllers
 {
+    [AllowAnonymous]
     public class RegistrationController : BaseApiController
     {
         private readonly IClientRegistrationService _registrationService;

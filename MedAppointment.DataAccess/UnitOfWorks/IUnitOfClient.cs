@@ -6,5 +6,7 @@
         IDoctorRepository Doctor { get; }
         IPersonRepository Person { get; }
         IUserRepository User { get; }
+        IOrganizationRepository Organization { get; }
+        IOrganizationUserRepository OrganizationUser { get; }
     }
 }

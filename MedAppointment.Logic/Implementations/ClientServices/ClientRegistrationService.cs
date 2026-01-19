@@ -4,53 +4,56 @@
     {
         protected readonly IUnitOfClient unitOfClient;
         protected readonly IValidator<TraditionalUserRegisterDto> TraditionalUserRegisterValidator;
-        private readonly ILogger<ClientRegistrationService> _logger;
+        protected readonly ILogger<ClientRegistrationService> Logger;
+        protected readonly IHashService Hasher;
 
         public ClientRegistrationService(IUnitOfClient unitOfClient,
             ILogger<ClientRegistrationService> logger,
-            IValidator<TraditionalUserRegisterDto> traditionalUserRegister)
+            IValidator<TraditionalUserRegisterDto> traditionalUserRegister,
+            IHashService hasher)
         {
             this.TraditionalUserRegisterValidator = traditionalUserRegister;
-            this._logger = logger;
+            this.Logger = logger;
             this.unitOfClient = unitOfClient;
+            Hasher = hasher;
         }
 
         public async Task<Result> RegisterTraditionalUserAsync(TraditionalUserRegisterDto traditionalUserRegister)
         {
             Result result = Result.Create();
-            _logger.Log(LogLevel.Trace, "Register traditional user. service started: {0}", traditionalUserRegister);
-            _logger.Log(LogLevel.Information, "Model Validation Starting");
+            Logger.Log(LogLevel.Trace, "Register traditional user. service started: {0}", traditionalUserRegister);
+            Logger.Log(LogLevel.Information, "Model Validation Starting");
             var validatorResult = await TraditionalUserRegisterValidator.ValidateAsync(traditionalUserRegister);
-            _logger.Log(LogLevel.Information, "Model Validation Finished");
+            Logger.Log(LogLevel.Information, "Model Validation Finished");
             if (validatorResult == null)
             {
-                _logger.Log(LogLevel.Error, "Validation result is null");
+                Logger.Log(LogLevel.Error, "Validation result is null");
                 result.AddMessage("ERR00100", "Unexpected error contact with admin", HttpStatusCode.BadRequest);
                 return result;
             }
             else if (!validatorResult.IsValid)
             {
-                _logger.Log(LogLevel.Debug, "Validation is failed more details: {0}", validatorResult.Errors);
-                result.CheckFluentValidation(validatorResult);
+                Logger.Log(LogLevel.Debug, "Validation is failed more details: {0}", validatorResult.Errors);
+                result.SetFluentValidationAndBadRequest(validatorResult);
                 return result;
             }
 
             var existedPersonByEmail = await unitOfClient.Person.FindByUsernameAsync(traditionalUserRegister.Email);
             if (existedPersonByEmail != null)
             {
-                _logger.Log(LogLevel.Information, "Founded existing email for registration");
+                Logger.Log(LogLevel.Information, "Founded existing email for registration");
                 result.AddMessage("ERR00022", "Email already registered!", HttpStatusCode.BadRequest);
                 return result;
             }
             var existedPersonByPhoneNumber = await unitOfClient.Person.FindByUsernameAsync(traditionalUserRegister.PhoneNumber);
             if (existedPersonByPhoneNumber != null)
             {
-                _logger.Log(LogLevel.Information, "Founded existing phone number for registration");
+                Logger.Log(LogLevel.Information, "Founded existing phone number for registration");
                 result.AddMessage("ERR00023", "Phone Number already registered!", HttpStatusCode.BadRequest);
                 return result;
             }
 
-
+            var hashedPassword = Hasher.HashText(traditionalUserRegister.Password, traditionalUserRegister.Email);
             PersonEntity person = new PersonEntity
             {
                 Name = traditionalUserRegister.Name,
@@ -64,22 +67,22 @@
                     Provider = 0,
                     TraditionalUser = new TraditionalUserEntity
                     {
-                        PasswordHash = traditionalUserRegister.Password
+                        PasswordHash = hashedPassword
                     }
                 }
             };
-            _logger.Log(LogLevel.Debug, "Entity created: {0}", person);
+            Logger.Log(LogLevel.Debug, "Entity created: {0}", person);
             try
             {
                 await unitOfClient.Person.AddAsync(person);
                 await unitOfClient.SaveChangesAsync();
 
                 result.SetStatusCode(HttpStatusCode.NoContent);
-                _logger.Log(LogLevel.Trace, "Traditional register finished. Success register for {0}", traditionalUserRegister.Email);
+                Logger.Log(LogLevel.Trace, "Traditional register finished. Success register for {0}", traditionalUserRegister.Email);
             }
             catch (Exception ex)
             {
-                _logger.Log(LogLevel.Error, ex, "Exception when register user: {0}", traditionalUserRegister);
+                Logger.Log(LogLevel.Error, ex, "Exception when register user: {0}", traditionalUserRegister);
                 result.AddMessage("ERR00100", "Unexpected error contact with admin", HttpStatusCode.BadRequest, ex);
             }
             return result;

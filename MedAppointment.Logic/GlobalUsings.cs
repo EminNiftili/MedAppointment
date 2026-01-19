@@ -39,17 +39,26 @@ global using Microsoft.Extensions.Logging;
 global using System.Net;
 global using Microsoft.Extensions.DependencyInjection;
 global using Microsoft.Extensions.Configuration;
+global using System.Security.Cryptography;
+global using Microsoft.IdentityModel.Tokens;
+global using System.IdentityModel.Tokens.Jwt;
+global using System.Security.Claims;
+global using System.Text;
 #endregion
 
 #region Data Transfer Objects
+global using MedAppointment.DataTransferObjects.Enums;
+global using MedAppointment.DataTransferObjects.CredentialDtos;
 global using MedAppointment.DataTransferObjects.UserDtos;
 #endregion
 
 
 #region Abstract Logic Services
 global using MedAppointment.Logics.Services.ClientServices;
+global using MedAppointment.Logics.Services.SecurityServices;
 #endregion
 
 #region Implementation Logic Services
 global using MedAppointment.Logics.Implementations.ClientServices;
+global using MedAppointment.Logics.Implementations.SecurityServices;
 #endregion

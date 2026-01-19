@@ -42,5 +42,11 @@
             MergeData(result);
             return this;
         }
+
+        public void Success(TModel model, HttpStatusCode httpStatusCode = HttpStatusCode.OK)
+        {
+            this.Model = model;
+            SetStatusCode(httpStatusCode);
+        }
     }
 }
