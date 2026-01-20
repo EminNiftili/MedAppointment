@@ -50,15 +50,18 @@ global using System.Text;
 global using MedAppointment.DataTransferObjects.Enums;
 global using MedAppointment.DataTransferObjects.CredentialDtos;
 global using MedAppointment.DataTransferObjects.UserDtos;
+global using MedAppointment.DataTransferObjects.ClassifierDtos;
 #endregion
 
 
 #region Abstract Logic Services
 global using MedAppointment.Logics.Services.ClientServices;
 global using MedAppointment.Logics.Services.SecurityServices;
+global using MedAppointment.Logics.Services.ClassifierServices;
 #endregion
 
 #region Implementation Logic Services
 global using MedAppointment.Logics.Implementations.ClientServices;
 global using MedAppointment.Logics.Implementations.SecurityServices;
+global using MedAppointment.Logics.Implementations.ClassifierServices;
 #endregion

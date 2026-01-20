@@ -16,6 +16,7 @@
         {
             services.AddScoped<IClientRegistrationService, ClientRegistrationService>();
             services.AddScoped<IPrivateClientInfoService, PrivateClientInfoService>();
+            services.AddScoped<IClassifierService, ClassifierService>();
 
 
             services.AddScoped<IHashService, HashService>();
