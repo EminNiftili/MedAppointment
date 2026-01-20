@@ -50,6 +50,25 @@
         protected static bool ContainsSpecial(string? s)
             => !string.IsNullOrEmpty(s) && s.Any(ch => !char.IsLetterOrDigit(ch));
         protected static bool NoWhitespace(string? s) => s?.Any(char.IsWhiteSpace) == false;
+        protected static bool BeValidBase64(string? s)
+        {
+            if (string.IsNullOrWhiteSpace(s))
+                return false;
+
+            var normalized = s.Trim();
+            if (normalized.Length % 4 != 0)
+                return false;
+
+            try
+            {
+                Convert.FromBase64String(normalized);
+                return true;
+            }
+            catch (FormatException)
+            {
+                return false;
+            }
+        }
         protected static bool BeValidClassifierName(string? s)
         {
             if (string.IsNullOrWhiteSpace(s))
