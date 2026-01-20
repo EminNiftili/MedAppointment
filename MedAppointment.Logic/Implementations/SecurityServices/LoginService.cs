@@ -152,11 +152,16 @@
             var refreshToken = TokenService.GenerateRefreshToken();
             Logger.LogInformation("New tokens generated");
 
-            tokenEntity.AccessToken = accessToken;
-            tokenEntity.RefreshToken = refreshToken;
-            UnitOfSecurity.Token.Update(tokenEntity);
+            var newTokenEntity = new TokenEntity
+            {
+                SessionId = tokenEntity.SessionId,
+                AccessToken = accessToken,
+                RefreshToken = refreshToken,
+            };
+
+            UnitOfSecurity.Token.Add(newTokenEntity);
             await UnitOfSecurity.SaveChangesAsync();
-            Logger.LogDebug("Token updated in session");
+            Logger.LogDebug("New token linked with session");
 
             result.Success(new TokenDto(accessToken, refreshToken));
             Logger.LogTrace("Finished refresh token workflow");
