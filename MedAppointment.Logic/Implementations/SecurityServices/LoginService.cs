@@ -73,7 +73,8 @@
             var userTypes = await PrivateClientInfoService.GetUserTypesAsync(person.User.Id);
             var claims = new Dictionary<string, object>();
             Logger.LogInformation("Retrieve user types");
-            claims.Add(ClaimTypes.Role, userTypes);
+            var roleNames = userTypes.Select(userType => userType.ToString()).ToArray();
+            claims.Add(ClaimTypes.Role, roleNames);
             Logger.LogTrace("All claims generated");
 
             var accessToken = TokenService.GetToken(claims);

@@ -16,6 +16,10 @@
         {
             services.AddScoped<IClientRegistrationService, ClientRegistrationService>();
             services.AddScoped<IPrivateClientInfoService, PrivateClientInfoService>();
+            services.AddScoped<ICurrencyService, CurrencyService>();
+            services.AddScoped<IPaymentTypeService, PaymentTypeService>();
+            services.AddScoped<IPeriodService, PeriodService>();
+            services.AddScoped<ISpecialtyService, SpecialtyService>();
 
 
             services.AddScoped<IHashService, HashService>();

@@ -20,9 +20,11 @@ global using Serilog;
 
 #region Data Transfer Objects
 global using MedAppointment.DataTransferObjects.UserDtos;
+global using MedAppointment.DataTransferObjects.ClassifierDtos;
 #endregion
 
 
 #region Abstract Logic Services
 global using MedAppointment.Logics.Services.ClientServices;
+global using MedAppointment.Logics.Services.ClassifierServices;
 #endregion
