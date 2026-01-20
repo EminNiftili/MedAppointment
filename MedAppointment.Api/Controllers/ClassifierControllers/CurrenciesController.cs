@@ -26,7 +26,7 @@ namespace MedAppointment.Api.Controllers.ClassifierControllers
         }
 
         [HttpPost]
-        [Authorize(Roles = "SystemAdmin,OrganizationAdmin")]
+        [Authorize(Roles = "SystemAdmin")]
         public async Task<IActionResult> CreateCurrencyAsync(CurrencyCreateDto currency)
         {
             var result = await _currencyService.CreateCurrencyAsync(currency);
@@ -34,7 +34,7 @@ namespace MedAppointment.Api.Controllers.ClassifierControllers
         }
 
         [HttpPut("{id:long}")]
-        [Authorize(Roles = "SystemAdmin,OrganizationAdmin")]
+        [Authorize(Roles = "SystemAdmin")]
         public async Task<IActionResult> UpdateCurrencyAsync(long id, CurrencyUpdateDto currency)
         {
             var result = await _currencyService.UpdateCurrencyAsync(id, currency);

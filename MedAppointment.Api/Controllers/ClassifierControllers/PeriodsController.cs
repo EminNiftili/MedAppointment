@@ -26,7 +26,7 @@ namespace MedAppointment.Api.Controllers.ClassifierControllers
         }
 
         [HttpPost]
-        [Authorize(Roles = "SystemAdmin,OrganizationAdmin")]
+        [Authorize(Roles = "SystemAdmin")]
         public async Task<IActionResult> CreatePeriodAsync(PeriodCreateDto period)
         {
             var result = await _periodService.CreatePeriodAsync(period);
@@ -34,7 +34,7 @@ namespace MedAppointment.Api.Controllers.ClassifierControllers
         }
 
         [HttpPut("{id:long}")]
-        [Authorize(Roles = "SystemAdmin,OrganizationAdmin")]
+        [Authorize(Roles = "SystemAdmin")]
         public async Task<IActionResult> UpdatePeriodAsync(long id, PeriodUpdateDto period)
         {
             var result = await _periodService.UpdatePeriodAsync(id, period);

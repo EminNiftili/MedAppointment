@@ -1,24 +1,18 @@
 namespace MedAppointment.DataTransferObjects.ClassifierDtos
 {
-    public class CurrencyDto
+    public record CurrencyDto : ClassifierDto
     {
         public long Id { get; set; }
-        public string Name { get; set; } = null!;
-        public string Description { get; set; } = null!;
         public decimal Coefficent { get; set; }
     }
 
-    public class CurrencyCreateDto
+    public record CurrencyCreateDto : ClassifierDto
     {
-        public string Name { get; set; } = null!;
-        public string Description { get; set; } = null!;
         public decimal Coefficent { get; set; }
     }
 
-    public class CurrencyUpdateDto
+    public record CurrencyUpdateDto : ClassifierDto
     {
-        public string Name { get; set; } = null!;
-        public string Description { get; set; } = null!;
         public decimal Coefficent { get; set; }
     }
 }

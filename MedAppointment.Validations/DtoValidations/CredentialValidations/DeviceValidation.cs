@@ -1,6 +1,4 @@
-﻿using MedAppointment.DataTransferObjects.Enums;
-
-namespace MedAppointment.Validations.DtoValidations.CredentialValidations
+﻿namespace MedAppointment.Validations.DtoValidations.CredentialValidations
 {
     public class DeviceValidation : BaseValidator<DeviceDto>
     {

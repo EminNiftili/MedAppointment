@@ -1,21 +1,15 @@
 namespace MedAppointment.DataTransferObjects.ClassifierDtos
 {
-    public class SpecialtyDto
+    public record SpecialtyDto : ClassifierDto
     {
         public long Id { get; set; }
-        public string Name { get; set; } = null!;
-        public string Description { get; set; } = null!;
     }
 
-    public class SpecialtyCreateDto
+    public record SpecialtyCreateDto : ClassifierDto
     {
-        public string Name { get; set; } = null!;
-        public string Description { get; set; } = null!;
     }
 
-    public class SpecialtyUpdateDto
+    public record SpecialtyUpdateDto : ClassifierDto
     {
-        public string Name { get; set; } = null!;
-        public string Description { get; set; } = null!;
     }
 }

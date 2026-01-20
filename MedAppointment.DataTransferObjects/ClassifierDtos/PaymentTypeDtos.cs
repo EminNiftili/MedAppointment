@@ -1,21 +1,15 @@
 namespace MedAppointment.DataTransferObjects.ClassifierDtos
 {
-    public class PaymentTypeDto
+    public record PaymentTypeDto : ClassifierDto
     {
         public long Id { get; set; }
-        public string Name { get; set; } = null!;
-        public string Description { get; set; } = null!;
     }
 
-    public class PaymentTypeCreateDto
+    public record PaymentTypeCreateDto : ClassifierDto
     {
-        public string Name { get; set; } = null!;
-        public string Description { get; set; } = null!;
     }
 
-    public class PaymentTypeUpdateDto
+    public class PaymentTypeUpdateDto : ClassifierDto
     {
-        public string Name { get; set; } = null!;
-        public string Description { get; set; } = null!;
     }
 }
