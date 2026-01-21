@@ -10,7 +10,7 @@
 
             builder.Property(x => x.Coefficent)
                 .IsRequired()
-                .HasColumnType("decimal(8,2)");
+                .HasColumnType("decimal(8,4)");
         }
     }
 }
