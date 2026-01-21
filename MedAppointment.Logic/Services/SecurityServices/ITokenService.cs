@@ -3,6 +3,6 @@
     public interface ITokenService
     {
         string GenerateRefreshToken();
-        string GetToken(IDictionary<string, object>? claims = null);
+        string GetToken(out DateTime expiredDate, IDictionary<string, object>? claims = null);
     }
 }

@@ -7,6 +7,15 @@ namespace MedAppointment.DataAccess.Implementations.EntityFramework.SqlServer.Co
         {
             builder.ToTable("Devices", "Security");
 
+            builder.HasIndex(x => x.UUID)
+                .IsUnique(false);
+
+            builder.HasIndex(x => x.Name)
+                .IsUnique(false);
+
+            builder.HasIndex(x => x.OSName)
+                .IsUnique(false);
+
             builder.Property(e => e.Name)
                 .IsRequired()
                 .HasMaxLength(150);

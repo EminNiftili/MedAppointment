@@ -9,7 +9,7 @@ namespace MedAppointment.DataTransferObjects.ClassifierDtos
     {
     }
 
-    public class PaymentTypeUpdateDto : ClassifierDto
+    public record PaymentTypeUpdateDto : ClassifierDto
     {
     }
 }

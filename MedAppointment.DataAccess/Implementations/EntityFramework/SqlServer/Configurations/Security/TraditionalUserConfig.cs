@@ -6,6 +6,10 @@
         {
             builder.ToTable("TraditionalUsers", "Security");
 
+
+            builder.HasIndex(x => x.PasswordHash)
+                .IsUnique(true);
+
             builder.Property(e => e.UserId)
                 .IsRequired();
             builder.Property(e => e.PasswordHash)

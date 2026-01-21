@@ -30,7 +30,7 @@
             return Convert.ToBase64String(bytes);
         }
 
-        public string GetToken(IDictionary<string, object>? claims = null)
+        public string GetToken(out DateTime expiredDate, IDictionary<string, object>? claims = null)
         {
             Logger.LogTrace("Starting Token Generation method");
             var issuer = Configuration["Jwt:Issuer"];
@@ -104,13 +104,13 @@
             }
 
             Logger.LogDebug("All claims added");
-
+            expiredDate = nowUtc.AddMinutes(minutes);
             var securityToken = new JwtSecurityToken(
                 issuer: issuer,
                 audience: audience,
                 claims: claimList,
                 notBefore: nowUtc,
-                expires: nowUtc.AddMinutes(minutes),
+                expires: expiredDate,
                 signingCredentials: creds
             );
             var token = new JwtSecurityTokenHandler().WriteToken(securityToken);
