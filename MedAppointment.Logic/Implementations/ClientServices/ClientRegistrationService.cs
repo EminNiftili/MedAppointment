@@ -18,9 +18,34 @@
             Hasher = hasher;
         }
 
-        public async Task<Result> RegisterTraditionalUserAsync(TraditionalUserRegisterDto traditionalUserRegister)
+        public async Task<Result<long>> RegisterUserAsync(BaseRegisterDto userRegister)
         {
-            Result result = Result.Create();
+            Result<long> result = Result<long>.Create(-1);
+            if (userRegister is null)
+            {
+                result.AddMessage("ERR00101", "Object is null", HttpStatusCode.BadRequest);
+                return result;
+            }
+
+            return userRegister switch
+            {
+                TraditionalUserRegisterDto t => await TraditionalUserRegistrationAsync(t),
+                // GoogleRegisterDto g => await RegisterGoogleAsync(g),
+                // AppleRegisterDto a => await RegisterAppleAsync(a),
+                _ => ReturnInvlaidRegistrationType()
+            };
+
+            Result<long> ReturnInvlaidRegistrationType()
+            {
+                result.AddMessage("ERR00101", "Object type is unknown", HttpStatusCode.Conflict);
+                return result;
+            }
+        }
+
+        private async Task<Result<long>> TraditionalUserRegistrationAsync(TraditionalUserRegisterDto traditionalUserRegister)
+        {
+
+            Result<long> result = Result<long>.Create(-1);
             Logger.Log(LogLevel.Trace, "Register traditional user. service started: {0}", traditionalUserRegister);
             Logger.Log(LogLevel.Information, "Model Validation Starting");
             var validatorResult = await TraditionalUserRegisterValidator.ValidateAsync(traditionalUserRegister);
@@ -76,7 +101,7 @@
             {
                 await unitOfClient.Person.AddAsync(person);
                 await unitOfClient.SaveChangesAsync();
-
+                result.Model = person.User.Id;
                 result.SetStatusCode(HttpStatusCode.NoContent);
                 Logger.Log(LogLevel.Trace, "Traditional register finished. Success register for {0}", traditionalUserRegister.Email);
             }

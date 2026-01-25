@@ -84,4 +84,6 @@ Return validation errors like:
 | ERR00052 | Refresh token must not contain whitespace. |
 | ERR00053 | Refresh token format is invalid. |
 | ERR00054 | Refresh token is invalid or expired. |
+| ERR00055 | Doctor registered |
 | ERR00100 | Unexpected error contact with admin | |
+| ERR00101 | Invalid object type | |

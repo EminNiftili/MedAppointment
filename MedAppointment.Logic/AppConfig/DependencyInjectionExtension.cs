@@ -16,6 +16,9 @@
         {
             services.AddScoped<IClientRegistrationService, ClientRegistrationService>();
             services.AddScoped<IPrivateClientInfoService, PrivateClientInfoService>();
+            services.AddScoped<IDoctorService, DoctorService>();
+
+
             services.AddScoped<ICurrencyService, CurrencyService>();
             services.AddScoped<IPaymentTypeService, PaymentTypeService>();
             services.AddScoped<IPeriodService, PeriodService>();

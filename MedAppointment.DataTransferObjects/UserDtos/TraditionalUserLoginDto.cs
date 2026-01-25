@@ -1,9 +1,8 @@
 ﻿namespace MedAppointment.DataTransferObjects.UserDtos
 {
-    public record TraditionalUserLoginDto
+    public record TraditionalUserLoginDto : BaseLoginDto
     {
         public string Username { get; set; } = null!;
         public string Password { get; set; } = null!;
-        public DeviceDto DeviceInfo { get; set; } = null!;
     }
 }

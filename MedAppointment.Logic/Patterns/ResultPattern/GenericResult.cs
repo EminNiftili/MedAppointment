@@ -8,6 +8,7 @@
         }
         public static Result<TModel> Create(TModel model, IEnumerable<Message> messages = null)
         {
+            messages ??= new List<Message>();
             return new Result<TModel>(model, messages);
         }
         public static new Result<TModel> Create(IEnumerable<Message> messages)
