@@ -26,7 +26,7 @@ namespace MedAppointment.Api.Controllers.ClassifierControllers
         }
 
         [HttpPost]
-        [Authorize(Roles = "SystemAdmin")]
+        [Authorize(Roles = RoleNames.SystemAdminRole)]
         public async Task<IActionResult> CreateSpecialtyAsync(SpecialtyCreateDto specialty)
         {
             var result = await _specialtyService.CreateSpecialtyAsync(specialty);
@@ -34,7 +34,7 @@ namespace MedAppointment.Api.Controllers.ClassifierControllers
         }
 
         [HttpPut("{id:long}")]
-        [Authorize(Roles = "SystemAdmin")]
+        [Authorize(Roles = RoleNames.SystemAdminRole)]
         public async Task<IActionResult> UpdateSpecialtyAsync(long id, SpecialtyUpdateDto specialty)
         {
             var result = await _specialtyService.UpdateSpecialtyAsync(id, specialty);

@@ -26,7 +26,7 @@ namespace MedAppointment.Api.Controllers.ClassifierControllers
         }
 
         [HttpPost]
-        [Authorize(Roles = "SystemAdmin")]
+        [Authorize(Roles = RoleNames.SystemAdminRole)]
         public async Task<IActionResult> CreatePaymentTypeAsync(PaymentTypeCreateDto paymentType)
         {
             var result = await _paymentTypeService.CreatePaymentTypeAsync(paymentType);
@@ -34,7 +34,7 @@ namespace MedAppointment.Api.Controllers.ClassifierControllers
         }
 
         [HttpPut("{id:long}")]
-        [Authorize(Roles = "SystemAdmin")]
+        [Authorize(Roles = RoleNames.SystemAdminRole)]
         public async Task<IActionResult> UpdatePaymentTypeAsync(long id, PaymentTypeUpdateDto paymentType)
         {
             var result = await _paymentTypeService.UpdatePaymentTypeAsync(id, paymentType);

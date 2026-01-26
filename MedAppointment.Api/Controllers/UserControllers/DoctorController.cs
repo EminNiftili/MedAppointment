@@ -1,8 +1,5 @@
-﻿using System.Threading.Tasks;
-
-namespace MedAppointment.Api.Controllers.UserControllers
+﻿namespace MedAppointment.Api.Controllers.UserControllers
 {
-    [AllowAnonymous]
     public class DoctorController : BaseApiController
     {
         private readonly IDoctorService _doctorService;
@@ -12,11 +9,20 @@ namespace MedAppointment.Api.Controllers.UserControllers
             _doctorService = doctorService;
         }
 
+        [AllowAnonymous]
         [HttpPost("register")]
-        public async Task<IActionResult> RegisterTraditionalDoctor(DoctorRegisterDto<TraditionalUserRegisterDto> doctorRegister)
+        public async Task<IActionResult> RegisterTraditionalDoctorAsync(DoctorRegisterDto<TraditionalUserRegisterDto> doctorRegister)
         {
             var result = await _doctorService.RegisterAsync(doctorRegister);
             return CustomResult(result);
         }
+
+        [Authorize(Roles = RoleNames.SystemAdminRole)]
+        [HttpPut("confirm")]
+        public async Task<IActionResult> ConfirmDoctorAsync()
+        {
+            return Ok();
+        }
+
     }
 }

@@ -4,7 +4,6 @@ namespace MedAppointment.Api.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
-    [Authorize]
     public abstract class BaseApiController : ControllerBase
     {
         protected IActionResult CustomResult(Result result)

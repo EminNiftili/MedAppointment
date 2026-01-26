@@ -28,3 +28,8 @@ global using MedAppointment.DataTransferObjects.ClassifierDtos;
 global using MedAppointment.Logics.Services.ClientServices;
 global using MedAppointment.Logics.Services.ClassifierServices;
 #endregion
+
+
+#region Utility Services
+global using MedAppointment.Logics.Constants;
+#endregion
