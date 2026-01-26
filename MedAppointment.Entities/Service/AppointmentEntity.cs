@@ -11,7 +11,7 @@
         /// </summary>
         public byte SelectedServiceType { get; set; }
         public long PaymentId { get; set; }
-
+        //TODO Needed add new relation USER
         public PaymentEntity? Payment { get; set; }
         public PeriodPlanEntity? PeriodPlan { get; set; }
     }
