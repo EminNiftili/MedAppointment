@@ -34,7 +34,6 @@ namespace MedAppointment.Logics.Implementations.ClientServices
 
             if (withAllSpecialties && doctorEntity.Specialties is not null && doctorEntity.Specialties.Count > 0)
             {
-                // Specialties List<T> deyilsə, əvvəlcə .ToList() edin və ya foreach saxlayın.
                 foreach (var s in doctorEntity.Specialties)
                 {
                     if (!s.IsConfirm)
