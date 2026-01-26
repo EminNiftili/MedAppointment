@@ -139,7 +139,6 @@ namespace MedAppointment.Logics.Implementations.ClientServices
             return result;
         }
 
-
         private async Task<DoctorEntity?> GetDoctorOrFailAsync(long doctorId, Result result)
         {
             var doctorEntity = await UnitOfClient.Doctor.GetByIdAsync(doctorId);
