@@ -6,7 +6,7 @@
         {
             return new Result<TModel>();
         }
-        public static Result<TModel> Create(TModel model, IEnumerable<Message> messages = null)
+        public static Result<TModel> Create(TModel model, IEnumerable<Message>? messages = null)
         {
             messages ??= new List<Message>();
             return new Result<TModel>(model, messages);

@@ -8,7 +8,7 @@
             Text = message;
             Exception = null;
         }
-        public Message(string textCode, string message, Exception exception)
+        public Message(string textCode, string message, Exception? exception)
         {
             TextCode = textCode;
             Text = message;

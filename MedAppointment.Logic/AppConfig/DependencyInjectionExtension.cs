@@ -6,6 +6,7 @@
         {
             services.AddMedAppointmentDataAccess(configuration);
             services.AddMedAppointmentValidation(configuration);
+            services.AddAutoMapper(typeof(DependencyInjectionExtension).Assembly);
 
             AddLogicServices(services);
 

@@ -75,11 +75,11 @@
             Messages.Add(message);
             SetStatusCode(httpStatus);
         }
-        public void AddMessage(string messageCode, string message, Exception exception = null)
+        public void AddMessage(string messageCode, string message, Exception? exception = null)
         {
             Messages.Add(new Message(messageCode, message, exception));
         }
-        public void AddMessage(string messageCode, string message, HttpStatusCode httpStatus, Exception exception = null)
+        public void AddMessage(string messageCode, string message, HttpStatusCode httpStatus, Exception? exception = null)
         {
             Messages.Add(new Message(messageCode, message, exception));
             SetStatusCode(httpStatus);
