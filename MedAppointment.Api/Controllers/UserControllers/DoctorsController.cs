@@ -10,16 +10,18 @@
         }
         [AllowAnonymous]
         [HttpGet]
-        public async Task<IActionResult> GetAllAsync()
+        public async Task<IActionResult> GetAllAsync([FromQuery] PaginationQueryDto query)
         {
-            return Ok();
+            var result = await _doctorService.GetDoctorsAsync(query, User.IsInRole(RoleNames.SystemAdminRole));
+            return CustomResult(result);
         }
 
         [AllowAnonymous]
         [HttpGet("{id:long}")]
         public async Task<IActionResult> GetByIdAsync(long id)
         {
-            return Ok();
+            var result = await _doctorService.GetDoctorByIdAsync(id, User.IsInRole(RoleNames.SystemAdminRole));
+            return CustomResult(result);
         }
 
         [AllowAnonymous]

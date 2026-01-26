@@ -6,14 +6,91 @@ namespace MedAppointment.Logics.Implementations.ClientServices
         protected readonly ILogger<DoctorService> Logger;
         protected readonly IUnitOfClient UnitOfClient;
         protected readonly IClientRegistrationService ClientRegistration;
+        protected readonly IValidator<PaginationQueryDto> PaginationQueryValidator;
+        protected readonly IMapper Mapper;
 
         public DoctorService(ILogger<DoctorService> logger, 
             IUnitOfClient unitOfClient,
-            IClientRegistrationService clientRegistration)
+            IClientRegistrationService clientRegistration,
+            IValidator<PaginationQueryDto> paginationQueryValidator,
+            IMapper mapper)
         {
             Logger = logger;
             UnitOfClient = unitOfClient;
             ClientRegistration = clientRegistration;
+            PaginationQueryValidator = paginationQueryValidator;
+            Mapper = mapper;
+        }
+
+        public async Task<Result<PagedResultDto<DoctorDto>>> GetDoctorsAsync(PaginationQueryDto query, bool includeUnconfirmed)
+        {
+            Logger.LogTrace("Started doctor list retrieval. IncludeUnconfirmed: {IncludeUnconfirmed}", includeUnconfirmed);
+            var result = Result<PagedResultDto<DoctorDto>>.Create();
+
+            if (!await ValidateModelAsync(PaginationQueryValidator, query, result))
+            {
+                Logger.LogDebug("Doctor list query validation failed.");
+                return result;
+            }
+            Logger.LogDebug("Doctor list query validation succeeded.");
+
+            var doctorEntities = await UnitOfClient.Doctor.GetAllAsync();
+            Logger.LogDebug("Doctor entities fetched. Count: {Count}", doctorEntities.Count());
+            var filteredDoctors = includeUnconfirmed
+                ? doctorEntities.ToList()
+                : doctorEntities.Where(x => x.IsConfirm).ToList();
+            Logger.LogDebug("Doctor entities filtered. Count: {Count}", filteredDoctors.Count);
+
+            var totalCount = filteredDoctors.Count;
+            var totalPages = (int)Math.Ceiling(totalCount / (double)query.PageSize);
+            Logger.LogDebug("Pagination calculated. TotalCount: {TotalCount}, TotalPages: {TotalPages}", totalCount, totalPages);
+
+            var doctors = filteredDoctors
+                .OrderBy(x => x.Id)
+                .Skip((query.PageNumber - 1) * query.PageSize)
+                .Take(query.PageSize)
+                .Select(x => Mapper.Map<DoctorDto>(x, options =>
+                {
+                    options.Items["IncludeUnconfirmed"] = includeUnconfirmed;
+                }))
+                .ToList();
+            Logger.LogDebug("Doctor page mapped. Count: {Count}", doctors.Count);
+
+            result.Success(new PagedResultDto<DoctorDto>
+            {
+                Items = doctors,
+                PageNumber = query.PageNumber,
+                PageSize = query.PageSize,
+                TotalCount = totalCount,
+                TotalPages = totalPages
+            });
+
+            Logger.LogInformation("Doctor list retrieved. Count: {Count}, PageNumber: {PageNumber}", doctors.Count, query.PageNumber);
+            return result;
+        }
+
+        public async Task<Result<DoctorDto>> GetDoctorByIdAsync(long doctorId, bool includeUnconfirmed)
+        {
+            Logger.LogTrace("Started doctor retrieval by id. DoctorId: {DoctorId}, IncludeUnconfirmed: {IncludeUnconfirmed}", doctorId, includeUnconfirmed);
+            var result = Result<DoctorDto>.Create();
+            var doctorEntity = await UnitOfClient.Doctor.GetByIdAsync(doctorId);
+            Logger.LogDebug("Doctor entity fetch completed. DoctorId: {DoctorId}", doctorId);
+
+            if (doctorEntity is null || (!includeUnconfirmed && !doctorEntity.IsConfirm))
+            {
+                Logger.LogInformation("Doctor not found or not confirmed. DoctorId: {DoctorId}", doctorId);
+                result.AddMessage("ERR00056", "Doctor cannot found", HttpStatusCode.NotFound);
+                return result;
+            }
+
+            var doctorDto = Mapper.Map<DoctorDto>(doctorEntity, options =>
+            {
+                options.Items["IncludeUnconfirmed"] = includeUnconfirmed;
+            });
+            Logger.LogDebug("Doctor entity mapped. DoctorId: {DoctorId}", doctorId);
+            result.Success(doctorDto);
+            Logger.LogInformation("Doctor retrieved by id. DoctorId: {DoctorId}", doctorId);
+            return result;
         }
 
         public async Task<Result> ConfirmDoctorAsync(long doctorId, bool withAllSpecialties = true)
@@ -158,6 +235,29 @@ namespace MedAppointment.Logics.Implementations.ClientServices
         {
             UnitOfClient.Doctor.Update(doctorEntity);
             await UnitOfClient.SaveChangesAsync();
+        }
+
+        private async Task<bool> ValidateModelAsync<TDto, TResult>(IValidator<TDto> validator, TDto model, Result<TResult> result)
+        {
+            Logger.LogInformation("Model validation started for {Validator}.", typeof(TDto).Name);
+            var validationResult = await validator.ValidateAsync(model);
+            Logger.LogInformation("Model validation finished for {Validator}.", typeof(TDto).Name);
+
+            if (validationResult == null)
+            {
+                Logger.LogError("Validation result is null for {Validator}.", typeof(TDto).Name);
+                result.AddMessage("ERR00100", "Unexpected error contact with admin", HttpStatusCode.BadRequest);
+                return false;
+            }
+
+            if (!validationResult.IsValid)
+            {
+                Logger.LogDebug("Validation failed for {Validator} with errors: {Errors}", typeof(TDto).Name, validationResult.Errors);
+                result.SetFluentValidationAndBadRequest(validationResult);
+                return false;
+            }
+
+            return true;
         }
     }
 }

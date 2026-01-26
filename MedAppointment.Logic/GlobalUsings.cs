@@ -34,6 +34,10 @@ global using FluentValidation;
 global using FluentValidation.Results;
 #endregion
 
+#region Mapper
+global using AutoMapper;
+#endregion
+
 #region System Usings
 global using Microsoft.Extensions.Logging;
 global using System.Net;
