@@ -18,71 +18,85 @@ namespace MedAppointment.Logics.Implementations.ClientServices
 
         public async Task<Result> ConfirmDoctorAsync(long doctorId, bool withAllSpecialties = true)
         {
-            Result result = Result.Create();
-            Logger.LogTrace("Started Doctor confirm.");
-            var doctorEntity = await UnitOfClient.Doctor.GetByIdAsync(doctorId);
-            Logger.LogDebug("Doctor user fetch request completed.");
-            if(doctorEntity == null)
+            Logger.LogTrace("Started doctor confirm. DoctorId:{0}, WithAllSpecialties:{1}",
+                doctorId, withAllSpecialties);
+
+            var result = Result.Create();
+
+            var doctorEntity = await GetDoctorOrFailAsync(doctorId, result);
+            if (doctorEntity is null) return result;
+
+            if (!doctorEntity.IsConfirm)
             {
-                Logger.LogDebug("Doctor cannot found.");
-                result.AddMessage("ERR00056", "Doctor cannot found", HttpStatusCode.NotFound);
-                return result;
+                doctorEntity.IsConfirm = true;
+                Logger.LogDebug("Doctor tagged as confirmed. DoctorId:{0}", doctorId);
             }
-            doctorEntity.IsConfirm = true;
-            Logger.LogDebug("Doctor tagged as confirmed.");
-            if (withAllSpecialties)
+
+            if (withAllSpecialties && doctorEntity.Specialties is not null && doctorEntity.Specialties.Count > 0)
             {
-                foreach (var doctorSpecialtyEntity in doctorEntity.Specialties)
+                // Specialties List<T> deyilsə, əvvəlcə .ToList() edin və ya foreach saxlayın.
+                foreach (var s in doctorEntity.Specialties)
                 {
-                    Logger.LogDebug("Doctor (id:{0}) specialties (id:{1}) tagged as confirm.", doctorEntity.Id, doctorSpecialtyEntity.SpecialtyId);
-                    doctorSpecialtyEntity.IsConfirm = true;
+                    if (!s.IsConfirm)
+                    {
+                        s.IsConfirm = true;
+                        Logger.LogDebug(
+                            "Doctor specialty tagged as confirmed. DoctorId:{0}, SpecialtyId:{1}",
+                            doctorId, s.SpecialtyId);
+                    }
                 }
             }
-            UnitOfClient.Doctor.Update(doctorEntity);
-            await UnitOfClient.SaveChangesAsync();
-            Logger.LogDebug("All tags applied.");
+
+            await SaveDoctorAsync(doctorEntity);
+
+            Logger.LogDebug("Confirm tags applied. DoctorId:{0}", doctorId);
             result.Success(HttpStatusCode.NoContent);
             return result;
-
-
-
         }
 
         public async Task<Result> ConfirmDoctorSpecialtiesAsync(long doctorId, long specialtyId)
         {
-            Result result = Result.Create();
-            Logger.LogTrace("Started Doctor confirm.");
-            var doctorEntity = await UnitOfClient.Doctor.GetByIdAsync(doctorId);
-            Logger.LogDebug("Doctor user fetch request completed.");
-            if (doctorEntity == null)
-            {
-                Logger.LogDebug("Doctor cannot found.");
-                result.AddMessage("ERR00056", "Doctor cannot found", HttpStatusCode.NotFound);
-                return result;
-            }
+            Logger.LogTrace("Started doctor specialty confirm. DoctorId:{0}, SpecialtyId:{1}",
+                doctorId, specialtyId);
+
+            var result = Result.Create();
+
+            var doctorEntity = await GetDoctorOrFailAsync(doctorId, result);
+            if (doctorEntity is null) return result;
+
             if (!doctorEntity.IsConfirm)
             {
-                Logger.LogDebug("Doctor cannot found.");
-                result.AddMessage("ERR00058", "Doctor cannot confirm specialty befaore Doctor Confirm", HttpStatusCode.Conflict);
+                Logger.LogDebug("Doctor is not confirmed yet. DoctorId:{0}", doctorId);
+                result.AddMessage("ERR00058", "Doctor is not confirmed yet. Doctor cannot confirm specialty before doctor confirm", HttpStatusCode.Conflict);
                 return result;
             }
 
-            var doctorSpecialtyEntity = doctorEntity.Specialties.FirstOrDefault(x => x.SpecialtyId == specialtyId);
-            if(doctorSpecialtyEntity == null)
+            var specialtyEntity = doctorEntity.Specialties?
+                .FirstOrDefault(x => x.SpecialtyId == specialtyId);
+
+            if (specialtyEntity is null)
             {
-                Logger.LogDebug("Doctor cannot found.");
+                Logger.LogDebug("Doctor specialty cannot found. DoctorId:{0}, SpecialtyId:{1}",
+                    doctorId, specialtyId);
+
                 result.AddMessage("ERR00057", "Doctor specialty cannot found", HttpStatusCode.NotFound);
                 return result;
             }
-            doctorSpecialtyEntity.IsConfirm = true;
-            Logger.LogDebug("Doctor (id:{0}) specialty (id:{1}) tagged as confirm.", doctorEntity.Id, doctorSpecialtyEntity.SpecialtyId);
 
-            UnitOfClient.Doctor.Update(doctorEntity);
-            await UnitOfClient.SaveChangesAsync();
-            Logger.LogDebug("Specialty confirm applied.");
+            if (!specialtyEntity.IsConfirm)
+            {
+                specialtyEntity.IsConfirm = true;
+                Logger.LogDebug("Doctor specialty tagged as confirmed. DoctorId:{0}, SpecialtyId:{1}",
+                    doctorId, specialtyId);
+            }
+
+            await SaveDoctorAsync(doctorEntity);
+
+            Logger.LogDebug("Specialty confirm applied. DoctorId:{0}, SpecialtyId:{1}",
+                doctorId, specialtyId);
+
             result.Success(HttpStatusCode.NoContent);
             return result;
-
         }
 
         public async Task<Result> RegisterAsync(DoctorRegisterDto<TraditionalUserRegisterDto> doctorRegister)
@@ -124,6 +138,28 @@ namespace MedAppointment.Logics.Implementations.ClientServices
             Logger.LogInformation("Doctor entity added");
             result.AddMessage("ERR00055", "Doctor registered successfully", HttpStatusCode.OK);
             return result;
+        }
+
+
+        private async Task<DoctorEntity?> GetDoctorOrFailAsync(long doctorId, Result result)
+        {
+            var doctorEntity = await UnitOfClient.Doctor.GetByIdAsync(doctorId);
+            Logger.LogDebug("Doctor fetch completed. DoctorId:{0}", doctorId);
+
+            if (doctorEntity is null)
+            {
+                Logger.LogDebug("Doctor cannot found. DoctorId:{0}", doctorId);
+                result.AddMessage("ERR00056", "Doctor cannot found", HttpStatusCode.NotFound);
+                return null;
+            }
+
+            return doctorEntity;
+        }
+
+        private async Task SaveDoctorAsync(DoctorEntity doctorEntity)
+        {
+            UnitOfClient.Doctor.Update(doctorEntity);
+            await UnitOfClient.SaveChangesAsync();
         }
     }
 }
