@@ -1,4 +1,4 @@
-namespace MedAppointment.DataTransferObjects.UserDtos
+namespace MedAppointment.DataTransferObjects.DoctorDtos
 {
     public record DoctorDto
     {
@@ -9,14 +9,7 @@ namespace MedAppointment.DataTransferObjects.UserDtos
         public string Title { get; set; } = string.Empty;
         public string Description { get; set; } = string.Empty;
         public bool IsConfirm { get; set; }
-        public IReadOnlyCollection<SpecialtyDto> Specialties { get; set; } = Array.Empty<SpecialtyDto>();
+        public IReadOnlyCollection<DoctorSpecialtyDto> Specialties { get; set; } = Array.Empty<DoctorSpecialtyDto>();
     }
 
-    public record SpecialtyDto
-    {
-        public long Id { get; set; }
-        public string Name { get; set; } = string.Empty;
-        public string Description { get; set; } = string.Empty;
-        public bool IsConfirm { get; set; }
-    }
 }

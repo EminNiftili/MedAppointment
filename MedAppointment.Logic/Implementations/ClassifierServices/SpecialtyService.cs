@@ -1,3 +1,5 @@
+using MedAppointment.DataTransferObjects.DoctorDtos;
+
 namespace MedAppointment.Logics.Implementations.ClassifierServices
 {
     internal class SpecialtyService : ISpecialtyService

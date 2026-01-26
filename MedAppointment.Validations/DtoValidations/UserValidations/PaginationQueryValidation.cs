@@ -1,3 +1,5 @@
+using MedAppointment.DataTransferObjects.PaginationDtos;
+
 namespace MedAppointment.Validations.DtoValidations.UserValidations
 {
     public class PaginationQueryValidation : BaseValidator<PaginationQueryDto>

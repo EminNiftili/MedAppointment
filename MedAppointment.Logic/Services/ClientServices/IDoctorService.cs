@@ -1,4 +1,7 @@
-﻿namespace MedAppointment.Logics.Services.ClientServices
+﻿using MedAppointment.DataTransferObjects.DoctorDtos;
+using MedAppointment.DataTransferObjects.PaginationDtos;
+
+namespace MedAppointment.Logics.Services.ClientServices
 {
     public interface IDoctorService
     {

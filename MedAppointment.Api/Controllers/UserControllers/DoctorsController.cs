@@ -1,4 +1,6 @@
-﻿namespace MedAppointment.Api.Controllers.UserControllers
+﻿using MedAppointment.DataTransferObjects.PaginationDtos;
+
+namespace MedAppointment.Api.Controllers.UserControllers
 {
     public class DoctorsController : BaseApiController
     {

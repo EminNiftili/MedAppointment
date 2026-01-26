@@ -1,3 +1,5 @@
+using MedAppointment.DataTransferObjects.DoctorDtos;
+
 namespace MedAppointment.Logics.Services.ClassifierServices
 {
     public interface ISpecialtyService

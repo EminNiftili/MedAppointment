@@ -1,4 +1,7 @@
 ﻿
+using MedAppointment.DataTransferObjects.DoctorDtos;
+using MedAppointment.DataTransferObjects.PaginationDtos;
+
 namespace MedAppointment.Logics.Implementations.ClientServices
 {
     internal class DoctorService : IDoctorService

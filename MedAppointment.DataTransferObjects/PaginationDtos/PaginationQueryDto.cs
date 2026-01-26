@@ -1,4 +1,4 @@
-namespace MedAppointment.DataTransferObjects.UserDtos
+namespace MedAppointment.DataTransferObjects.PaginationDtos
 {
     public record PaginationQueryDto
     {
