@@ -14,6 +14,9 @@ EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MedAppointment.Validations", "MedAppointment.Validations\MedAppointment.Validations.csproj", "{86B74399-7FB9-4329-A04F-7FB9DA8A700E}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Documentation", "Documentation", "{02EA681E-C7D8-13C7-8484-4AC65E1B71E8}"
+	ProjectSection(SolutionItems) = preProject
+		Info\General.md = Info\General.md
+	EndProjectSection
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "SQL", "SQL", "{57673996-7E91-42DF-A6A0-C10D985A7F69}"
 	ProjectSection(SolutionItems) = preProject
