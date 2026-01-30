@@ -6,6 +6,7 @@
         internal DbSet<PaymentTypeEntity> PaymentTypes { get; private set; }
         internal DbSet<PeriodEntity> Periods { get; private set; }
         internal DbSet<SpecialtyEntity> Specialties { get; private set; }
+        internal DbSet<PlanPaddingTypeEntity> PlanPaddingTypes { get; private set; }
 
 
 
@@ -20,6 +21,11 @@
         internal DbSet<ChatHistoryEntity> ChatHistories { get; private set; }
         internal DbSet<ChatEntity> Chats { get; private set; }
         internal DbSet<MeetEntity> Meets { get; private set; }
+
+
+        internal DbSet<WeeklySchemaEntity> WeeklySchemas { get; private set; }
+        internal DbSet<DaySchemaEntity> DaySchemas { get; private set; }
+        internal DbSet<DayBreakEntity> DayBreaks { get; private set; }
 
 
 

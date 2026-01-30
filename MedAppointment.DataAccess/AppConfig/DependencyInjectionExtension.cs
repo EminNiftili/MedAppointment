@@ -42,6 +42,7 @@
             services.AddScoped<IPaymentTypeRepository, PaymentTypeRepository>();
             services.AddScoped<IPeriodRepository, PeriodRepository>();
             services.AddScoped<ISpecialtyRepository, SpecialtyRepository>();
+            services.AddScoped<IPlanPaddingTypeRepository, PlanPaddingTypeRepository>();
         }
 
         private static void AddUnifOfWorks(IServiceCollection services)

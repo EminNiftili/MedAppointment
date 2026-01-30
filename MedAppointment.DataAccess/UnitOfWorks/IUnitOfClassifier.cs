@@ -6,5 +6,6 @@
         IPaymentTypeRepository PaymentType { get; }
         IPeriodRepository Period { get; }
         ISpecialtyRepository Specialty { get; }
+        IPlanPaddingTypeRepository PlanPaddingType { get; }
     }
 }
