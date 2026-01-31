@@ -109,3 +109,15 @@ Return validation errors like:
 | ERR00118 | Day break name must not exceed 150 characters. | `Name` length must be **<= 150** when provided. |
 | ERR00119 | Day schema PlanPaddingTypeId must be greater than 0 when provided. | When not null, must be positive. |
 | ERR00120 | Day break DaySchemaId must be greater than 0. | `DaySchemaId` required for day break. |
+| ERR00121 | Weekly schema id must be greater than 0. | Required for create day plans from schema. |
+| ERR00122 | Start date is required. | Start date for the target week is required. |
+| ERR00123 | Currency id must be greater than 0. | Required for period plan price. |
+| ERR00124 | Price per period must be greater than or equal to 0. | Price per period cannot be negative. |
+| ERR00125 | Only verified doctors can create day plans from schema. | Doctor must be confirmed. |
+| ERR00126 | Weekly schema (template) not found. | Template with given id does not exist. |
+| ERR00127 | Weekly schema must have exactly 7 day schemas (one per weekday). | Invalid week data; 6 or 8 days is invalid. |
+| ERR00128 | Period or break time overlap detected. Invalid schedule data. | DayBreak and Period times must not overlap. |
+| ERR00129 | Invalid padding position. Must be a valid PlanPaddingPosition enum value (0-4). | PlanPaddingPosition value is not defined in enum. |
+| ERR00130 | Day schema PeriodCount must be between 0 and 255. | Number of periods per day must be in valid range. |
+| ERR00131 | Weekly schema (template) is required. | CreateDayPlansFromSchemaDto.WeeklySchema must not be null. |
+| ERR00132 | Day schema PeriodTimeMinutes must be between 1 and 255 when day is not closed. | Period duration in minutes when day has slots. |

@@ -1,4 +1,4 @@
-﻿namespace MedAppointment.Logics.Implementations.ClientServices
+namespace MedAppointment.Logics.Implementations.ClientServices
 {
     internal class DoctorService : IDoctorService
     {
@@ -174,6 +174,33 @@
                 doctorId, specialtyId);
 
             result.Success(HttpStatusCode.NoContent);
+            return result;
+        }
+
+        public async Task<Result> EnsureDoctorIsVerifiedAsync(long doctorId)
+        {
+            Logger.LogTrace("Started ensure doctor is verified. DoctorId: {DoctorId}", doctorId);
+            var result = Result.Create();
+
+            var doctorEntity = await UnitOfDoctor.Doctor.GetByIdAsync(doctorId);
+            Logger.LogDebug("Doctor entity fetch completed. DoctorId: {DoctorId}", doctorId);
+
+            if (doctorEntity is null)
+            {
+                Logger.LogInformation("Doctor not found. DoctorId: {DoctorId}", doctorId);
+                result.AddMessage("ERR00056", "Doctor cannot found", HttpStatusCode.NotFound);
+                return result;
+            }
+
+            if (!doctorEntity.IsConfirm)
+            {
+                Logger.LogInformation("Doctor is not verified. DoctorId: {DoctorId}", doctorId);
+                result.AddMessage("ERR00125", "Only verified doctors can create day plans from schema.", HttpStatusCode.Forbidden);
+                return result;
+            }
+
+            Logger.LogDebug("Doctor is verified. DoctorId: {DoctorId}", doctorId);
+            result.Success();
             return result;
         }
 

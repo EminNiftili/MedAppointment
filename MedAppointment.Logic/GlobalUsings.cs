@@ -1,9 +1,10 @@
-﻿#region Entities
+#region Entities
 global using MedAppointment.Entities;
 global using MedAppointment.Entities.Classifier;
 global using MedAppointment.Entities.Client;
 global using MedAppointment.Entities.Communication;
 global using MedAppointment.Entities.Composition;
+global using MedAppointment.Entities.Doctor;
 global using MedAppointment.Entities.File;
 global using MedAppointment.Entities.Payment;
 global using MedAppointment.Entities.Security;
@@ -64,10 +65,15 @@ global using MedAppointment.DataTransferObjects.DoctorDtos;
 global using MedAppointment.Logics.Services.ClientServices;
 global using MedAppointment.Logics.Services.SecurityServices;
 global using MedAppointment.Logics.Services.ClassifierServices;
+global using MedAppointment.Logics.Services.PlanManagerServices;
+global using MedAppointment.Logics.Services.ScheduleServices;
 #endregion
 
 #region Implementation Logic Services
 global using MedAppointment.Logics.Implementations.ClientServices;
 global using MedAppointment.Logics.Implementations.SecurityServices;
 global using MedAppointment.Logics.Implementations.ClassifierServices;
+global using MedAppointment.Logics.Implementations.PlanManagerServices;
+global using MedAppointment.Logics.Implementations.ScheduleServices;
+global using MedAppointment.Logics.Implementations.ScheduleServices.PaddingStrategies;
 #endregion

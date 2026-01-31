@@ -24,6 +24,19 @@ namespace MedAppointment.Validations.DtoValidations.DoctorSchemaValidations
                     .WithErrorCode("ERR00113")
                     .WithMessage("Day schema DayOfWeek must be between 1 (Monday) and 7 (Sunday).");
 
+            RuleFor(x => x.PeriodCount)
+                .InclusiveBetween((byte)0, (byte)255)
+                    .WithErrorCode("ERR00130")
+                    .WithMessage("Day schema PeriodCount must be between 0 and 255.");
+
+            When(x => !x.IsClosed, () =>
+            {
+                RuleFor(x => x.PeriodTimeMinutes)
+                    .InclusiveBetween((byte)1, (byte)255)
+                    .WithErrorCode("ERR00132")
+                    .WithMessage("Day schema PeriodTimeMinutes must be between 1 and 255 when day is not closed.");
+            });
+
             When(x => x.PlanPaddingTypeId.HasValue, () =>
             {
                 RuleFor(x => x.PlanPaddingTypeId!.Value)

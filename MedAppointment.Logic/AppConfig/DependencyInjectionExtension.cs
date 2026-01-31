@@ -1,4 +1,4 @@
-﻿namespace MedAppointment.Logics.AppConfig
+namespace MedAppointment.Logics.AppConfig
 {
     public static class DependencyInjectionExtension
     {
@@ -19,6 +19,15 @@
             services.AddScoped<IPrivateClientInfoService, PrivateClientInfoService>();
             services.AddScoped<IDoctorService, DoctorService>();
 
+            services.AddScoped<IDoctorPlanManagerService, DoctorPlanManagerService>();
+
+            services.AddScoped<ITimeSlotPaddingStrategy, NoPaddingStrategy>();
+            services.AddScoped<ITimeSlotPaddingStrategy, StartOfPeriodPaddingStrategy>();
+            services.AddScoped<ITimeSlotPaddingStrategy, EndOfPeriodPaddingStrategy>();
+            services.AddScoped<ITimeSlotPaddingStrategy, LinearBetweenOfPeriodPaddingStrategy>();
+            services.AddScoped<ITimeSlotPaddingStrategy, CenterBetweenOfPeriodPaddingStrategy>();
+            services.AddScoped<ITimeSlotPaddingStrategyResolver, TimeSlotPaddingStrategyResolver>();
+            services.AddScoped<ITimeSlotService, TimeSlotService>();
 
             services.AddScoped<ICurrencyService, CurrencyService>();
             services.AddScoped<IPaymentTypeService, PaymentTypeService>();

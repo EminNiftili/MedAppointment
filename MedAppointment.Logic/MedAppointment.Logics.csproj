@@ -1,4 +1,4 @@
-﻿<Project Sdk="Microsoft.NET.Sdk">
+<Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
     <TargetFramework>net9.0</TargetFramework>
@@ -8,6 +8,7 @@
 
   <ItemGroup>
     <ProjectReference Include="..\MedAppointment.DataAccess\MedAppointment.DataAccess.csproj" />
+    <ProjectReference Include="..\MedAppointment.DataTransferObjects\MedAppointment.DataTransferObjects.csproj" />
     <ProjectReference Include="..\MedAppointment.Validations\MedAppointment.Validations.csproj" />
   </ItemGroup>
 

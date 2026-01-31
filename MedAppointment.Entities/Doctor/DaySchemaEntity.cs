@@ -1,4 +1,4 @@
-﻿namespace MedAppointment.Entities.Doctor
+namespace MedAppointment.Entities.Doctor
 {
     public class DaySchemaEntity : BaseEntity
     {
@@ -11,8 +11,13 @@
         /// </summary>
         public byte DayOfWeek { get; set; }
         public TimeSpan OpenTime { get; set; }
+        /// <summary>
+        /// Number of periods (slots) for this day. Used when generating day slots; 0 when IsClosed.
+        /// </summary>
+        public byte PeriodCount { get; set; }
         public bool IsClosed { get; set; }
-
+        public bool IsOnlineService { get; set; }
+        public bool IsOnSiteService { get; set; }
 
         public WeeklySchemaEntity? WeeklySchema { get; set; }
         public SpecialtyEntity? Specialty { get; set; }

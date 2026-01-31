@@ -1,4 +1,4 @@
-﻿namespace MedAppointment.DataAccess.Implementations.EntityFramework.SqlServer.Configurations.Doctor
+namespace MedAppointment.DataAccess.Implementations.EntityFramework.SqlServer.Configurations.Doctor
 {
     public class DaySchemaConfig : BaseConfig<DaySchemaEntity>
     {
@@ -23,9 +23,22 @@
                 .IsRequired()
                 .HasColumnType("time(7)");
 
+            builder.Property(e => e.PeriodCount)
+                .IsRequired()
+                .HasDefaultValueSql("0")
+                .HasComment("Number of periods (slots) for this day; 0 when closed.");
+
             builder.Property(e => e.IsClosed)
                 .IsRequired()
                 .HasDefaultValueSql("0");
+
+            builder.Property(e => e.IsOnlineService)
+                .IsRequired()
+                .HasDefaultValueSql("1");
+
+            builder.Property(e => e.IsOnSiteService)
+                .IsRequired()
+                .HasDefaultValueSql("1");
 
             builder.HasOne(x => x.WeeklySchema)
                 .WithMany()
