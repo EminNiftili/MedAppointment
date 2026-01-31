@@ -4,4 +4,4 @@ alwaysApply: true
 ---
 
 Validation Layeri Dto layerini referans alır. Burada BaseValidator vasitəsi islə validatorları yazılır. Əgər Dto-ların base-ləri varsa Validatorda onlara görə şəkillənir.  Folder Structuru Dto-lara çox yaxındır. Hər validation üçün ayrı Fayl olmalıdır. Hər bir validasiya üçün Code və Message təmin edək. Code  cə message strukturu isə :
-Code-lar ERR00001-dən başlayaraq kodlanır. Hər bir kodun bir mesajı var. Bunlar isə Proyektin Folder Strukturundakı Localization Folderındakı Readme.md faylında verilib. Yeni kod əlavə edərkən, burdakı cədvələ əlavə et. Error code-lar unikla olmalıdı Ardıcıllığa önəm ver.
+Code-lar ERR00001-dən başlayaraq kodlanır. Hər bir kodun bir mesajı var. Bunlar isə Proyektin Folder Strukturundakı Localization Folderındakı Readme.md faylında verilib. Yeni kod əlavə edərkən, burdakı cədvələ əlavə et. Error code-lar unikla olmalıdı Ardıcıllığa önəm ver. Validasiyalar üçün  məntiqi olmalıdır, ən əsası isə DataAccess Layerdəki Configlərə uyğun gəlməlidir.
