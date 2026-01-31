@@ -1,0 +1,6 @@
+---
+description: 
+alwaysApply: true
+---
+
+Proyektimdə Logic Layerdə Pattern folderın içində cutom Result pattern yazılıb. Bu Pattern-i hər bir logic layerindəki methodlar üçün istifadə et. Bütün methodlarda result hər zaman ən başda yarat sonra return et. Result yalnız bir dəfə inital olsun. Result mesajları isə ERR00001-dən başlayaraq kodlanır. Hər bir kodun bir mesajı var. Bunlar isə Proyektin Folder Strukturundakı Localization Folderındakı Readme.md faylında verilib. Yeni kod əlavə edərkən, burdakı cədvələ əlavə et. Error code-lar unikla olmalıdı Ardıcıllığa önəm ver.

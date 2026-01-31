@@ -1,0 +1,6 @@
+---
+description: 
+alwaysApply: true
+---
+
+Dtolari hər zaman record kimi yarat. Məntiqinə uyğun folderdə yerləşdir. Heç birfolderə aid edə bilmirsənsə yeni folder yaratmaqdan çəkinmə. Balansı qorumağa çalış. Dto-lar Yalnzı Dto-layerdə ola  bilər. Əgər bir Dto-nun Create, Update olan versiyaları varsa onlar üçün ümumi abstract record yaratmağın daha yaxşı olar. Beləliklə OOP prinsiblərinə əməl etmiş olarıq.

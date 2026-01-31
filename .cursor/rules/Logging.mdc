@@ -1,0 +1,5 @@
+---
+alwaysApply: true
+---
+
+Logic layerindəki hər method body-sində detallı loglama aparılmalıdır. Trace, İnfo,Debug hamısı orada yazılmalı. Log mesajlar yalnız İngiliscə yazılmalıdır. Paramater ötürülməsi bizim üçün yaxşıdır. Error caselər olması ehtimal lakin olmamalı olan hallar üçün, Critacl isə Unhandled olan bütün vəziyyətlər üçün yazılmalıdır.  Bunlar üçün lokalizasiya istifadə edilməyəcək.

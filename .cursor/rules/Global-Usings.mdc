@@ -1,0 +1,5 @@
+---
+alwaysApply: true
+---
+
+Proyektdəki hət layer üçün folderlardan qıraqda bir fayl olmalıdır. Bu faylların içərində #region-lar ilə  hamısı qəşəng strukturda ayır.
