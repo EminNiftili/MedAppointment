@@ -4,6 +4,11 @@ namespace MedAppointment.Validations.DtoValidations.DoctorSchemaValidations
     {
         public WeeklySchemaValidation()
         {
+            RuleFor(x => x.DoctorId)
+                .GreaterThan(0L)
+                    .WithErrorCode("ERR00109")
+                    .WithMessage("DoctorId must be greater than 0.");
+
             RuleFor(x => x.Name)
                 .NotEmpty()
                     .WithErrorCode("ERR00105")
@@ -22,6 +27,10 @@ namespace MedAppointment.Validations.DtoValidations.DoctorSchemaValidations
                 .Must(hex => ColorHexRegex.IsMatch(hex))
                     .WithErrorCode("ERR00108")
                     .WithMessage("Weekly schema ColorHex must be 9 characters in format #RRGGBBAA.");
+
+            RuleForEach(x => x.DaySchemas)
+                .SetValidator(new DaySchemaValidation())
+                .When(x => x.DaySchemas != null);
         }
     }
 }

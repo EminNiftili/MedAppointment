@@ -4,6 +4,11 @@ namespace MedAppointment.Validations.DtoValidations.DoctorSchemaValidations
     {
         public DayBreakValidation()
         {
+            RuleFor(x => x.DaySchemaId)
+                .GreaterThan(0L)
+                    .WithErrorCode("ERR00120")
+                    .WithMessage("Day break DaySchemaId must be greater than 0.");
+
             RuleFor(x => x)
                 .Must(x => x.EndTime > x.StartTime)
                     .WithErrorCode("ERR00117")

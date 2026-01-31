@@ -108,3 +108,4 @@ Return validation errors like:
 | ERR00117 | Day break EndTime must be after StartTime. | Break interval must be valid. |
 | ERR00118 | Day break name must not exceed 150 characters. | `Name` length must be **<= 150** when provided. |
 | ERR00119 | Day schema PlanPaddingTypeId must be greater than 0 when provided. | When not null, must be positive. |
+| ERR00120 | Day break DaySchemaId must be greater than 0. | `DaySchemaId` required for day break. |
