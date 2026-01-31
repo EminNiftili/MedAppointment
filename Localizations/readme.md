@@ -1,4 +1,4 @@
-﻿# Validation Error Codes (TraditionalUserRegisterValidation)
+# Validation Error Codes (TraditionalUserRegisterValidation)
 
 This document lists the validation error codes and their default (English) messages used in `TraditionalUserRegisterValidation`.
 
@@ -93,3 +93,18 @@ Return validation errors like:
 | ERR00102 | Page number must be greater than 0. | |
 | ERR00103 | Page size must be greater than 0. | |
 | ERR00104 | Page size must not exceed 100. | |
+| ERR00105 | Weekly schema name is required. | `Name` field must not be empty. |
+| ERR00106 | Weekly schema name must not exceed 100 characters. | `Name` length must be **<= 100**. |
+| ERR00107 | Weekly schema ColorHex is required. | `ColorHex` field must not be empty. |
+| ERR00108 | Weekly schema ColorHex must be 9 characters in format #RRGGBBAA. | RGBA hex format, 9 chars. |
+| ERR00109 | DoctorId must be greater than 0. | `DoctorId` required for weekly schema create. |
+| ERR00110 | Day schema WeeklySchemaId must be greater than 0. | `WeeklySchemaId` required for day schema create. |
+| ERR00111 | Day schema SpecialtyId must be greater than 0. | `SpecialtyId` required. |
+| ERR00112 | Day schema PeriodId must be greater than 0. | `PeriodId` required. |
+| ERR00113 | Day schema DayOfWeek must be between 1 (Monday) and 7 (Sunday). | Valid weekday. |
+| ERR00114 | Day schema OpenTime is required. | Reserved for OpenTime validation. |
+| ERR00115 | Day break StartTime is required. | Reserved for StartTime validation. |
+| ERR00116 | Day break EndTime is required. | Reserved for EndTime validation. |
+| ERR00117 | Day break EndTime must be after StartTime. | Break interval must be valid. |
+| ERR00118 | Day break name must not exceed 150 characters. | `Name` length must be **<= 150** when provided. |
+| ERR00119 | Day schema PlanPaddingTypeId must be greater than 0 when provided. | When not null, must be positive. |
