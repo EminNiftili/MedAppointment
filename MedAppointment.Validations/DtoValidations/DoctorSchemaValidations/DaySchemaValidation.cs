@@ -1,8 +1,8 @@
 namespace MedAppointment.Validations.DtoValidations.DoctorSchemaValidations
 {
-    public abstract class BaseDaySchemaWriteValidation<TModel> : BaseValidator<TModel> where TModel : BaseDaySchemaDto
+    public class DaySchemaValidation : BaseValidator<DaySchemaDto>
     {
-        protected BaseDaySchemaWriteValidation()
+        protected DaySchemaValidation()
         {
             RuleFor(x => x.SpecialtyId)
                 .GreaterThan(0L)
@@ -28,7 +28,7 @@ namespace MedAppointment.Validations.DtoValidations.DoctorSchemaValidations
             });
 
             RuleForEach(x => x.DayBreaks)
-                .SetValidator(new DayBreakCreateValidation())
+                .SetValidator(new DayBreakValidation())
                 .When(x => x.DayBreaks != null);
         }
     }

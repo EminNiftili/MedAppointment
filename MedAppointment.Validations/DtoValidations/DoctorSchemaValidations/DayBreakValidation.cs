@@ -1,8 +1,8 @@
 namespace MedAppointment.Validations.DtoValidations.DoctorSchemaValidations
 {
-    public abstract class BaseDayBreakWriteValidation<TModel> : BaseValidator<TModel> where TModel : BaseDayBreakDto
+    public class DayBreakValidation : BaseValidator<DayBreakDto>
     {
-        protected BaseDayBreakWriteValidation()
+        protected DayBreakValidation()
         {
             RuleFor(x => x)
                 .Must(x => x.EndTime > x.StartTime)

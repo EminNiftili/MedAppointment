@@ -1,10 +1,10 @@
 namespace MedAppointment.Validations.DtoValidations.DoctorSchemaValidations
 {
-    public abstract class BaseWeeklySchemaWriteValidation<TModel> : BaseValidator<TModel> where TModel : BaseWeeklySchemaDto
+    public class WeeklySchemaValidation : BaseValidator<WeeklySchemaDto>
     {
         protected static readonly System.Text.RegularExpressions.Regex ColorHexRegex = new(@"^#[0-9A-Fa-f]{8}$", System.Text.RegularExpressions.RegexOptions.Compiled);
 
-        protected BaseWeeklySchemaWriteValidation()
+        protected WeeklySchemaValidation()
         {
             RuleFor(x => x.Name)
                 .NotEmpty()
