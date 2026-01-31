@@ -8,6 +8,8 @@
         {
             { "AZ" , @"^(?:\+994)(10|50|51|55|60|70|77|99)\d{7}$" }
         };
+        protected static readonly System.Text.RegularExpressions.Regex ColorHexRegex = new(@"^#[0-9A-Fa-f]{8}$", System.Text.RegularExpressions.RegexOptions.Compiled);
+
         protected static bool BeValidPhone(string phone)
         {
             if (string.IsNullOrWhiteSpace(phone))

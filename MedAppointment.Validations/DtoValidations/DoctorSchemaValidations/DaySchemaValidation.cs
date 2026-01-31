@@ -2,7 +2,7 @@ namespace MedAppointment.Validations.DtoValidations.DoctorSchemaValidations
 {
     public class DaySchemaValidation : BaseValidator<DaySchemaDto>
     {
-        protected DaySchemaValidation()
+        public DaySchemaValidation()
         {
             RuleFor(x => x.SpecialtyId)
                 .GreaterThan(0L)

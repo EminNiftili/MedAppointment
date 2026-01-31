@@ -2,7 +2,7 @@ namespace MedAppointment.Validations.DtoValidations.DoctorSchemaValidations
 {
     public class DayBreakValidation : BaseValidator<DayBreakDto>
     {
-        protected DayBreakValidation()
+        public DayBreakValidation()
         {
             RuleFor(x => x)
                 .Must(x => x.EndTime > x.StartTime)

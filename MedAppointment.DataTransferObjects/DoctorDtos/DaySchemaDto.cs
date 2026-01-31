@@ -13,6 +13,6 @@ namespace MedAppointment.DataTransferObjects.DoctorDtos
         public byte DayOfWeek { get; set; }
         public TimeSpan OpenTime { get; set; }
         public bool IsClosed { get; set; }
-        public IEnumerable<DayBreakCreateDto> DayBreaks { get; set; } = new List<DayBreakCreateDto>();
+        public IEnumerable<DayBreakDto> DayBreaks { get; set; } = new List<DayBreakDto>();
     }
 }
