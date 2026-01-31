@@ -5,7 +5,7 @@ namespace MedAppointment.DataAccess.Implementations.EntityFramework.SqlServer.Co
     {
         protected override void ConfigureEntity(EntityTypeBuilder<DayBreakEntity> builder)
         {
-            builder.ToTable("DayPlans", "Service");
+            builder.ToTable("DayBreaks", "Doctor");
 
             builder.Property(e => e.DaySchemaId)
                 .IsRequired();

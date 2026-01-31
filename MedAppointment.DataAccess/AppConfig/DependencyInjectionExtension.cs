@@ -27,6 +27,10 @@
 
             services.AddScoped<IImageRepository, ImageRepository>();
 
+            services.AddScoped<IDayBreakRepository, DayBreakRepository>();
+            services.AddScoped<IDaySchemaRepository, DaySchemaRepository>();
+            services.AddScoped<IWeeklySchemaRepository, WeeklySchemaRepository>();
+
             services.AddScoped<IPaymentRepository, PaymentRepository>();
 
             services.AddScoped<IDeviceRepository, DeviceRepository>();
@@ -50,6 +54,7 @@
             services.AddScoped<IUnitOfClassifier, UnitOfClassifier>();
             services.AddScoped<IUnitOfClient, UnitOfClient>();
             services.AddScoped<IUnitOfCommunication, UnitOfCommunication>();
+            services.AddScoped<IUnitOfDoctor, UnitOfDoctor>();
             services.AddScoped<IUnitOfFile, UnitOfFile>();
             services.AddScoped<IUnitOfPayment, UnitOfPayment>();
             services.AddScoped<IUnitOfSecurity, UnitOfSecurity>();

@@ -5,6 +5,7 @@
         public long DoctorId { get; set; }
         public long SpecialtyId { get; set; }
         public long PeriodId { get; set; }
+        public DateTime BelongDate { get; set; }
         /// <summary>
         /// 1=Monday ... 7=Sunday
         /// </summary>

@@ -14,6 +14,10 @@ namespace MedAppointment.DataAccess.Implementations.EntityFramework.SqlServer.Co
             builder.Property(e => e.PeriodId)
                 .IsRequired();
 
+            builder.Property(e => e.BelongDate)
+                .IsRequired()
+                .HasColumnType("date");
+
             builder.Property(e => e.DayOfWeek)
                 .IsRequired()
                 .HasComment("1=Monday ... 7=Sunday");

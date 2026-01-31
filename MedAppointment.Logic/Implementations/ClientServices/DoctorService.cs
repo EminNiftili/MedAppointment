@@ -3,12 +3,14 @@
     internal class DoctorService : IDoctorService
     {
         protected readonly ILogger<DoctorService> Logger;
+        protected readonly IUnitOfDoctor UnitOfDoctor;
         protected readonly IUnitOfClient UnitOfClient;
         protected readonly IClientRegistrationService ClientRegistration;
         protected readonly IValidator<PaginationQueryDto> PaginationQueryValidator;
         protected readonly IMapper Mapper;
 
-        public DoctorService(ILogger<DoctorService> logger, 
+        public DoctorService(ILogger<DoctorService> logger,
+            IUnitOfDoctor unitOfDoctor,
             IUnitOfClient unitOfClient,
             IClientRegistrationService clientRegistration,
             IValidator<PaginationQueryDto> paginationQueryValidator,
@@ -16,6 +18,7 @@
         {
             Logger = logger;
             UnitOfClient = unitOfClient;
+            UnitOfDoctor = unitOfDoctor;
             ClientRegistration = clientRegistration;
             PaginationQueryValidator = paginationQueryValidator;
             Mapper = mapper;
@@ -33,7 +36,7 @@
             }
             Logger.LogDebug("Doctor list query validation succeeded.");
 
-            var doctorEntities = await UnitOfClient.Doctor.GetAllAsync();
+            var doctorEntities = await UnitOfDoctor.Doctor.GetAllAsync();
             Logger.LogDebug("Doctor entities fetched. Count: {Count}", doctorEntities.Count());
             var filteredDoctors = includeUnconfirmed
                 ? doctorEntities.ToList()
@@ -72,7 +75,7 @@
         {
             Logger.LogTrace("Started doctor retrieval by id. DoctorId: {DoctorId}, IncludeUnconfirmed: {IncludeUnconfirmed}", doctorId, includeUnconfirmed);
             var result = Result<DoctorDto>.Create();
-            var doctorEntity = await UnitOfClient.Doctor.GetByIdAsync(doctorId);
+            var doctorEntity = await UnitOfDoctor.Doctor.GetByIdAsync(doctorId);
             Logger.LogDebug("Doctor entity fetch completed. DoctorId: {DoctorId}", doctorId);
 
             if (doctorEntity is null || (!includeUnconfirmed && !doctorEntity.IsConfirm))
@@ -209,7 +212,7 @@
             };
             Logger.LogInformation("Doctor entity created.");
             UnitOfClient.User.Update(userEntity);
-            await UnitOfClient.SaveChangesAsync();
+            await UnitOfDoctor.SaveChangesAsync();
             Logger.LogInformation("Doctor entity added");
             result.AddMessage("ERR00055", "Doctor registered successfully", HttpStatusCode.OK);
             return result;
@@ -217,7 +220,7 @@
 
         private async Task<DoctorEntity?> GetDoctorOrFailAsync(long doctorId, Result result)
         {
-            var doctorEntity = await UnitOfClient.Doctor.GetByIdAsync(doctorId);
+            var doctorEntity = await UnitOfDoctor.Doctor.GetByIdAsync(doctorId);
             Logger.LogDebug("Doctor fetch completed. DoctorId:{0}", doctorId);
 
             if (doctorEntity is null)
@@ -232,8 +235,8 @@
 
         private async Task SaveDoctorAsync(DoctorEntity doctorEntity)
         {
-            UnitOfClient.Doctor.Update(doctorEntity);
-            await UnitOfClient.SaveChangesAsync();
+            UnitOfDoctor.Doctor.Update(doctorEntity);
+            await UnitOfDoctor.SaveChangesAsync();
         }
 
         private async Task<bool> ValidateModelAsync<TDto, TResult>(IValidator<TDto> validator, TDto model, Result<TResult> result)

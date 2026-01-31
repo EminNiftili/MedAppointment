@@ -6,14 +6,12 @@ namespace MedAppointment.DataAccess.Implementations.EntityFramework.UnitOfWorks
     {
         public UnitOfClient(MedicalAppointmentContext medicalAppointmentContext,
             IAdminRepository admin, 
-            IDoctorRepository doctor, 
             IPersonRepository person, 
             IUserRepository user,
             IOrganizationRepository organization,
             IOrganizationUserRepository organizationUser) : base(medicalAppointmentContext)
         {
             Admin = admin;
-            Doctor = doctor;
             Person = person;
             User = user;
             Organization = organization;
@@ -21,8 +19,6 @@ namespace MedAppointment.DataAccess.Implementations.EntityFramework.UnitOfWorks
         }
 
         public IAdminRepository Admin { get; private set; }
-
-        public IDoctorRepository Doctor { get; private set; }
 
         public IPersonRepository Person { get; private set; }
 
