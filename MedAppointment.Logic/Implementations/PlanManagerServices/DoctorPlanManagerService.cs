@@ -89,8 +89,13 @@ namespace MedAppointment.Logics.Implementations.PlanManagerServices
                 return result;
             }
             _logger.LogDebug("Classifiers (Period, PlanPaddingType, Currency) loaded from DB.");
-
-            var mondayOfWeek = GetMondayOfWeek(dto.StartDate.Date);
+            if(dto.StartDate.DayOfWeek != DayOfWeek.Monday)
+            {
+                _logger.LogInformation("Selected Start Date Day of Week is invalid. This date should be Monday. Date: {0}", dto.StartDate);
+                result.AddMessage("ERR00133", "Selected Start Date Day of Week is invalid. This date should be Monday.", HttpStatusCode.Conflict);
+                return result;
+            }
+            //var mondayOfWeek = GetMondayOfWeek(dto.StartDate.Date);
 
             foreach (var daySchema in daySchemas.OrderBy(x => x.DayOfWeek))
             {
@@ -99,7 +104,7 @@ namespace MedAppointment.Logics.Implementations.PlanManagerServices
                 if (daySchema.PlanPaddingTypeId.HasValue && paddingTypes.TryGetValue(daySchema.PlanPaddingTypeId.Value, out var pt))
                     paddingType = pt;
 
-                var belongDate = mondayOfWeek.AddDays(daySchema.DayOfWeek - 1);
+                var belongDate = dto.StartDate;
                 var dayBreaksForSchema = daySchema.DayBreaks.Select(b => (b.StartTime, b.EndTime)).ToList();
 
                 var dayPlan = new DayPlanEntity
@@ -122,14 +127,14 @@ namespace MedAppointment.Logics.Implementations.PlanManagerServices
                 }
 
                 var slotsResult = _timeSlotService.GenerateDaySlots(
-                    daySchema.OpenTime,
-                    period.PeriodTime,
-                    paddingType?.PaddingTime,
-                    paddingType != null && Enum.IsDefined(typeof(PlanPaddingPosition), (PlanPaddingPosition)paddingType.PaddingPosition)
+                    openTime: daySchema.OpenTime,
+                    periodTimeMinutes: period.PeriodTime,
+                    paddingTimeMinutes: paddingType?.PaddingTime,
+                    paddingPosition: paddingType != null && Enum.IsDefined(typeof(PlanPaddingPosition), (PlanPaddingPosition)paddingType.PaddingPosition)
                         ? (PlanPaddingPosition?)paddingType.PaddingPosition
                         : null,
-                    daySchema.PeriodCount,
-                    dayBreaksForSchema);
+                    periodCount: daySchema.PeriodCount,
+                    breaks: dayBreaksForSchema);
                 if (!slotsResult.IsSuccess())
                 {
                     _logger.LogInformation("Period or break overlap detected for day. BelongDate: {BelongDate}, DayOfWeek: {DayOfWeek}",

@@ -121,3 +121,10 @@ Return validation errors like:
 | ERR00130 | Day schema PeriodCount must be between 0 and 255. | Number of periods per day must be in valid range. |
 | ERR00131 | Weekly schema (template) is required. | CreateDayPlansFromSchemaDto.WeeklySchema must not be null. |
 | ERR00132 | Day schema PeriodTimeMinutes must be between 1 and 255 when day is not closed. | Period duration in minutes when day has slots. |
+| ERR00133 | Selected Start Date Day of Week is invalid. This date should be Monday. |
+
+
+
+
+
+
