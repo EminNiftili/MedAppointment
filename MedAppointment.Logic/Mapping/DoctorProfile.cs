@@ -1,3 +1,5 @@
+using MedAppointment.DataTransferObjects.LocalizationDtos;
+
 namespace MedAppointment.Logics.Mapping
 {
     public class DoctorProfile : Profile
@@ -20,8 +22,30 @@ namespace MedAppointment.Logics.Mapping
 
             CreateMap<DoctorSpecialtyEntity, DataTransferObjects.DoctorDtos.DoctorSpecialtyDto>()
                 .ForMember(dest => dest.Id, opt => opt.MapFrom(src => src.SpecialtyId))
-                .ForMember(dest => dest.Name, opt => opt.MapFrom(src => src.Specialty!.Name ?? string.Empty))
-                .ForMember(dest => dest.Description, opt => opt.MapFrom(src => src.Specialty!.Description ?? string.Empty))
+                .ForMember(dest => dest.Name, opt => opt.MapFrom(src =>
+                {
+                    var translations = src.Specialty?.Name?.Translations;
+                    return translations == null
+                        ? new List<LocalizationDto>()
+                        : translations.Select(x => new LocalizationDto
+                        {
+                            Key = src.Specialty!.Name!.Key,
+                            LanguageId = x.LanguageId,
+                            Text = x.Text,
+                        }).ToList();
+                }))
+                .ForMember(dest => dest.Description, opt => opt.MapFrom(src =>
+                {
+                    var translations = src.Specialty?.Description?.Translations;
+                    return translations == null
+                        ? new List<LocalizationDto>()
+                        : translations.Select(x => new LocalizationDto
+                        {
+                            Key = src.Specialty!.Description!.Key,
+                            LanguageId = x.LanguageId,
+                            Text = x.Text,
+                        }).ToList();
+                }))
                 .ForMember(dest => dest.IsConfirm, opt => opt.MapFrom(src => src.IsConfirm));
         }
     }
