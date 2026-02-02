@@ -2,7 +2,11 @@
 {
     public abstract class BaseClassfierEntity : BaseEntity
     {
-        public string Name { get; set; } = null!;
-        public string Description { get; set; } = null!;
+        public string Key { get; set; } = null!;
+        public long NameTextId { get; set; }
+        public long DescriptionTextId { get; set; }
+
+        public ResourceEntity? Name { get; set; }
+        public ResourceEntity? Description { get; set; }
     }
 }

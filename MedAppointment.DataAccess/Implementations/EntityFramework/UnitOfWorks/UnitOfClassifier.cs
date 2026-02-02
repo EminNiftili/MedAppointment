@@ -8,13 +8,15 @@ namespace MedAppointment.DataAccess.Implementations.EntityFramework.UnitOfWorks
             IPaymentTypeRepository paymentType, 
             IPeriodRepository period, 
             ISpecialtyRepository specialty,
-            IPlanPaddingTypeRepository planPaddingType) : base(medicalAppointmentContext)
+            IPlanPaddingTypeRepository planPaddingType,
+            ILanguageRepository language) : base(medicalAppointmentContext)
         {
             Currency = currency;
             PaymentType = paymentType;
             Period = period;
             Specialty = specialty;
             PlanPaddingType = planPaddingType;
+            Language = language;
         }
 
         public ICurrencyRepository Currency { get; private set; }
@@ -26,5 +28,7 @@ namespace MedAppointment.DataAccess.Implementations.EntityFramework.UnitOfWorks
         public ISpecialtyRepository Specialty { get; private set; }
 
         public IPlanPaddingTypeRepository PlanPaddingType { get; private set; }
+
+        public ILanguageRepository Language { get; private set; }
     }
 }

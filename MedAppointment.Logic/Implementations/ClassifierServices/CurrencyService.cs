@@ -1,18 +1,24 @@
+using MedAppointment.DataTransferObjects.LocalizationDtos;
+using MedAppointment.Logics.Services.LocalizationServices;
+
 namespace MedAppointment.Logics.Implementations.ClassifierServices
 {
     internal class CurrencyService : ICurrencyService
     {
+        protected readonly ILocalizerService LocalizerService;
         protected readonly IUnitOfClassifier UnitOfClassifier;
         protected readonly ILogger<CurrencyService> Logger;
         protected readonly IValidator<CurrencyCreateDto> CurrencyCreateValidator;
         protected readonly IValidator<CurrencyUpdateDto> CurrencyUpdateValidator;
 
         public CurrencyService(
+            ILocalizerService localizerService,
             IUnitOfClassifier unitOfClassifier,
             ILogger<CurrencyService> logger,
             IValidator<CurrencyCreateDto> currencyCreateValidator,
             IValidator<CurrencyUpdateDto> currencyUpdateValidator)
         {
+            LocalizerService = localizerService;
             UnitOfClassifier = unitOfClassifier;
             Logger = logger;
             CurrencyCreateValidator = currencyCreateValidator;
@@ -56,17 +62,27 @@ namespace MedAppointment.Logics.Implementations.ClassifierServices
                 return result;
             }
 
-            if (await UnitOfClassifier.Currency.AnyAsync(x => x.Name == currency.Name))
+            if (await UnitOfClassifier.Currency.AnyAsync(x => x.Key == currency.Key))
             {
-                Logger.LogInformation("Currency name already exists: {Name}", currency.Name);
+                Logger.LogInformation("Currency name already exists: {Name}", currency.Key);
                 result.AddMessage("ERR00051", "Classifier name already exists.", HttpStatusCode.Conflict);
+                return result;
+            }
+            var nameResult = await LocalizerService.AddResourceAsync(currency.Name);
+            var descriptionResult = await LocalizerService.AddResourceAsync(currency.Description);
+
+            if(!nameResult.IsSuccess() || !descriptionResult.IsSuccess())
+            {
+                result.MergeResult(nameResult);
+                result.MergeResult(descriptionResult);
                 return result;
             }
 
             var entity = new CurrencyEntity
             {
-                Name = currency.Name,
-                Description = currency.Description,
+                Key = currency.Key,
+                NameTextId = nameResult.Model,
+                DescriptionTextId = descriptionResult.Model,
                 Coefficent = currency.Coefficent
             };
 
@@ -75,7 +91,7 @@ namespace MedAppointment.Logics.Implementations.ClassifierServices
                 await UnitOfClassifier.Currency.AddAsync(entity);
                 await UnitOfClassifier.SaveChangesAsync();
                 result.SetStatusCode(HttpStatusCode.NoContent);
-                Logger.LogInformation("Currency created: {Name}", currency.Name);
+                Logger.LogInformation("Currency created: {Name}", currency.Key);
             }
             catch (Exception ex)
             {
@@ -103,15 +119,25 @@ namespace MedAppointment.Logics.Implementations.ClassifierServices
                 return result;
             }
 
-            if (await UnitOfClassifier.Currency.AnyAsync(x => x.Id != id && x.Name == currency.Name))
+            if (await UnitOfClassifier.Currency.AnyAsync(x => x.Id != id && x.Key == currency.Key))
             {
-                Logger.LogInformation("Currency name already exists: {Name}", currency.Name);
+                Logger.LogInformation("Currency name already exists: {Name}", currency.Key);
                 result.AddMessage("ERR00051", "Classifier name already exists.", HttpStatusCode.Conflict);
                 return result;
             }
 
-            entity.Name = currency.Name;
-            entity.Description = currency.Description;
+            var nameResult = await LocalizerService.AddResourceAsync(currency.Name);
+            var descriptionResult = await LocalizerService.AddResourceAsync(currency.Description);
+
+            if (!nameResult.IsSuccess() || !descriptionResult.IsSuccess())
+            {
+                result.MergeResult(nameResult);
+                result.MergeResult(descriptionResult);
+                return result;
+            }
+
+            entity.NameTextId = nameResult.Model;
+            entity.DescriptionTextId = descriptionResult.Model;
             entity.Coefficent = currency.Coefficent;
 
             try
@@ -135,8 +161,19 @@ namespace MedAppointment.Logics.Implementations.ClassifierServices
             return new CurrencyDto
             {
                 Id = entity.Id,
-                Name = entity.Name,
-                Description = entity.Description,
+                Key = entity.Key,
+                Name = entity.Name!.Translations.Select(x => new LocalizationDto
+                {
+                    Key = entity.Name.Key,
+                    LanguageId = x.LanguageId,
+                    Text = x.Text,
+                }).ToList(),
+                Description = entity.Description!.Translations.Select(x => new LocalizationDto
+                {
+                    Key = entity.Description.Key,
+                    LanguageId = x.LanguageId,
+                    Text = x.Text,
+                }).ToList(),
                 Coefficent = entity.Coefficent
             };
         }

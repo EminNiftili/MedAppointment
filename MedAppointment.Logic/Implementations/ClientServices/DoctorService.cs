@@ -1,7 +1,10 @@
+using MedAppointment.Logics.Services.LocalizationServices;
+
 namespace MedAppointment.Logics.Implementations.ClientServices
 {
     internal class DoctorService : IDoctorService
     {
+        protected readonly ILocalizerService LocalizerService;
         protected readonly ILogger<DoctorService> Logger;
         protected readonly IUnitOfDoctor UnitOfDoctor;
         protected readonly IUnitOfClient UnitOfClient;
@@ -9,13 +12,16 @@ namespace MedAppointment.Logics.Implementations.ClientServices
         protected readonly IValidator<PaginationQueryDto> PaginationQueryValidator;
         protected readonly IMapper Mapper;
 
-        public DoctorService(ILogger<DoctorService> logger,
+        public DoctorService(
+            ILocalizerService localizerService, 
+            ILogger<DoctorService> logger,
             IUnitOfDoctor unitOfDoctor,
             IUnitOfClient unitOfClient,
             IClientRegistrationService clientRegistration,
             IValidator<PaginationQueryDto> paginationQueryValidator,
             IMapper mapper)
         {
+            LocalizerService = localizerService;
             Logger = logger;
             UnitOfClient = unitOfClient;
             UnitOfDoctor = unitOfDoctor;
@@ -226,10 +232,19 @@ namespace MedAppointment.Logics.Implementations.ClientServices
             }
             Logger.LogInformation("Registered user found");
 
+            var titleResult = await LocalizerService.AddResourceAsync(doctorRegister.Title);
+            var descriptionResult = await LocalizerService.AddResourceAsync(doctorRegister.Description);
+
+            if (!titleResult.IsSuccess() || !descriptionResult.IsSuccess())
+            {
+                result.MergeResult(titleResult);
+                result.MergeResult(descriptionResult);
+                return result;
+            }
             userEntity.Doctor = new DoctorEntity
             {
-                Title = doctorRegister.Title,
-                Description = doctorRegister.Description,
+                TitleTextId = titleResult.Model,
+                DescriptionTextId = descriptionResult.Model,
                 IsConfirm = false,
                 Specialties = doctorRegister.Specialties.Select(x => new DoctorSpecialtyEntity
                 {

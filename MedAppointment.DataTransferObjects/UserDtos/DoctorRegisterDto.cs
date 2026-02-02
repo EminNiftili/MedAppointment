@@ -4,7 +4,7 @@
     {
         public TUserRegisterModel User { get; set; } = null!;
         public List<long> Specialties { get; set; } = new List<long>();
-        public string Title { get; set; } = null!;
-        public string Description { get; set; } = null!;
+        public List<LocalizationDto> Title { get; set; } = new List<LocalizationDto>();
+        public List<LocalizationDto> Description { get; set; } = new List<LocalizationDto>();
     }
 }

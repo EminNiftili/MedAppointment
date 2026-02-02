@@ -11,15 +11,11 @@
                 .IsRequired()
                 .HasDefaultValueSql("0");
 
-            builder.Property(x => x.Title)
-                .IsRequired()
-                .HasMaxLength(150)
-                .IsUnicode();
+            builder.Property(x => x.TitleTextId)
+                .IsRequired();
 
-            builder.Property(x => x.Description)
-                .IsRequired()
-                .HasMaxLength(1000)
-                .IsUnicode();
+            builder.Property(x => x.DescriptionTextId)
+                .IsRequired();
 
             builder.Property(e => e.UserId)
                 .IsRequired();
@@ -27,6 +23,14 @@
             builder.HasOne(x => x.User)
                 .WithOne(x => x.Doctor)
                 .HasForeignKey<DoctorEntity>(x => x.UserId);
+
+            builder.HasOne(x => x.Title)
+                .WithOne()
+                .HasForeignKey<DoctorEntity>(x => x.TitleTextId);
+
+            builder.HasOne(x => x.Description)
+                .WithOne()
+                .HasForeignKey<DoctorEntity>(x => x.DescriptionTextId);
         }
     }
 }

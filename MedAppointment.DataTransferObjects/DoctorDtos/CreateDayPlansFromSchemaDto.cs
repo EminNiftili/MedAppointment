@@ -7,7 +7,6 @@ namespace MedAppointment.DataTransferObjects.DoctorDtos
     /// </summary>
     public record CreateDayPlansFromSchemaDto
     {
-        public long DoctorId { get; set; }
         /// <summary>
         /// Template (WeeklySchema with DaySchemas). Provided by caller; not loaded from DB.
         /// </summary>

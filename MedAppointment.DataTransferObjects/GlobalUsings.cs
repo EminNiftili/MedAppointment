@@ -4,3 +4,4 @@ global using MedAppointment.DataTransferObjects.UserDtos;
 global using MedAppointment.DataTransferObjects.ClassifierDtos;
 global using MedAppointment.DataTransferObjects.PaginationDtos;
 global using MedAppointment.DataTransferObjects.DoctorDtos;
+global using MedAppointment.DataTransferObjects.LocalizationDtos;

@@ -1,20 +1,25 @@
 using MedAppointment.DataTransferObjects.DoctorDtos;
+using MedAppointment.DataTransferObjects.LocalizationDtos;
+using MedAppointment.Logics.Services.LocalizationServices;
 
 namespace MedAppointment.Logics.Implementations.ClassifierServices
 {
     internal class SpecialtyService : ISpecialtyService
     {
+        protected readonly ILocalizerService LocalizerService;
         protected readonly IUnitOfClassifier UnitOfClassifier;
         protected readonly ILogger<SpecialtyService> Logger;
         protected readonly IValidator<SpecialtyCreateDto> SpecialtyCreateValidator;
         protected readonly IValidator<SpecialtyUpdateDto> SpecialtyUpdateValidator;
 
         public SpecialtyService(
+            ILocalizerService localizerService,
             IUnitOfClassifier unitOfClassifier,
             ILogger<SpecialtyService> logger,
             IValidator<SpecialtyCreateDto> specialtyCreateValidator,
             IValidator<SpecialtyUpdateDto> specialtyUpdateValidator)
         {
+            LocalizerService = localizerService;
             UnitOfClassifier = unitOfClassifier;
             Logger = logger;
             SpecialtyCreateValidator = specialtyCreateValidator;
@@ -58,17 +63,28 @@ namespace MedAppointment.Logics.Implementations.ClassifierServices
                 return result;
             }
 
-            if (await UnitOfClassifier.Specialty.AnyAsync(x => x.Name == specialty.Name))
+            if (await UnitOfClassifier.Specialty.AnyAsync(x => x.Key == specialty.Key))
             {
-                Logger.LogInformation("Specialty name already exists: {Name}", specialty.Name);
+                Logger.LogInformation("Specialty name already exists: {Name}", specialty.Key);
                 result.AddMessage("ERR00051", "Classifier name already exists.", HttpStatusCode.Conflict);
+                return result;
+            }
+
+            var nameResult = await LocalizerService.AddResourceAsync(specialty.Name);
+            var descriptionResult = await LocalizerService.AddResourceAsync(specialty.Description);
+
+            if (!nameResult.IsSuccess() || !descriptionResult.IsSuccess())
+            {
+                result.MergeResult(nameResult);
+                result.MergeResult(descriptionResult);
                 return result;
             }
 
             var entity = new SpecialtyEntity
             {
-                Name = specialty.Name,
-                Description = specialty.Description
+                Key = specialty.Key,
+                NameTextId = nameResult.Model,
+                DescriptionTextId = descriptionResult.Model,
             };
 
             try
@@ -76,7 +92,7 @@ namespace MedAppointment.Logics.Implementations.ClassifierServices
                 await UnitOfClassifier.Specialty.AddAsync(entity);
                 await UnitOfClassifier.SaveChangesAsync();
                 result.SetStatusCode(HttpStatusCode.NoContent);
-                Logger.LogInformation("Specialty created: {Name}", specialty.Name);
+                Logger.LogInformation("Specialty created: {Name}", specialty.Key);
             }
             catch (Exception ex)
             {
@@ -104,15 +120,25 @@ namespace MedAppointment.Logics.Implementations.ClassifierServices
                 return result;
             }
 
-            if (await UnitOfClassifier.Specialty.AnyAsync(x => x.Id != id && x.Name == specialty.Name))
+            if (await UnitOfClassifier.Specialty.AnyAsync(x => x.Id != id && x.Key == specialty.Key))
             {
-                Logger.LogInformation("Specialty name already exists: {Name}", specialty.Name);
+                Logger.LogInformation("Specialty name already exists: {Name}", specialty.Key);
                 result.AddMessage("ERR00051", "Classifier name already exists.", HttpStatusCode.Conflict);
                 return result;
             }
 
-            entity.Name = specialty.Name;
-            entity.Description = specialty.Description;
+            var nameResult = await LocalizerService.AddResourceAsync(specialty.Name);
+            var descriptionResult = await LocalizerService.AddResourceAsync(specialty.Description);
+
+            if (!nameResult.IsSuccess() || !descriptionResult.IsSuccess())
+            {
+                result.MergeResult(nameResult);
+                result.MergeResult(descriptionResult);
+                return result;
+            }
+
+            entity.NameTextId = nameResult.Model;
+            entity.DescriptionTextId = descriptionResult.Model;
 
             try
             {
@@ -135,8 +161,19 @@ namespace MedAppointment.Logics.Implementations.ClassifierServices
             return new SpecialtyDto
             {
                 Id = entity.Id,
-                Name = entity.Name,
-                Description = entity.Description
+                Key = entity.Key,
+                Name = entity.Name!.Translations.Select(x => new LocalizationDto
+                {
+                    Key = entity.Name.Key,
+                    LanguageId = x.LanguageId,
+                    Text = x.Text,
+                }).ToList(),
+                Description = entity.Description!.Translations.Select(x => new LocalizationDto
+                {
+                    Key = entity.Description.Key,
+                    LanguageId = x.LanguageId,
+                    Text = x.Text,
+                }).ToList(),
             };
         }
 

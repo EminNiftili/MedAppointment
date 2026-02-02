@@ -9,6 +9,7 @@ global using MedAppointment.Entities.File;
 global using MedAppointment.Entities.Payment;
 global using MedAppointment.Entities.Security;
 global using MedAppointment.Entities.Service;
+global using MedAppointment.Entities.Localization;
 #endregion
 
 #region Abstract DataAccess

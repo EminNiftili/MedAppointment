@@ -7,3 +7,4 @@ global using MedAppointment.Entities.Payment;
 global using MedAppointment.Entities.Security;
 global using MedAppointment.Entities.Doctor;
 global using MedAppointment.Entities.Service;
+global using MedAppointment.Entities.Localization;

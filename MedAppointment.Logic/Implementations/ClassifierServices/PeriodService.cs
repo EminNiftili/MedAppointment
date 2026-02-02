@@ -1,18 +1,24 @@
+using MedAppointment.DataTransferObjects.LocalizationDtos;
+using MedAppointment.Logics.Services.LocalizationServices;
+
 namespace MedAppointment.Logics.Implementations.ClassifierServices
 {
     internal class PeriodService : IPeriodService
     {
+        protected readonly ILocalizerService LocalizerService;
         protected readonly IUnitOfClassifier UnitOfClassifier;
         protected readonly ILogger<PeriodService> Logger;
         protected readonly IValidator<PeriodCreateDto> PeriodCreateValidator;
         protected readonly IValidator<PeriodUpdateDto> PeriodUpdateValidator;
 
         public PeriodService(
+            ILocalizerService localizerService,
             IUnitOfClassifier unitOfClassifier,
             ILogger<PeriodService> logger,
             IValidator<PeriodCreateDto> periodCreateValidator,
             IValidator<PeriodUpdateDto> periodUpdateValidator)
         {
+            LocalizerService = localizerService;
             UnitOfClassifier = unitOfClassifier;
             Logger = logger;
             PeriodCreateValidator = periodCreateValidator;
@@ -56,17 +62,28 @@ namespace MedAppointment.Logics.Implementations.ClassifierServices
                 return result;
             }
 
-            if (await UnitOfClassifier.Period.AnyAsync(x => x.Name == period.Name))
+            if (await UnitOfClassifier.Period.AnyAsync(x => x.Key == period.Key))
             {
-                Logger.LogInformation("Period name already exists: {Name}", period.Name);
+                Logger.LogInformation("Period name already exists: {Name}", period.Key);
                 result.AddMessage("ERR00051", "Classifier name already exists.", HttpStatusCode.Conflict);
+                return result;
+            }
+
+            var nameResult = await LocalizerService.AddResourceAsync(period.Name);
+            var descriptionResult = await LocalizerService.AddResourceAsync(period.Description);
+
+            if (!nameResult.IsSuccess() || !descriptionResult.IsSuccess())
+            {
+                result.MergeResult(nameResult);
+                result.MergeResult(descriptionResult);
                 return result;
             }
 
             var entity = new PeriodEntity
             {
-                Name = period.Name,
-                Description = period.Description,
+                Key = period.Key,
+                NameTextId = nameResult.Model,
+                DescriptionTextId = descriptionResult.Model,
                 PeriodTime = period.PeriodTime
             };
 
@@ -75,7 +92,7 @@ namespace MedAppointment.Logics.Implementations.ClassifierServices
                 await UnitOfClassifier.Period.AddAsync(entity);
                 await UnitOfClassifier.SaveChangesAsync();
                 result.SetStatusCode(HttpStatusCode.NoContent);
-                Logger.LogInformation("Period created: {Name}", period.Name);
+                Logger.LogInformation("Period created: {Name}", period.Key);
             }
             catch (Exception ex)
             {
@@ -103,15 +120,25 @@ namespace MedAppointment.Logics.Implementations.ClassifierServices
                 return result;
             }
 
-            if (await UnitOfClassifier.Period.AnyAsync(x => x.Id != id && x.Name == period.Name))
+            if (await UnitOfClassifier.Period.AnyAsync(x => x.Id != id && x.Key == period.Key))
             {
-                Logger.LogInformation("Period name already exists: {Name}", period.Name);
+                Logger.LogInformation("Period name already exists: {Name}", period.Key);
                 result.AddMessage("ERR00051", "Classifier name already exists.", HttpStatusCode.Conflict);
                 return result;
             }
 
-            entity.Name = period.Name;
-            entity.Description = period.Description;
+            var nameResult = await LocalizerService.AddResourceAsync(period.Name);
+            var descriptionResult = await LocalizerService.AddResourceAsync(period.Description);
+
+            if (!nameResult.IsSuccess() || !descriptionResult.IsSuccess())
+            {
+                result.MergeResult(nameResult);
+                result.MergeResult(descriptionResult);
+                return result;
+            }
+
+            entity.NameTextId = nameResult.Model;
+            entity.DescriptionTextId = descriptionResult.Model;
             entity.PeriodTime = period.PeriodTime;
 
             try
@@ -135,8 +162,19 @@ namespace MedAppointment.Logics.Implementations.ClassifierServices
             return new PeriodDto
             {
                 Id = entity.Id,
-                Name = entity.Name,
-                Description = entity.Description,
+                Key = entity.Key,
+                Name = entity.Name!.Translations.Select(x => new LocalizationDto
+                {
+                    Key = entity.Name.Key,
+                    LanguageId = x.LanguageId,
+                    Text = x.Text,
+                }).ToList(),
+                Description = entity.Description!.Translations.Select(x => new LocalizationDto
+                {
+                    Key = entity.Description.Key,
+                    LanguageId = x.LanguageId,
+                    Text = x.Text,
+                }).ToList(),
                 PeriodTime = entity.PeriodTime
             };
         }

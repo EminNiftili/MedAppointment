@@ -1,18 +1,24 @@
+using MedAppointment.DataTransferObjects.LocalizationDtos;
+using MedAppointment.Logics.Services.LocalizationServices;
+
 namespace MedAppointment.Logics.Implementations.ClassifierServices
 {
     internal class PaymentTypeService : IPaymentTypeService
     {
+        protected readonly ILocalizerService LocalizerService;
         protected readonly IUnitOfClassifier UnitOfClassifier;
         protected readonly ILogger<PaymentTypeService> Logger;
         protected readonly IValidator<PaymentTypeCreateDto> PaymentTypeCreateValidator;
         protected readonly IValidator<PaymentTypeUpdateDto> PaymentTypeUpdateValidator;
 
         public PaymentTypeService(
+            ILocalizerService localizerService,
             IUnitOfClassifier unitOfClassifier,
             ILogger<PaymentTypeService> logger,
             IValidator<PaymentTypeCreateDto> paymentTypeCreateValidator,
             IValidator<PaymentTypeUpdateDto> paymentTypeUpdateValidator)
         {
+            LocalizerService = localizerService;
             UnitOfClassifier = unitOfClassifier;
             Logger = logger;
             PaymentTypeCreateValidator = paymentTypeCreateValidator;
@@ -56,17 +62,21 @@ namespace MedAppointment.Logics.Implementations.ClassifierServices
                 return result;
             }
 
-            if (await UnitOfClassifier.PaymentType.AnyAsync(x => x.Name == paymentType.Name))
+            if (await UnitOfClassifier.PaymentType.AnyAsync(x => x.Key == paymentType.Key))
             {
-                Logger.LogInformation("Payment type name already exists: {Name}", paymentType.Name);
+                Logger.LogInformation("Payment type name already exists: {Name}", paymentType.Key);
                 result.AddMessage("ERR00051", "Classifier name already exists.", HttpStatusCode.Conflict);
                 return result;
             }
 
+            var nameResult = await LocalizerService.AddResourceAsync(paymentType.Name);
+            var descriptionResult = await LocalizerService.AddResourceAsync(paymentType.Description);
+
             var entity = new PaymentTypeEntity
             {
-                Name = paymentType.Name,
-                Description = paymentType.Description
+                Key = paymentType.Key,
+                NameTextId = nameResult.Model,
+                DescriptionTextId = descriptionResult.Model
             };
 
             try
@@ -74,7 +84,7 @@ namespace MedAppointment.Logics.Implementations.ClassifierServices
                 await UnitOfClassifier.PaymentType.AddAsync(entity);
                 await UnitOfClassifier.SaveChangesAsync();
                 result.SetStatusCode(HttpStatusCode.NoContent);
-                Logger.LogInformation("Payment type created: {Name}", paymentType.Name);
+                Logger.LogInformation("Payment type created: {Name}", paymentType.Key);
             }
             catch (Exception ex)
             {
@@ -102,15 +112,25 @@ namespace MedAppointment.Logics.Implementations.ClassifierServices
                 return result;
             }
 
-            if (await UnitOfClassifier.PaymentType.AnyAsync(x => x.Id != id && x.Name == paymentType.Name))
+            if (await UnitOfClassifier.PaymentType.AnyAsync(x => x.Id != id && x.Key == paymentType.Key))
             {
-                Logger.LogInformation("Payment type name already exists: {Name}", paymentType.Name);
+                Logger.LogInformation("Payment type name already exists: {Name}", paymentType.Key);
                 result.AddMessage("ERR00051", "Classifier name already exists.", HttpStatusCode.Conflict);
                 return result;
             }
 
-            entity.Name = paymentType.Name;
-            entity.Description = paymentType.Description;
+            var nameResult = await LocalizerService.AddResourceAsync(paymentType.Name);
+            var descriptionResult = await LocalizerService.AddResourceAsync(paymentType.Description);
+
+            if (!nameResult.IsSuccess() || !descriptionResult.IsSuccess())
+            {
+                result.MergeResult(nameResult);
+                result.MergeResult(descriptionResult);
+                return result;
+            }
+
+            entity.NameTextId = nameResult.Model;
+            entity.DescriptionTextId = descriptionResult.Model;
 
             try
             {
@@ -133,8 +153,19 @@ namespace MedAppointment.Logics.Implementations.ClassifierServices
             return new PaymentTypeDto
             {
                 Id = entity.Id,
-                Name = entity.Name,
-                Description = entity.Description
+                Key = entity.Key,
+                Name = entity.Name!.Translations.Select(x => new LocalizationDto
+                {
+                    Key = entity.Name.Key,
+                    LanguageId = x.LanguageId,
+                    Text = x.Text,
+                }).ToList(),
+                Description = entity.Description!.Translations.Select(x => new LocalizationDto
+                {
+                    Key = entity.Description.Key,
+                    LanguageId = x.LanguageId,
+                    Text = x.Text,
+                }).ToList(),
             };
         }
 

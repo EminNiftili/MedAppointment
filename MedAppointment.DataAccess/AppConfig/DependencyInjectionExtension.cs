@@ -18,6 +18,7 @@
             services.AddScoped<IOrganizationRepository, OrganizationRepository>();
             services.AddScoped<IPersonRepository, PersonRepository>();
             services.AddScoped<IUserRepository, UserRepository>();
+            services.AddScoped<ILanguageRepository, LanguageRepository>();
 
             services.AddScoped<IChatHistoryRepository, ChatHistoryRepository>();
             services.AddScoped<IChatRepository, ChatRepository>();
@@ -47,6 +48,9 @@
             services.AddScoped<IPeriodRepository, PeriodRepository>();
             services.AddScoped<ISpecialtyRepository, SpecialtyRepository>();
             services.AddScoped<IPlanPaddingTypeRepository, PlanPaddingTypeRepository>();
+
+            services.AddScoped<IResourceRepository, ResourceRespository>();
+            services.AddScoped<ITranslationRepository, TranslationRepository>();
         }
 
         private static void AddUnifOfWorks(IServiceCollection services)
@@ -59,6 +63,7 @@
             services.AddScoped<IUnitOfPayment, UnitOfPayment>();
             services.AddScoped<IUnitOfSecurity, UnitOfSecurity>();
             services.AddScoped<IUnitOfService, UnitOfService>();
+            services.AddScoped<IUnitOfLocalization, UnitOfLocalization>();
         }
 
         private static void AddDbContext(IServiceCollection services, IConfiguration configuration)

@@ -27,7 +27,7 @@ namespace MedAppointment.Logics.Implementations.PlanManagerServices
 
         public async Task<Result> CreateDayPlansFromWeeklySchemaAsync(CreateDayPlansFromSchemaDto dto)
         {
-            var doctorId = dto.DoctorId;
+            var doctorId = dto.WeeklySchema.DoctorId;
             _logger.LogTrace("Started CreateDayPlansFromWeeklySchema. DoctorId: {DoctorId}, StartDate: {StartDate}",
                 doctorId, dto.StartDate);
 

@@ -2,7 +2,8 @@
 {
     public abstract record ClassifierDto
     {
-        public string Name { get; set; } = null!;
-        public string Description { get; set; } = null!;
+        public string Key { get; set; } = null!;
+        public List<LocalizationDto> Name { get; set; } = new List<LocalizationDto>();
+        public List<LocalizationDto> Description { get; set; } = new List<LocalizationDto>();
     }
 }

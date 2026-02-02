@@ -4,10 +4,6 @@ namespace MedAppointment.Validations.DtoValidations.DoctorSchemaValidations
     {
         public CreateDayPlansFromSchemaValidation()
         {
-            RuleFor(x => x.DoctorId)
-                .GreaterThan(0L)
-                .WithErrorCode("ERR00109")
-                .WithMessage("DoctorId must be greater than 0.");
 
             RuleFor(x => x.WeeklySchema)
                 .NotNull()

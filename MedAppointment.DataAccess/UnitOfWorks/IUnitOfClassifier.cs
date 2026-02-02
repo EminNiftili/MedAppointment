@@ -7,5 +7,6 @@
         IPeriodRepository Period { get; }
         ISpecialtyRepository Specialty { get; }
         IPlanPaddingTypeRepository PlanPaddingType { get; }
+        ILanguageRepository Language { get; }
     }
 }

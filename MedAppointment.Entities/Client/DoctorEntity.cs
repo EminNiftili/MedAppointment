@@ -4,9 +4,11 @@
     {
         public long UserId { get; set; }
         public bool IsConfirm { get; set; }
-        public string Title { get; set; } = null!;
-        public string Description { get; set; } = null!;
+        public long TitleTextId { get; set; }
+        public long DescriptionTextId { get; set; }
 
+        public ResourceEntity? Title {  get; set; }
+        public ResourceEntity? Description { get; set; }
         public UserEntity? User { get; set; }
         public ICollection<DoctorSpecialtyEntity> Specialties { get; set; } = new List<DoctorSpecialtyEntity>();
     }
