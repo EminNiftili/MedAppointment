@@ -122,7 +122,14 @@ Return validation errors like:
 | ERR00131 | Weekly schema (template) is required. | CreateDayPlansFromSchemaDto.WeeklySchema must not be null. |
 | ERR00132 | Day schema PeriodTimeMinutes must be between 1 and 255 when day is not closed. | Period duration in minutes when day has slots. |
 | ERR00133 | Selected Start Date Day of Week is invalid. This date should be Monday. |
-
+| ERR00134 | Localization key is required. | Localization entry must include a key. |
+| ERR00135 | Localization key must not exceed 150 characters. | Localization key length must be **<= 150**. |
+| ERR00136 | Localization language id must be greater than 0. | LanguageId must be positive. |
+| ERR00137 | Localization text is required. | Localization entry must include text. |
+| ERR00138 | Localization text must not exceed 150 characters. | Localization text length must be **<= 150** for name entries. |
+| ERR00139 | Localization text must not exceed 500 characters. | Localization text length must be **<= 500** for description entries. |
+| ERR00140 | Key is required. | Classifier key must not be empty. |
+| ERR00141 | Key must not exceed 150 characters. | Classifier key length must be **<= 150**. |
 
 
 
