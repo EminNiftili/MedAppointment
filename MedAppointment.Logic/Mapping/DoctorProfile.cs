@@ -23,29 +23,30 @@ namespace MedAppointment.Logics.Mapping
             CreateMap<DoctorSpecialtyEntity, DataTransferObjects.DoctorDtos.DoctorSpecialtyDto>()
                 .ForMember(dest => dest.Id, opt => opt.MapFrom(src => src.SpecialtyId))
                 .ForMember(dest => dest.Name, opt => opt.MapFrom(src =>
-                {
-                    var translations = src.Specialty?.Name?.Translations;
-                    return translations == null
-                        ? new List<LocalizationDto>()
-                        : translations.Select(x => new LocalizationDto
+                    (src.Specialty != null &&
+                     src.Specialty.Name != null &&
+                     src.Specialty.Name.Translations != null)
+                        ? src.Specialty.Name.Translations.Select(x => new LocalizationDto
                         {
-                            Key = src.Specialty!.Name!.Key,
+                            Key = src.Specialty.Name.Key,
                             LanguageId = x.LanguageId,
                             Text = x.Text,
-                        }).ToList();
-                }))
+                        }).ToList()
+                        : new List<LocalizationDto>()
+                ))
                 .ForMember(dest => dest.Description, opt => opt.MapFrom(src =>
-                {
-                    var translations = src.Specialty?.Description?.Translations;
-                    return translations == null
-                        ? new List<LocalizationDto>()
-                        : translations.Select(x => new LocalizationDto
+                    (src.Specialty != null &&
+                     src.Specialty.Description != null &&
+                     src.Specialty.Description.Translations != null)
+                        ? src.Specialty.Description.Translations.Select(x => new LocalizationDto
                         {
-                            Key = src.Specialty!.Description!.Key,
+                            Key = src.Specialty.Description.Key,
                             LanguageId = x.LanguageId,
                             Text = x.Text,
-                        }).ToList();
-                }))
+                        }).ToList()
+                        : new List<LocalizationDto>()
+                    ))
+
                 .ForMember(dest => dest.IsConfirm, opt => opt.MapFrom(src => src.IsConfirm));
         }
     }
