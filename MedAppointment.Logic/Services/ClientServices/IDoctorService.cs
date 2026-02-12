@@ -7,6 +7,8 @@ namespace MedAppointment.Logics.Services.ClientServices
         Task<Result> RegisterAsync(DoctorRegisterDto<TraditionalUserRegisterDto> doctorRegister);
         Task<Result> ConfirmDoctorAsync(long doctorId, bool withAllSpecalties = true);
         Task<Result> ConfirmDoctorSpecialtiesAsync(long doctorId, long specialtyId);
+        Task<Result> AddDoctorSpecialtyAsync(long doctorId, AdminDoctorSpecialtyCreateDto specialty);
+        Task<Result> RemoveDoctorSpecialtyAsync(long doctorId, long specialtyId);
 
         /// <summary>
         /// Ensures the doctor exists and is verified (confirmed). Use when an operation requires a verified doctor.
