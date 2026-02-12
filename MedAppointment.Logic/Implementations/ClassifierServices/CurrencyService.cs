@@ -1,6 +1,9 @@
 using MedAppointment.DataTransferObjects.LocalizationDtos;
 using MedAppointment.Logics.Services.LocalizationServices;
 
+using System.Linq.Expressions;
+using MedAppointment.DataTransferObjects.PaginationDtos.ClassifierPagination;
+
 namespace MedAppointment.Logics.Implementations.ClassifierServices
 {
     internal class CurrencyService : ICurrencyService
@@ -10,29 +13,73 @@ namespace MedAppointment.Logics.Implementations.ClassifierServices
         protected readonly ILogger<CurrencyService> Logger;
         protected readonly IValidator<CurrencyCreateDto> CurrencyCreateValidator;
         protected readonly IValidator<CurrencyUpdateDto> CurrencyUpdateValidator;
+        protected readonly IValidator<CurrencyPaginationQueryDto> CurrencyPaginationQueryValidator;
+        protected readonly IClassifierFilterExpressionStrategy<CurrencyEntity, CurrencyPaginationQueryDto> FilterExpressionStrategy;
+        protected readonly ITranslationLookupService TranslationLookupService;
 
         public CurrencyService(
             ILocalizerService localizerService,
             IUnitOfClassifier unitOfClassifier,
             ILogger<CurrencyService> logger,
             IValidator<CurrencyCreateDto> currencyCreateValidator,
-            IValidator<CurrencyUpdateDto> currencyUpdateValidator)
+            IValidator<CurrencyUpdateDto> currencyUpdateValidator,
+            IValidator<CurrencyPaginationQueryDto> currencyPaginationQueryValidator,
+            IClassifierFilterExpressionStrategy<CurrencyEntity, CurrencyPaginationQueryDto> filterExpressionStrategy,
+            ITranslationLookupService translationLookupService)
         {
             LocalizerService = localizerService;
             UnitOfClassifier = unitOfClassifier;
             Logger = logger;
             CurrencyCreateValidator = currencyCreateValidator;
             CurrencyUpdateValidator = currencyUpdateValidator;
+            CurrencyPaginationQueryValidator = currencyPaginationQueryValidator;
+            FilterExpressionStrategy = filterExpressionStrategy;
+            TranslationLookupService = translationLookupService;
         }
 
-        public async Task<Result<IEnumerable<CurrencyDto>>> GetCurrenciesAsync()
+        public async Task<Result<CurrencyPagedResultDto>> GetCurrenciesAsync(CurrencyPaginationQueryDto query)
         {
-            Logger.LogTrace("Getting currency list");
-            var result = Result<IEnumerable<CurrencyDto>>.Create();
-            var entities = await UnitOfClassifier.Currency.GetAllAsync();
-            var dtoList = entities.Select(MapCurrency).ToList();
-            result.Success(dtoList);
-            Logger.LogInformation("Currencies retrieved: {Count}", dtoList.Count);
+            Logger.LogTrace("Getting currency list with pagination and filters. PageNumber: {PageNumber}, PageSize: {PageSize}, NameFilter: {NameFilter}, CoefficentMin: {CoefficentMin}, CoefficentMax: {CoefficentMax}", query.PageNumber, query.PageSize, query.NameFilter, query.CoefficentMin, query.CoefficentMax);
+            var result = Result<CurrencyPagedResultDto>.Create();
+
+            if (!await ValidateModelAsync(CurrencyPaginationQueryValidator, query, result))
+            {
+                Logger.LogDebug("Pagination query validation failed for GetCurrenciesAsync.");
+                return result;
+            }
+
+            Expression<Func<CurrencyEntity, bool>> predicate;
+            if (!string.IsNullOrWhiteSpace(query.NameFilter) || !string.IsNullOrWhiteSpace(query.DescriptionFilter))
+            {
+                var (nameIds, descIds) = await TranslationLookupService.GetFilterIdsAsync(query.NameFilter, query.DescriptionFilter);
+                predicate = FilterExpressionStrategy.Build(query, nameIds, descIds);
+            }
+            else
+            {
+                predicate = FilterExpressionStrategy.Build(query);
+            }
+            var entities = (await UnitOfClassifier.Currency.FindAsync(predicate)).ToList();
+            var totalCount = entities.Count;
+            var totalPages = (int)Math.Ceiling(totalCount / (double)query.PageSize);
+            var items = entities
+                .Skip((query.PageNumber - 1) * query.PageSize)
+                .Take(query.PageSize)
+                .Select(MapCurrency)
+                .ToList();
+
+            result.Success(new CurrencyPagedResultDto
+            {
+                PageNumber = query.PageNumber,
+                PageSize = query.PageSize,
+                NameFilter = query.NameFilter,
+                DescriptionFilter = query.DescriptionFilter,
+                CoefficentMin = query.CoefficentMin,
+                CoefficentMax = query.CoefficentMax,
+                Items = items,
+                TotalCount = totalCount,
+                TotalPages = totalPages
+            });
+            Logger.LogInformation("Currencies retrieved: {Count} items on page {PageNumber} of {TotalPages}", items.Count, query.PageNumber, totalPages);
             return result;
         }
 

@@ -1,4 +1,4 @@
-﻿#region Entities
+#region Entities
 global using MedAppointment.Entities;
 global using MedAppointment.Entities.Classifier;
 global using MedAppointment.Entities.Client;
@@ -10,6 +10,7 @@ global using MedAppointment.Entities.Security;
 global using MedAppointment.Entities.Doctor;
 global using MedAppointment.Entities.Localization;
 global using MedAppointment.Entities.Service;
+global using MedAppointment.Entities.Localization;
 #endregion
 
 #region Abstract DataAccess

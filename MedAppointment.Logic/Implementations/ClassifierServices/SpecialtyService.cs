@@ -1,6 +1,8 @@
+using System.Linq.Expressions;
 using MedAppointment.DataTransferObjects.DoctorDtos;
 using MedAppointment.DataTransferObjects.LocalizationDtos;
 using MedAppointment.Logics.Services.LocalizationServices;
+using MedAppointment.DataTransferObjects.PaginationDtos.ClassifierPagination;
 
 namespace MedAppointment.Logics.Implementations.ClassifierServices
 {
@@ -11,29 +13,71 @@ namespace MedAppointment.Logics.Implementations.ClassifierServices
         protected readonly ILogger<SpecialtyService> Logger;
         protected readonly IValidator<SpecialtyCreateDto> SpecialtyCreateValidator;
         protected readonly IValidator<SpecialtyUpdateDto> SpecialtyUpdateValidator;
+        protected readonly IValidator<ClassifierPaginationQueryDto> ClassifierPaginationQueryValidator;
+        protected readonly IClassifierFilterExpressionStrategy<SpecialtyEntity, ClassifierPaginationQueryDto> FilterExpressionStrategy;
+        protected readonly ITranslationLookupService TranslationLookup;
 
         public SpecialtyService(
             ILocalizerService localizerService,
             IUnitOfClassifier unitOfClassifier,
             ILogger<SpecialtyService> logger,
             IValidator<SpecialtyCreateDto> specialtyCreateValidator,
-            IValidator<SpecialtyUpdateDto> specialtyUpdateValidator)
+            IValidator<SpecialtyUpdateDto> specialtyUpdateValidator,
+            IValidator<ClassifierPaginationQueryDto> classifierPaginationQueryValidator,
+            IClassifierFilterExpressionStrategy<SpecialtyEntity, ClassifierPaginationQueryDto> filterExpressionStrategy,
+            ITranslationLookupService translationLookup)
         {
             LocalizerService = localizerService;
             UnitOfClassifier = unitOfClassifier;
             Logger = logger;
             SpecialtyCreateValidator = specialtyCreateValidator;
             SpecialtyUpdateValidator = specialtyUpdateValidator;
+            ClassifierPaginationQueryValidator = classifierPaginationQueryValidator;
+            FilterExpressionStrategy = filterExpressionStrategy;
+            TranslationLookup = translationLookup;
         }
 
-        public async Task<Result<IEnumerable<SpecialtyDto>>> GetSpecialtiesAsync()
+        public async Task<Result<SpecialtyPagedResultDto>> GetSpecialtiesAsync(ClassifierPaginationQueryDto query)
         {
-            Logger.LogTrace("Getting specialty list");
-            var result = Result<IEnumerable<SpecialtyDto>>.Create();
-            var entities = await UnitOfClassifier.Specialty.GetAllAsync();
-            var dtoList = entities.Select(MapSpecialty).ToList();
-            result.Success(dtoList);
-            Logger.LogInformation("Specialties retrieved: {Count}", dtoList.Count);
+            Logger.LogTrace("Getting specialty list with pagination and filters. PageNumber: {PageNumber}, PageSize: {PageSize}, NameFilter: {NameFilter}, DescriptionFilter: {DescriptionFilter}", query.PageNumber, query.PageSize, query.NameFilter, query.DescriptionFilter);
+            var result = Result<SpecialtyPagedResultDto>.Create();
+
+            if (!await ValidateModelAsync(ClassifierPaginationQueryValidator, query, result))
+            {
+                Logger.LogDebug("Pagination query validation failed for GetSpecialtiesAsync.");
+                return result;
+            }
+
+            Expression<Func<SpecialtyEntity, bool>> predicate;
+            if (!string.IsNullOrWhiteSpace(query.NameFilter) || !string.IsNullOrWhiteSpace(query.DescriptionFilter))
+            {
+                var (nameIds, descIds) = await TranslationLookup.GetFilterIdsAsync(query.NameFilter, query.DescriptionFilter);
+                predicate = FilterExpressionStrategy.Build(query, nameIds, descIds);
+            }
+            else
+            {
+                predicate = FilterExpressionStrategy.Build(query);
+            }
+            var entities = (await UnitOfClassifier.Specialty.FindAsync(predicate)).ToList();
+            var totalCount = entities.Count;
+            var totalPages = (int)Math.Ceiling(totalCount / (double)query.PageSize);
+            var items = entities
+                .Skip((query.PageNumber - 1) * query.PageSize)
+                .Take(query.PageSize)
+                .Select(MapSpecialty)
+                .ToList();
+
+            result.Success(new SpecialtyPagedResultDto
+            {
+                PageNumber = query.PageNumber,
+                PageSize = query.PageSize,
+                NameFilter = query.NameFilter,
+                DescriptionFilter = query.DescriptionFilter,
+                Items = items,
+                TotalCount = totalCount,
+                TotalPages = totalPages
+            });
+            Logger.LogInformation("Specialties retrieved: {Count} items on page {PageNumber} of {TotalPages}", items.Count, query.PageNumber, totalPages);
             return result;
         }
 

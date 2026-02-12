@@ -130,8 +130,5 @@ Return validation errors like:
 | ERR00139 | Localization text must not exceed 500 characters. | Localization text length must be **<= 500** for description entries. |
 | ERR00140 | Key is required. | Classifier key must not be empty. |
 | ERR00141 | Key must not exceed 150 characters. | Classifier key length must be **<= 150**. |
-
-
-
-
-
+| ERR00142 | Padding time must be between 1 and 255 minutes. | PlanPaddingType padding time in minutes. |
+| ERR00143 | 134 CoefficentMin must be less than or equal to CoefficentMax. | Currency filter range. |

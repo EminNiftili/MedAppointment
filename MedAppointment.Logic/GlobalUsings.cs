@@ -24,6 +24,7 @@ global using MedAppointment.DataAccess.Repositories.File;
 global using MedAppointment.DataAccess.Repositories.Payment;
 global using MedAppointment.DataAccess.Repositories.Security;
 global using MedAppointment.DataAccess.Repositories.Service;
+global using MedAppointment.DataAccess.Repositories.Localization;
 #endregion
 
 #region
@@ -58,7 +59,12 @@ global using MedAppointment.DataTransferObjects.CredentialDtos;
 global using MedAppointment.DataTransferObjects.UserDtos;
 global using MedAppointment.DataTransferObjects.ClassifierDtos;
 global using MedAppointment.DataTransferObjects.PaginationDtos;
+global using MedAppointment.DataTransferObjects.PaginationDtos.ClassifierPagination;
 global using MedAppointment.DataTransferObjects.DoctorDtos;
+#endregion
+
+#region CustomExpressions
+global using MedAppointment.Logics.CustomExpressions.ClassifierExpressions;
 #endregion
 
 

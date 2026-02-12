@@ -2,5 +2,6 @@
 {
     public interface ITranslationRepository : IGenericRepository<TranslationEntity>
     {
+        
     }
 }

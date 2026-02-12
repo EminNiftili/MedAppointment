@@ -11,9 +11,9 @@ namespace MedAppointment.Api.Controllers.ClassifierControllers
 
         [HttpGet]
         [AllowAnonymous]
-        public async Task<IActionResult> GetCurrenciesAsync()
+        public async Task<IActionResult> GetCurrenciesAsync([FromQuery] CurrencyPaginationQueryDto query)
         {
-            var result = await _currencyService.GetCurrenciesAsync();
+            var result = await _currencyService.GetCurrenciesAsync(query);
             return CustomResult(result);
         }
 

@@ -11,9 +11,9 @@ namespace MedAppointment.Api.Controllers.ClassifierControllers
 
         [HttpGet]
         [AllowAnonymous]
-        public async Task<IActionResult> GetPeriodsAsync()
+        public async Task<IActionResult> GetPeriodsAsync([FromQuery] PeriodPaginationQueryDto query)
         {
-            var result = await _periodService.GetPeriodsAsync();
+            var result = await _periodService.GetPeriodsAsync(query);
             return CustomResult(result);
         }
 

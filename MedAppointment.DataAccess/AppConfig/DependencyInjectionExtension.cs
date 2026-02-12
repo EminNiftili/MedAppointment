@@ -1,4 +1,4 @@
-﻿namespace MedAppointment.DataAccess.AppConfig
+namespace MedAppointment.DataAccess.AppConfig
 {
     public static class DependencyInjectionExtension
     {

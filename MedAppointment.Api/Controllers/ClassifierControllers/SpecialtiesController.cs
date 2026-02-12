@@ -11,9 +11,9 @@ namespace MedAppointment.Api.Controllers.ClassifierControllers
 
         [HttpGet]
         [AllowAnonymous]
-        public async Task<IActionResult> GetSpecialtiesAsync()
+        public async Task<IActionResult> GetSpecialtiesAsync([FromQuery] ClassifierPaginationQueryDto query)
         {
-            var result = await _specialtyService.GetSpecialtiesAsync();
+            var result = await _specialtyService.GetSpecialtiesAsync(query);
             return CustomResult(result);
         }
 

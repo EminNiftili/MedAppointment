@@ -1,6 +1,9 @@
 using MedAppointment.DataTransferObjects.LocalizationDtos;
 using MedAppointment.Logics.Services.LocalizationServices;
 
+using System.Linq.Expressions;
+using MedAppointment.DataTransferObjects.PaginationDtos.ClassifierPagination;
+
 namespace MedAppointment.Logics.Implementations.ClassifierServices
 {
     internal class PaymentTypeService : IPaymentTypeService
@@ -10,29 +13,71 @@ namespace MedAppointment.Logics.Implementations.ClassifierServices
         protected readonly ILogger<PaymentTypeService> Logger;
         protected readonly IValidator<PaymentTypeCreateDto> PaymentTypeCreateValidator;
         protected readonly IValidator<PaymentTypeUpdateDto> PaymentTypeUpdateValidator;
+        protected readonly IValidator<ClassifierPaginationQueryDto> ClassifierPaginationQueryValidator;
+        protected readonly IClassifierFilterExpressionStrategy<PaymentTypeEntity, ClassifierPaginationQueryDto> FilterExpressionStrategy;
+        protected readonly ITranslationLookupService TranslationLookup;
 
         public PaymentTypeService(
             ILocalizerService localizerService,
             IUnitOfClassifier unitOfClassifier,
             ILogger<PaymentTypeService> logger,
             IValidator<PaymentTypeCreateDto> paymentTypeCreateValidator,
-            IValidator<PaymentTypeUpdateDto> paymentTypeUpdateValidator)
+            IValidator<PaymentTypeUpdateDto> paymentTypeUpdateValidator,
+            IValidator<ClassifierPaginationQueryDto> classifierPaginationQueryValidator,
+            IClassifierFilterExpressionStrategy<PaymentTypeEntity, ClassifierPaginationQueryDto> filterExpressionStrategy,
+            ITranslationLookupService translationLookup)
         {
             LocalizerService = localizerService;
             UnitOfClassifier = unitOfClassifier;
             Logger = logger;
             PaymentTypeCreateValidator = paymentTypeCreateValidator;
             PaymentTypeUpdateValidator = paymentTypeUpdateValidator;
+            ClassifierPaginationQueryValidator = classifierPaginationQueryValidator;
+            FilterExpressionStrategy = filterExpressionStrategy;
+            TranslationLookup = translationLookup;
         }
 
-        public async Task<Result<IEnumerable<PaymentTypeDto>>> GetPaymentTypesAsync()
+        public async Task<Result<PaymentTypePagedResultDto>> GetPaymentTypesAsync(ClassifierPaginationQueryDto query)
         {
-            Logger.LogTrace("Getting payment type list");
-            var result = Result<IEnumerable<PaymentTypeDto>>.Create();
-            var entities = await UnitOfClassifier.PaymentType.GetAllAsync();
-            var dtoList = entities.Select(MapPaymentType).ToList();
-            result.Success(dtoList);
-            Logger.LogInformation("Payment types retrieved: {Count}", dtoList.Count);
+            Logger.LogTrace("Getting payment type list with pagination and filters. PageNumber: {PageNumber}, PageSize: {PageSize}, NameFilter: {NameFilter}", query.PageNumber, query.PageSize, query.NameFilter);
+            var result = Result<PaymentTypePagedResultDto>.Create();
+
+            if (!await ValidateModelAsync(ClassifierPaginationQueryValidator, query, result))
+            {
+                Logger.LogDebug("Pagination query validation failed for GetPaymentTypesAsync.");
+                return result;
+            }
+
+            Expression<Func<PaymentTypeEntity, bool>> predicate;
+            if (!string.IsNullOrWhiteSpace(query.NameFilter) || !string.IsNullOrWhiteSpace(query.DescriptionFilter))
+            {
+                var (nameIds, descIds) = await TranslationLookup.GetFilterIdsAsync(query.NameFilter, query.DescriptionFilter);
+                predicate = FilterExpressionStrategy.Build(query, nameIds, descIds);
+            }
+            else
+            {
+                predicate = FilterExpressionStrategy.Build(query);
+            }
+            var entities = (await UnitOfClassifier.PaymentType.FindAsync(predicate)).ToList();
+            var totalCount = entities.Count;
+            var totalPages = (int)Math.Ceiling(totalCount / (double)query.PageSize);
+            var items = entities
+                .Skip((query.PageNumber - 1) * query.PageSize)
+                .Take(query.PageSize)
+                .Select(MapPaymentType)
+                .ToList();
+
+            result.Success(new PaymentTypePagedResultDto
+            {
+                PageNumber = query.PageNumber,
+                PageSize = query.PageSize,
+                NameFilter = query.NameFilter,
+                DescriptionFilter = query.DescriptionFilter,
+                Items = items,
+                TotalCount = totalCount,
+                TotalPages = totalPages
+            });
+            Logger.LogInformation("Payment types retrieved: {Count} items on page {PageNumber} of {TotalPages}", items.Count, query.PageNumber, totalPages);
             return result;
         }
 

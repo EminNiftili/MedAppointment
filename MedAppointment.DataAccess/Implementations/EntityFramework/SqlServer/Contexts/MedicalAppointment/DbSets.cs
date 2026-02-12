@@ -1,4 +1,4 @@
-﻿namespace MedAppointment.DataAccess.Implementations.EntityFramework.SqlServer.Contexts.MedicalAppointment
+namespace MedAppointment.DataAccess.Implementations.EntityFramework.SqlServer.Contexts.MedicalAppointment
 {
     internal partial class MedicalAppointmentContext
     {
@@ -52,5 +52,8 @@
         internal DbSet<AppointmentEntity> Appointments { get; private set; }
         internal DbSet<DayPlanEntity> DayPlans { get; private set; }
         internal DbSet<PeriodPlanEntity> PeriodPlans { get; private set; }
+
+        internal DbSet<TranslationEntity> Translations { get; private set; }
+        internal DbSet<ResourceEntity> Resources { get; private set; }
     }
 }

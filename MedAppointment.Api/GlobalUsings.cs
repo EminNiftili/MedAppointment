@@ -1,4 +1,4 @@
-﻿#region Patterns
+#region Patterns
 global using MedAppointment.Logics.Patterns.ResultPattern;
 #endregion
 
@@ -21,6 +21,8 @@ global using Serilog;
 #region Data Transfer Objects
 global using MedAppointment.DataTransferObjects.UserDtos;
 global using MedAppointment.DataTransferObjects.ClassifierDtos;
+global using MedAppointment.DataTransferObjects.PaginationDtos;
+global using MedAppointment.DataTransferObjects.PaginationDtos.ClassifierPagination;
 #endregion
 
 

@@ -1,6 +1,9 @@
 using MedAppointment.DataTransferObjects.LocalizationDtos;
 using MedAppointment.Logics.Services.LocalizationServices;
 
+using System.Linq.Expressions;
+using MedAppointment.DataTransferObjects.PaginationDtos.ClassifierPagination;
+
 namespace MedAppointment.Logics.Implementations.ClassifierServices
 {
     internal class PeriodService : IPeriodService
@@ -10,29 +13,72 @@ namespace MedAppointment.Logics.Implementations.ClassifierServices
         protected readonly ILogger<PeriodService> Logger;
         protected readonly IValidator<PeriodCreateDto> PeriodCreateValidator;
         protected readonly IValidator<PeriodUpdateDto> PeriodUpdateValidator;
+        protected readonly IValidator<PeriodPaginationQueryDto> PeriodPaginationQueryValidator;
+        protected readonly IClassifierFilterExpressionStrategy<PeriodEntity, PeriodPaginationQueryDto> FilterExpressionStrategy;
+        protected readonly ITranslationLookupService TranslationLookup;
 
         public PeriodService(
             ILocalizerService localizerService,
             IUnitOfClassifier unitOfClassifier,
             ILogger<PeriodService> logger,
             IValidator<PeriodCreateDto> periodCreateValidator,
-            IValidator<PeriodUpdateDto> periodUpdateValidator)
+            IValidator<PeriodUpdateDto> periodUpdateValidator,
+            IValidator<PeriodPaginationQueryDto> periodPaginationQueryValidator,
+            IClassifierFilterExpressionStrategy<PeriodEntity, PeriodPaginationQueryDto> filterExpressionStrategy,
+            ITranslationLookupService translationLookup)
         {
             LocalizerService = localizerService;
             UnitOfClassifier = unitOfClassifier;
             Logger = logger;
             PeriodCreateValidator = periodCreateValidator;
             PeriodUpdateValidator = periodUpdateValidator;
+            PeriodPaginationQueryValidator = periodPaginationQueryValidator;
+            FilterExpressionStrategy = filterExpressionStrategy;
+            TranslationLookup = translationLookup;
         }
 
-        public async Task<Result<IEnumerable<PeriodDto>>> GetPeriodsAsync()
+        public async Task<Result<PeriodPagedResultDto>> GetPeriodsAsync(PeriodPaginationQueryDto query)
         {
-            Logger.LogTrace("Getting period list");
-            var result = Result<IEnumerable<PeriodDto>>.Create();
-            var entities = await UnitOfClassifier.Period.GetAllAsync();
-            var dtoList = entities.Select(MapPeriod).ToList();
-            result.Success(dtoList);
-            Logger.LogInformation("Periods retrieved: {Count}", dtoList.Count);
+            Logger.LogTrace("Getting period list with pagination and filters. PageNumber: {PageNumber}, PageSize: {PageSize}, NameFilter: {NameFilter}, PeriodTime: {PeriodTime}", query.PageNumber, query.PageSize, query.NameFilter, query.PeriodTime);
+            var result = Result<PeriodPagedResultDto>.Create();
+
+            if (!await ValidateModelAsync(PeriodPaginationQueryValidator, query, result))
+            {
+                Logger.LogDebug("Pagination query validation failed for GetPeriodsAsync.");
+                return result;
+            }
+
+            Expression<Func<PeriodEntity, bool>> predicate;
+            if (!string.IsNullOrWhiteSpace(query.NameFilter) || !string.IsNullOrWhiteSpace(query.DescriptionFilter))
+            {
+                var (nameIds, descIds) = await TranslationLookup.GetFilterIdsAsync(query.NameFilter, query.DescriptionFilter);
+                predicate = FilterExpressionStrategy.Build(query, nameIds, descIds);
+            }
+            else
+            {
+                predicate = FilterExpressionStrategy.Build(query);
+            }
+            var entities = (await UnitOfClassifier.Period.FindAsync(predicate)).ToList();
+            var totalCount = entities.Count;
+            var totalPages = (int)Math.Ceiling(totalCount / (double)query.PageSize);
+            var items = entities
+                .Skip((query.PageNumber - 1) * query.PageSize)
+                .Take(query.PageSize)
+                .Select(MapPeriod)
+                .ToList();
+
+            result.Success(new PeriodPagedResultDto
+            {
+                PageNumber = query.PageNumber,
+                PageSize = query.PageSize,
+                NameFilter = query.NameFilter,
+                DescriptionFilter = query.DescriptionFilter,
+                PeriodTime = query.PeriodTime,
+                Items = items,
+                TotalCount = totalCount,
+                TotalPages = totalPages
+            });
+            Logger.LogInformation("Periods retrieved: {Count} items on page {PageNumber} of {TotalPages}", items.Count, query.PageNumber, totalPages);
             return result;
         }
 

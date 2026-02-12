@@ -1,3 +1,5 @@
+using MedAppointment.Logics.Services.LocalizationServices;
+
 namespace MedAppointment.Logics.AppConfig
 {
     public static class DependencyInjectionExtension
@@ -33,11 +35,24 @@ namespace MedAppointment.Logics.AppConfig
             services.AddScoped<IPaymentTypeService, PaymentTypeService>();
             services.AddScoped<IPeriodService, PeriodService>();
             services.AddScoped<ISpecialtyService, SpecialtyService>();
+            services.AddScoped<IPlanPaddingTypeService, PlanPaddingTypeService>();
 
+
+            services.AddScoped<ITranslationLookupService, TranslationLookupService>();
+            AddClassifierPaginationExpressionStrategies(services);
 
             services.AddScoped<IHashService, HashService>();
             services.AddScoped<ILoginService, LoginService>();
             services.AddScoped<ITokenService, JwtBearerTokenService>();
+        }
+
+        private static void AddClassifierPaginationExpressionStrategies(IServiceCollection services)
+        {
+            services.AddScoped<IClassifierFilterExpressionStrategy<SpecialtyEntity, ClassifierPaginationQueryDto>, ClassifierFilterExpressionStrategy<SpecialtyEntity>>();
+            services.AddScoped<IClassifierFilterExpressionStrategy<PaymentTypeEntity, ClassifierPaginationQueryDto>, ClassifierFilterExpressionStrategy<PaymentTypeEntity>>();
+            services.AddScoped<IClassifierFilterExpressionStrategy<PeriodEntity, PeriodPaginationQueryDto>, PeriodFilterExpressionStrategy>();
+            services.AddScoped<IClassifierFilterExpressionStrategy<CurrencyEntity, CurrencyPaginationQueryDto>, CurrencyFilterExpressionStrategy>();
+            services.AddScoped<IClassifierFilterExpressionStrategy<PlanPaddingTypeEntity, PlanPaddingTypePaginationQueryDto>, PlanPaddingTypeFilterExpressionStrategy>();
         }
     }
 }

@@ -11,9 +11,9 @@ namespace MedAppointment.Api.Controllers.ClassifierControllers
 
         [HttpGet]
         [AllowAnonymous]
-        public async Task<IActionResult> GetPaymentTypesAsync()
+        public async Task<IActionResult> GetPaymentTypesAsync([FromQuery] ClassifierPaginationQueryDto query)
         {
-            var result = await _paymentTypeService.GetPaymentTypesAsync();
+            var result = await _paymentTypeService.GetPaymentTypesAsync(query);
             return CustomResult(result);
         }
 
