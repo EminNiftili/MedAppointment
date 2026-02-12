@@ -19,6 +19,7 @@ namespace MedAppointment.Logics.AppConfig
         {
             services.AddScoped<IClientRegistrationService, ClientRegistrationService>();
             services.AddScoped<IPrivateClientInfoService, PrivateClientInfoService>();
+            services.AddScoped<IAdminUserService, AdminUserService>();
             services.AddScoped<IDoctorService, DoctorService>();
 
             services.AddScoped<IDoctorPlanManagerService, DoctorPlanManagerService>();

@@ -8,8 +8,10 @@ namespace MedAppointment.Logics.Implementations.ClientServices
         protected readonly ILogger<DoctorService> Logger;
         protected readonly IUnitOfDoctor UnitOfDoctor;
         protected readonly IUnitOfClient UnitOfClient;
+        protected readonly IUnitOfClassifier UnitOfClassifier;
         protected readonly IClientRegistrationService ClientRegistration;
         protected readonly IValidator<PaginationQueryDto> PaginationQueryValidator;
+        protected readonly IValidator<AdminDoctorSpecialtyCreateDto> AdminDoctorSpecialtyCreateValidator;
         protected readonly IMapper Mapper;
 
         public DoctorService(
@@ -17,17 +19,67 @@ namespace MedAppointment.Logics.Implementations.ClientServices
             ILogger<DoctorService> logger,
             IUnitOfDoctor unitOfDoctor,
             IUnitOfClient unitOfClient,
+            IUnitOfClassifier unitOfClassifier,
             IClientRegistrationService clientRegistration,
             IValidator<PaginationQueryDto> paginationQueryValidator,
+            IValidator<AdminDoctorSpecialtyCreateDto> adminDoctorSpecialtyCreateValidator,
             IMapper mapper)
         {
             LocalizerService = localizerService;
             Logger = logger;
             UnitOfClient = unitOfClient;
             UnitOfDoctor = unitOfDoctor;
+            UnitOfClassifier = unitOfClassifier;
             ClientRegistration = clientRegistration;
             PaginationQueryValidator = paginationQueryValidator;
+            AdminDoctorSpecialtyCreateValidator = adminDoctorSpecialtyCreateValidator;
             Mapper = mapper;
+        }
+
+        public async Task<Result> AddDoctorSpecialtyAsync(long doctorId, AdminDoctorSpecialtyCreateDto specialty)
+        {
+            Logger.LogTrace("Started doctor specialty add. DoctorId:{0}, SpecialtyId:{1}, IsConfirmed:{2}",
+                doctorId, specialty.SpecialtyId, specialty.IsConfirmed);
+
+            var result = Result.Create();
+
+            if (!await ValidateModelAsync(AdminDoctorSpecialtyCreateValidator, specialty, result))
+            {
+                return result;
+            }
+
+            var doctorEntity = await GetDoctorOrFailAsync(doctorId, result);
+            if (doctorEntity is null) return result;
+
+            var specialtyEntity = await UnitOfClassifier.Specialty.GetByIdAsync(specialty.SpecialtyId);
+            Logger.LogDebug("Specialty fetch completed. SpecialtyId:{0}, Exists:{1}", specialty.SpecialtyId, specialtyEntity is not null);
+            if (specialtyEntity is null)
+            {
+                result.AddMessage("ERR00050", "Classifier item not found.", HttpStatusCode.NotFound);
+                return result;
+            }
+
+            var exists = doctorEntity.Specialties.Any(x => !x.IsDeleted && x.SpecialtyId == specialty.SpecialtyId);
+            Logger.LogDebug("Doctor specialty existence check completed. DoctorId:{0}, SpecialtyId:{1}, Exists:{2}",
+                doctorId, specialty.SpecialtyId, exists);
+            if (exists)
+            {
+                result.AddMessage("ERR00051", "Classifier name already exists.", HttpStatusCode.Conflict);
+                return result;
+            }
+
+            doctorEntity.Specialties.Add(new DoctorSpecialtyEntity
+            {
+                SpecialtyId = specialty.SpecialtyId,
+                IsConfirm = specialty.IsConfirmed,
+            });
+
+            await SaveDoctorAsync(doctorEntity);
+
+            Logger.LogInformation("Doctor specialty added. DoctorId:{0}, SpecialtyId:{1}, IsConfirmed:{2}",
+                doctorId, specialty.SpecialtyId, specialty.IsConfirmed);
+            result.Success(HttpStatusCode.NoContent);
+            return result;
         }
 
         public async Task<Result<PagedResultDto<DoctorDto>>> GetDoctorsAsync(PaginationQueryDto query, bool includeUnconfirmed)
@@ -183,6 +235,31 @@ namespace MedAppointment.Logics.Implementations.ClientServices
             return result;
         }
 
+        public async Task<Result> RemoveDoctorSpecialtyAsync(long doctorId, long specialtyId)
+        {
+            Logger.LogTrace("Started doctor specialty remove. DoctorId:{0}, SpecialtyId:{1}", doctorId, specialtyId);
+
+            var result = Result.Create();
+
+            var doctorEntity = await GetDoctorOrFailAsync(doctorId, result);
+            if (doctorEntity is null) return result;
+
+            var specialtyEntity = doctorEntity.Specialties.FirstOrDefault(x => !x.IsDeleted && x.SpecialtyId == specialtyId);
+            if (specialtyEntity is null)
+            {
+                Logger.LogInformation("Doctor specialty cannot found for delete. DoctorId:{0}, SpecialtyId:{1}", doctorId, specialtyId);
+                result.AddMessage("ERR00057", "Doctor specialty cannot found", HttpStatusCode.NotFound);
+                return result;
+            }
+
+            specialtyEntity.IsDeleted = true;
+            await SaveDoctorAsync(doctorEntity);
+
+            Logger.LogInformation("Doctor specialty soft deleted. DoctorId:{0}, SpecialtyId:{1}", doctorId, specialtyId);
+            result.Success(HttpStatusCode.NoContent);
+            return result;
+        }
+
         public async Task<Result> EnsureDoctorIsVerifiedAsync(long doctorId)
         {
             Logger.LogTrace("Started ensure doctor is verified. DoctorId: {DoctorId}", doctorId);
@@ -282,6 +359,29 @@ namespace MedAppointment.Logics.Implementations.ClientServices
         }
 
         private async Task<bool> ValidateModelAsync<TDto, TResult>(IValidator<TDto> validator, TDto model, Result<TResult> result)
+        {
+            Logger.LogInformation("Model validation started for {Validator}.", typeof(TDto).Name);
+            var validationResult = await validator.ValidateAsync(model);
+            Logger.LogInformation("Model validation finished for {Validator}.", typeof(TDto).Name);
+
+            if (validationResult == null)
+            {
+                Logger.LogError("Validation result is null for {Validator}.", typeof(TDto).Name);
+                result.AddMessage("ERR00100", "Unexpected error contact with admin", HttpStatusCode.BadRequest);
+                return false;
+            }
+
+            if (!validationResult.IsValid)
+            {
+                Logger.LogDebug("Validation failed for {Validator} with errors: {Errors}", typeof(TDto).Name, validationResult.Errors);
+                result.SetFluentValidationAndBadRequest(validationResult);
+                return false;
+            }
+
+            return true;
+        }
+
+        private async Task<bool> ValidateModelAsync<TDto>(IValidator<TDto> validator, TDto model, Result result)
         {
             Logger.LogInformation("Model validation started for {Validator}.", typeof(TDto).Name);
             var validationResult = await validator.ValidateAsync(model);

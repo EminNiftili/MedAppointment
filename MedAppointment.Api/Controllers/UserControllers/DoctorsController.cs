@@ -51,5 +51,21 @@ namespace MedAppointment.Api.Controllers.UserControllers
             return CustomResult(result);
         }
 
+        [Authorize(Roles = RoleNames.SystemAdminRole)]
+        [HttpPost("{doctorId:long}/specialties")]
+        public async Task<IActionResult> AddDoctorSpecialtyAsync(long doctorId, [FromBody] AdminDoctorSpecialtyCreateDto specialty)
+        {
+            var result = await _doctorService.AddDoctorSpecialtyAsync(doctorId, specialty);
+            return CustomResult(result);
+        }
+
+        [Authorize(Roles = RoleNames.SystemAdminRole)]
+        [HttpDelete("{doctorId:long}/specialties/{specialtyId:long}")]
+        public async Task<IActionResult> RemoveDoctorSpecialtyAsync(long doctorId, long specialtyId)
+        {
+            var result = await _doctorService.RemoveDoctorSpecialtyAsync(doctorId, specialtyId);
+            return CustomResult(result);
+        }
+
     }
 }
