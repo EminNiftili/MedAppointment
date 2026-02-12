@@ -1,4 +1,5 @@
-﻿using MedAppointment.DataTransferObjects.PaginationDtos;
+﻿using MedAppointment.DataTransferObjects.DoctorDtos;
+using MedAppointment.DataTransferObjects.PaginationDtos;
 
 namespace MedAppointment.Api.Controllers.UserControllers
 {

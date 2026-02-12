@@ -46,7 +46,7 @@ namespace MedAppointment.Logics.Implementations.ClientServices
                     Email = user.Person.Email,
                     PhoneNumber = user.Person.PhoneNumber,
                     BirthDate = user.Person.BirthDate,
-                    ImagePath = user.Person.Image?.Path,
+                    ImagePath = user.Person.Image?.FilePath,
                     UserTypes = userTypes,
                 });
 

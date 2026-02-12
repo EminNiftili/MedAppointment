@@ -38,6 +38,8 @@ namespace MedAppointment.Logics.AppConfig
             services.AddScoped<ISpecialtyService, SpecialtyService>();
             services.AddScoped<IPlanPaddingTypeService, PlanPaddingTypeService>();
 
+            services.AddScoped<ILocalizerService>((s) => new object() as ILocalizerService);
+
 
             services.AddScoped<ITranslationLookupService, TranslationLookupService>();
             AddClassifierPaginationExpressionStrategies(services);
