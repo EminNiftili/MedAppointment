@@ -132,3 +132,6 @@ Return validation errors like:
 | ERR00141 | Key must not exceed 150 characters. | Classifier key length must be **<= 150**. |
 | ERR00142 | Padding time must be between 1 and 255 minutes. | PlanPaddingType padding time in minutes. |
 | ERR00143 | 134 CoefficentMin must be less than or equal to CoefficentMax. | Currency filter range. |
+| ERR00144 | Default language cannot be deleted. | Cannot delete the default language. |
+| ERR00145 | Language name must not exceed 100 characters. | Language classifier name length must be **<= 100**. |
+| ERR00146 | Default Language already setted. |

@@ -8,7 +8,7 @@ namespace MedAppointment.Logics.CustomExpressions.ClassifierExpressions
     /// </summary>
     /// <typeparam name="TEntity">Entity type (e.g. SpecialtyEntity).</typeparam>
     /// <typeparam name="TQuery">Query DTO type (ClassifierPaginationQueryDto or derived).</typeparam>
-    public interface IClassifierFilterExpressionStrategy<TEntity, TQuery> where TQuery : ClassifierPaginationQueryDto
+    public interface IClassifierFilterExpressionStrategy<TEntity, TQuery> where TQuery : PaginationQueryDto
     {
         /// <summary>
         /// Builds a filter expression from the query. Returns a predicate that can be compiled and used in Where().

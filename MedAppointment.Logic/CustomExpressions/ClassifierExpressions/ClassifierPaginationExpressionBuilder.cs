@@ -9,11 +9,11 @@ namespace MedAppointment.Logics.CustomExpressions.ClassifierExpressions
     /// </summary>
     public static class ClassifierPaginationExpressionBuilder
     {
-        private static readonly MethodInfo StringContainsMethod = typeof(string).GetMethod(
+        public static readonly MethodInfo StringContainsMethod = typeof(string).GetMethod(
             nameof(string.Contains),
             new[] { typeof(string), typeof(StringComparison) })!;
 
-        private static readonly MethodInfo HashSetLongContainsMethod = typeof(HashSet<long>).GetMethod(
+        public static readonly MethodInfo HashSetLongContainsMethod = typeof(HashSet<long>).GetMethod(
             nameof(HashSet<long>.Contains),
             new[] { typeof(long) })!;
 

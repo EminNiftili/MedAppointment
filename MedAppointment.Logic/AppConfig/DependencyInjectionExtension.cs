@@ -33,6 +33,7 @@ namespace MedAppointment.Logics.AppConfig
             services.AddScoped<ITimeSlotService, TimeSlotService>();
 
             services.AddScoped<ICurrencyService, CurrencyService>();
+            services.AddScoped<ILanguageService, LanguageService>();
             services.AddScoped<IPaymentTypeService, PaymentTypeService>();
             services.AddScoped<IPeriodService, PeriodService>();
             services.AddScoped<ISpecialtyService, SpecialtyService>();
