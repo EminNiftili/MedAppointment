@@ -21,6 +21,10 @@
             builder.HasOne(x => x.Resource)
                 .WithMany(x => x.Translations)
                 .HasForeignKey(x => x.ResourceId);
+
+            builder.HasOne(x => x.Language)
+                .WithMany()
+                .HasForeignKey(x => x.LanguageId);
         }
     }
 }

@@ -26,11 +26,13 @@
 
             builder.HasOne(x => x.Title)
                 .WithOne()
-                .HasForeignKey<DoctorEntity>(x => x.TitleTextId);
+                .HasForeignKey<DoctorEntity>(x => x.TitleTextId)
+                .OnDelete(DeleteBehavior.NoAction);
 
             builder.HasOne(x => x.Description)
                 .WithOne()
-                .HasForeignKey<DoctorEntity>(x => x.DescriptionTextId);
+                .HasForeignKey<DoctorEntity>(x => x.DescriptionTextId)
+                .OnDelete(DeleteBehavior.NoAction);
         }
     }
 }

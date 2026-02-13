@@ -20,11 +20,13 @@
 
             builder.HasOne(x => x.Name)
                 .WithOne()
-                .HasForeignKey<TEntity>(x => x.NameTextId);
+                .HasForeignKey<TEntity>(x => x.NameTextId)
+                .OnDelete(DeleteBehavior.NoAction);
 
             builder.HasOne(x => x.Description)
                 .WithOne()
-                .HasForeignKey<TEntity>(x => x.DescriptionTextId);
+                .HasForeignKey<TEntity>(x => x.DescriptionTextId)
+                .OnDelete(DeleteBehavior.NoAction);
         }
     }
 }
