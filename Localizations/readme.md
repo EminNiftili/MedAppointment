@@ -135,3 +135,5 @@ Return validation errors like:
 | ERR00144 | Default language cannot be deleted. | Cannot delete the default language. |
 | ERR00145 | Language name must not exceed 100 characters. | Language classifier name length must be **<= 100**. |
 | ERR00146 | Default Language already setted. |
+| ERR00147 | Email filter must not exceed 256 characters. | User list email filter length must be **<= 256**. |
+| ERR00148 | Phone filter must not exceed 50 characters. | User list phone filter length must be **<= 50**. |
