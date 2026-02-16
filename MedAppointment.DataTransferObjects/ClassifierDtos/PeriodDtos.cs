@@ -9,6 +9,8 @@ namespace MedAppointment.DataTransferObjects.ClassifierDtos
     public record PeriodCreateDto : ClassifierDto
     {
         public byte PeriodTime { get; set; }
+        public new List<CreateLocalizationDto> Name { get; set; } = new List<CreateLocalizationDto>();
+        public new List<CreateLocalizationDto> Description { get; set; } = new List<CreateLocalizationDto>();
     }
 
     public record PeriodUpdateDto : ClassifierDto

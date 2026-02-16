@@ -114,8 +114,8 @@ namespace MedAppointment.Logics.Implementations.ClassifierServices
                 return result;
             }
 
-            var nameResult = await LocalizerService.AddResourceAsync(specialty.Name);
-            var descriptionResult = await LocalizerService.AddResourceAsync(specialty.Description);
+            var nameResult = await LocalizerService.AddResourceAsync("specialty_name", specialty.Name);
+            var descriptionResult = await LocalizerService.AddResourceAsync("specialty_desc", specialty.Description);
 
             if (!nameResult.IsSuccess() || !descriptionResult.IsSuccess())
             {
@@ -171,8 +171,8 @@ namespace MedAppointment.Logics.Implementations.ClassifierServices
                 return result;
             }
 
-            var nameResult = await LocalizerService.AddResourceAsync(specialty.Name);
-            var descriptionResult = await LocalizerService.AddResourceAsync(specialty.Description);
+            var nameResult = await LocalizerService.AddResourceAsync("specialty_name", specialty.Name);
+            var descriptionResult = await LocalizerService.AddResourceAsync("specialty_desc", specialty.Description);
 
             if (!nameResult.IsSuccess() || !descriptionResult.IsSuccess())
             {

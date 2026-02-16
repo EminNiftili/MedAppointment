@@ -1,6 +1,7 @@
 ﻿using MedAppointment.DataAccess.Implementations.EntityFramework.UnitOfWorks;
 using MedAppointment.DataTransferObjects.LocalizationDtos;
 using MedAppointment.Logics.Services.LocalizationServices;
+using Microsoft.EntityFrameworkCore.Metadata.Internal;
 
 namespace MedAppointment.Logics.Implementations
 {
@@ -20,25 +21,19 @@ namespace MedAppointment.Logics.Implementations
         }
 
         //TODO ADD LOGGER and ADD error messages
-        public async Task<Result<long>> AddResourceAsync(IEnumerable<LocalizationDto> localizations)
+        public async Task<Result<long>> AddResourceAsync(string key, IEnumerable<CreateLocalizationDto> localizations)
         {
             var result = Result<long>.Create();
 
-            var groupLocalization = localizations.GroupBy(x => x.Key).ToList();
-            if(groupLocalization.Count() != 1)
-            {
-                // multiple keys detected
-                return result;
-            }
-            string key = groupLocalization.First().Key;
-            
-            var hasDuplicateLanguageId = HasDuplicateLanguageId(groupLocalization.First());
+            key = $"{key}_auto_generated_{DateTime.Now.Ticks.ToString()}";
+
+            var hasDuplicateLanguageId = HasDuplicateLanguageId(localizations);
             if (hasDuplicateLanguageId)
             {
                 // duplicate languageId detected
                 return result;
             }
-            var localizationDetails = groupLocalization.First().ToDictionary(x => x.LanguageId, x => x.Text) ?? new Dictionary<long, string>();
+            var localizationDetails = localizations.ToDictionary(x => x.LanguageId, x => x.Text) ?? new Dictionary<long, string>();
             var localizationResult = await AddLocalizationAsync(key, localizationDetails);
             result.MergeResult(localizationResult);
             return result;
@@ -84,7 +79,7 @@ namespace MedAppointment.Logics.Implementations
             return result;
         }
 
-        private bool HasDuplicateLanguageId(IEnumerable<LocalizationDto> localizations)
+        private bool HasDuplicateLanguageId(IEnumerable<CreateLocalizationDto> localizations)
         {
             var set = new HashSet<long>();
 

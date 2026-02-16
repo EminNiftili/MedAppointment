@@ -115,8 +115,8 @@ namespace MedAppointment.Logics.Implementations.ClassifierServices
                 return result;
             }
 
-            var nameResult = await LocalizerService.AddResourceAsync(planPaddingType.Name);
-            var descriptionResult = await LocalizerService.AddResourceAsync(planPaddingType.Description);
+            var nameResult = await LocalizerService.AddResourceAsync("plan_padding_type_name", planPaddingType.Name);
+            var descriptionResult = await LocalizerService.AddResourceAsync("plan_padding_type_desc", planPaddingType.Description);
 
             if (!nameResult.IsSuccess() || !descriptionResult.IsSuccess())
             {
@@ -174,8 +174,8 @@ namespace MedAppointment.Logics.Implementations.ClassifierServices
                 return result;
             }
 
-            var nameResult = await LocalizerService.AddResourceAsync(planPaddingType.Name);
-            var descriptionResult = await LocalizerService.AddResourceAsync(planPaddingType.Description);
+            var nameResult = await LocalizerService.AddResourceAsync("plan_padding_type_name", planPaddingType.Name);
+            var descriptionResult = await LocalizerService.AddResourceAsync("plan_padding_type_desc", planPaddingType.Description);
 
             if (!nameResult.IsSuccess() || !descriptionResult.IsSuccess())
             {

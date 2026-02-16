@@ -114,8 +114,8 @@ namespace MedAppointment.Logics.Implementations.ClassifierServices
                 return result;
             }
 
-            var nameResult = await LocalizerService.AddResourceAsync(paymentType.Name);
-            var descriptionResult = await LocalizerService.AddResourceAsync(paymentType.Description);
+            var nameResult = await LocalizerService.AddResourceAsync("payment_type_name", paymentType.Name);
+            var descriptionResult = await LocalizerService.AddResourceAsync("payment_type_desc", paymentType.Description);
 
             var entity = new PaymentTypeEntity
             {
@@ -164,8 +164,8 @@ namespace MedAppointment.Logics.Implementations.ClassifierServices
                 return result;
             }
 
-            var nameResult = await LocalizerService.AddResourceAsync(paymentType.Name);
-            var descriptionResult = await LocalizerService.AddResourceAsync(paymentType.Description);
+            var nameResult = await LocalizerService.AddResourceAsync("payment_type_name", paymentType.Name);
+            var descriptionResult = await LocalizerService.AddResourceAsync("payment_type_desc", paymentType.Description);
 
             if (!nameResult.IsSuccess() || !descriptionResult.IsSuccess())
             {

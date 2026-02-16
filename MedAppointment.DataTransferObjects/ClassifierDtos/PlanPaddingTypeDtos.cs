@@ -11,6 +11,8 @@ namespace MedAppointment.DataTransferObjects.ClassifierDtos
     {
         public PlanPaddingPosition PaddingPosition { get; set; }
         public byte PaddingTime { get; set; }
+        public new List<CreateLocalizationDto> Name { get; set; } = new List<CreateLocalizationDto>();
+        public new List<CreateLocalizationDto> Description { get; set; } = new List<CreateLocalizationDto>();
     }
 
     public record PlanPaddingTypeUpdateDto : ClassifierDto

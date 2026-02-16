@@ -1,3 +1,4 @@
+using MedAppointment.Logics.Implementations;
 using MedAppointment.Logics.Services.LocalizationServices;
 
 namespace MedAppointment.Logics.AppConfig
@@ -39,7 +40,7 @@ namespace MedAppointment.Logics.AppConfig
             services.AddScoped<ISpecialtyService, SpecialtyService>();
             services.AddScoped<IPlanPaddingTypeService, PlanPaddingTypeService>();
 
-            services.AddScoped<ILocalizerService>((s) => new object() as ILocalizerService);
+            services.AddScoped<ILocalizerService, LocalizerService>();
 
 
             services.AddScoped<ITranslationLookupService, TranslationLookupService>();

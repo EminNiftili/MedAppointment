@@ -1,9 +1,12 @@
 ﻿namespace MedAppointment.DataTransferObjects.LocalizationDtos
 {
-    public class LocalizationDto
+    public record CreateLocalizationDto
     {
-        public string Key { get; set; } = null!;
         public long LanguageId { get; set; }
         public string Text { get; set; } = null!;
+    }
+    public record LocalizationDto : CreateLocalizationDto
+    {
+        public string Key { get; set; } = null!;
     }
 }

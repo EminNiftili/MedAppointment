@@ -7,6 +7,8 @@ namespace MedAppointment.DataTransferObjects.ClassifierDtos
 
     public record PaymentTypeCreateDto : ClassifierDto
     {
+        public new List<CreateLocalizationDto> Name { get; set; } = new List<CreateLocalizationDto>();
+        public new List<CreateLocalizationDto> Description { get; set; } = new List<CreateLocalizationDto>();
     }
 
     public record PaymentTypeUpdateDto : ClassifierDto

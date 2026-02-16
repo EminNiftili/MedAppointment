@@ -1,3 +1,4 @@
+using MedAppointment.Logics.Extensions;
 using MedAppointment.Logics.Services.LocalizationServices;
 
 namespace MedAppointment.Logics.Implementations.ClientServices
@@ -309,8 +310,8 @@ namespace MedAppointment.Logics.Implementations.ClientServices
             }
             Logger.LogInformation("Registered user found");
 
-            var titleResult = await LocalizerService.AddResourceAsync(doctorRegister.Title);
-            var descriptionResult = await LocalizerService.AddResourceAsync(doctorRegister.Description);
+            var titleResult = await LocalizerService.AddResourceAsync($"doctor_{doctorRegister.User.Name.ToASCIIFromUnicode()}_title", doctorRegister.Title);
+            var descriptionResult = await LocalizerService.AddResourceAsync($"doctor_{doctorRegister.User.Name.ToASCIIFromUnicode()}_desc", doctorRegister.Description);
 
             if (!titleResult.IsSuccess() || !descriptionResult.IsSuccess())
             {

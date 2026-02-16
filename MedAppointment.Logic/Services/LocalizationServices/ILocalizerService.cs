@@ -4,6 +4,6 @@ namespace MedAppointment.Logics.Services.LocalizationServices
 {
     public interface ILocalizerService
     {
-        Task<Result<long>> AddResourceAsync(IEnumerable<LocalizationDto> localization);
+        Task<Result<long>> AddResourceAsync(string key, IEnumerable<CreateLocalizationDto> localization);
     }
 }

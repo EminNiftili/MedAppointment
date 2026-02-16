@@ -115,8 +115,8 @@ namespace MedAppointment.Logics.Implementations.ClassifierServices
                 result.AddMessage("ERR00051", "Classifier name already exists.", HttpStatusCode.Conflict);
                 return result;
             }
-            var nameResult = await LocalizerService.AddResourceAsync(currency.Name);
-            var descriptionResult = await LocalizerService.AddResourceAsync(currency.Description);
+            var nameResult = await LocalizerService.AddResourceAsync("currency_name", currency.Name);
+            var descriptionResult = await LocalizerService.AddResourceAsync("currency_desc", currency.Description);
 
             if(!nameResult.IsSuccess() || !descriptionResult.IsSuccess())
             {
@@ -173,8 +173,8 @@ namespace MedAppointment.Logics.Implementations.ClassifierServices
                 return result;
             }
 
-            var nameResult = await LocalizerService.AddResourceAsync(currency.Name);
-            var descriptionResult = await LocalizerService.AddResourceAsync(currency.Description);
+            var nameResult = await LocalizerService.AddResourceAsync("currency_name", currency.Name);
+            var descriptionResult = await LocalizerService.AddResourceAsync("currency_desc", currency.Description);
 
             if (!nameResult.IsSuccess() || !descriptionResult.IsSuccess())
             {

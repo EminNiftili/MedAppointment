@@ -115,8 +115,8 @@ namespace MedAppointment.Logics.Implementations.ClassifierServices
                 return result;
             }
 
-            var nameResult = await LocalizerService.AddResourceAsync(period.Name);
-            var descriptionResult = await LocalizerService.AddResourceAsync(period.Description);
+            var nameResult = await LocalizerService.AddResourceAsync("period_name", period.Name);
+            var descriptionResult = await LocalizerService.AddResourceAsync("period_desc", period.Description);
 
             if (!nameResult.IsSuccess() || !descriptionResult.IsSuccess())
             {
@@ -173,8 +173,8 @@ namespace MedAppointment.Logics.Implementations.ClassifierServices
                 return result;
             }
 
-            var nameResult = await LocalizerService.AddResourceAsync(period.Name);
-            var descriptionResult = await LocalizerService.AddResourceAsync(period.Description);
+            var nameResult = await LocalizerService.AddResourceAsync("period_name", period.Name);
+            var descriptionResult = await LocalizerService.AddResourceAsync("period_desc", period.Description);
 
             if (!nameResult.IsSuccess() || !descriptionResult.IsSuccess())
             {
