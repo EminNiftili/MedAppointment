@@ -1,5 +1,4 @@
 ﻿using MedAppointment.DataTransferObjects.DoctorDtos;
-using MedAppointment.DataTransferObjects.PaginationDtos;
 
 namespace MedAppointment.Api.Controllers.UserControllers
 {
@@ -11,7 +10,7 @@ namespace MedAppointment.Api.Controllers.UserControllers
         {
             _doctorService = doctorService;
         }
-        [AllowAnonymous]
+        [Authorize(Roles = RoleNames.SystemAdminRole)]
         [HttpGet]
         public async Task<IActionResult> GetAllAsync([FromQuery] PaginationQueryDto query)
         {
@@ -19,7 +18,7 @@ namespace MedAppointment.Api.Controllers.UserControllers
             return CustomResult(result);
         }
 
-        [AllowAnonymous]
+        [Authorize(Roles = RoleNames.SystemAdminRole)]
         [HttpGet("{id:long}")]
         public async Task<IActionResult> GetByIdAsync(long id)
         {
@@ -60,7 +59,7 @@ namespace MedAppointment.Api.Controllers.UserControllers
             return CustomResult(result);
         }
 
-        [Authorize(Roles = RoleNames.SystemAdminRole)]
+        [Authorize(Roles = $"{RoleNames.DoctorRole},{RoleNames.SystemAdminRole}")]
         [HttpDelete("{doctorId:long}/specialties/{specialtyId:long}")]
         public async Task<IActionResult> RemoveDoctorSpecialtyAsync(long doctorId, long specialtyId)
         {
