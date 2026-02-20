@@ -164,8 +164,8 @@ namespace MedAppointment.Logics.Implementations.ClassifierServices
                 return result;
             }
 
-            var nameResult = await LocalizerService.AddResourceAsync("payment_type_name", paymentType.Name);
-            var descriptionResult = await LocalizerService.AddResourceAsync("payment_type_desc", paymentType.Description);
+            var nameResult = await LocalizerService.AddResourceAsync(entity.Name!.Key, paymentType.Name);
+            var descriptionResult = await LocalizerService.AddResourceAsync(entity.Description!.Key, paymentType.Description);
 
             if (!nameResult.IsSuccess() || !descriptionResult.IsSuccess())
             {

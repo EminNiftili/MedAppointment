@@ -171,8 +171,8 @@ namespace MedAppointment.Logics.Implementations.ClassifierServices
                 return result;
             }
 
-            var nameResult = await LocalizerService.AddResourceAsync("specialty_name", specialty.Name);
-            var descriptionResult = await LocalizerService.AddResourceAsync("specialty_desc", specialty.Description);
+            var nameResult = await LocalizerService.AddResourceAsync(entity.Name!.Key, specialty.Name);
+            var descriptionResult = await LocalizerService.AddResourceAsync(entity.Description!.Key, specialty.Description);
 
             if (!nameResult.IsSuccess() || !descriptionResult.IsSuccess())
             {
