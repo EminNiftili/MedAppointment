@@ -1,14 +1,16 @@
-﻿using MedAppointment.DataTransferObjects.DoctorDtos;
+using MedAppointment.DataTransferObjects.DoctorDtos;
 
 namespace MedAppointment.Api.Controllers.UserControllers
 {
     public class DoctorsController : BaseApiController
     {
         private readonly IDoctorService _doctorService;
+        private readonly IDoctorPlanManagerService _doctorPlanManagerService;
 
-        public DoctorsController(IDoctorService doctorService)
+        public DoctorsController(IDoctorService doctorService, IDoctorPlanManagerService doctorPlanManagerService)
         {
             _doctorService = doctorService;
+            _doctorPlanManagerService = doctorPlanManagerService;
         }
         [Authorize(Roles = RoleNames.SystemAdminRole)]
         [HttpGet]
@@ -67,5 +69,12 @@ namespace MedAppointment.Api.Controllers.UserControllers
             return CustomResult(result);
         }
 
+        [Authorize(Roles = $"{RoleNames.DoctorRole}")]
+        [HttpPost("schemas")]
+        public async Task<IActionResult> AddDoctorSchemaAsync([FromBody] DoctorSchemaCreateDto dto)
+        {
+            var result = await _doctorPlanManagerService.AddDoctorSchemaAsync(dto);
+            return CustomResult(result);
+        }
     }
 }

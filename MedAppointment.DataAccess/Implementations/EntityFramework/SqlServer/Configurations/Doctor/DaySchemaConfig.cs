@@ -53,8 +53,8 @@ namespace MedAppointment.DataAccess.Implementations.EntityFramework.SqlServer.Co
                 .HasForeignKey(x => x.PeriodId);
 
             builder.HasOne(x => x.PlanPaddingType)
-                .WithOne()
-                .HasForeignKey<DaySchemaEntity>(x => x.PlanPaddingTypeId);
+                .WithMany()
+                .HasForeignKey(x => x.PlanPaddingTypeId);
         }
     }
 }

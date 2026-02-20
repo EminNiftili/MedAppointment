@@ -9,11 +9,6 @@ namespace MedAppointment.Logics.Services.ClientServices
         Task<Result> ConfirmDoctorSpecialtiesAsync(long doctorId, long specialtyId);
         Task<Result> AddDoctorSpecialtyAsync(long doctorId, AdminDoctorSpecialtyCreateDto specialty);
         Task<Result> RemoveDoctorSpecialtyAsync(long doctorId, long specialtyId);
-
-        /// <summary>
-        /// Ensures the doctor exists and is verified (confirmed). Use when an operation requires a verified doctor.
-        /// Returns success if doctor exists and IsConfirm; otherwise NotFound or Forbidden with appropriate message.
-        /// </summary>
         Task<Result> EnsureDoctorIsVerifiedAsync(long doctorId);
     }
 }

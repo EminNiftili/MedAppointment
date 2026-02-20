@@ -137,3 +137,4 @@ Return validation errors like:
 | ERR00146 | Default Language already setted. |
 | ERR00147 | Email filter must not exceed 256 characters. | User list email filter length must be **<= 256**. |
 | ERR00148 | Phone filter must not exceed 50 characters. | User list phone filter length must be **<= 50**. |
+| ERR00149 | Doctor weekly schema created successfully. | Success message when a doctor weekly schema (template) is added. |

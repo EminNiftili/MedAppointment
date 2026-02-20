@@ -8,5 +8,11 @@ namespace MedAppointment.Logics.Services.PlanManagerServices
         /// Only verified (confirmed) doctors can perform this operation.
         /// </summary>
         Task<Result> CreateDayPlansFromWeeklySchemaAsync(CreateDayPlansFromSchemaDto dto);
+
+        /// <summary>
+        /// Adds a new doctor weekly schema (template) with day schemas and day breaks.
+        /// Only verified (confirmed) doctors can have schemas added.
+        /// </summary>
+        Task<Result<long>> AddDoctorSchemaAsync(DoctorSchemaCreateDto dto);
     }
 }
