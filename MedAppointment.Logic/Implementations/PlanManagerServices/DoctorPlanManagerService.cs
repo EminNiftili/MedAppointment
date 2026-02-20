@@ -9,6 +9,7 @@ namespace MedAppointment.Logics.Implementations.PlanManagerServices
         private readonly IUnitOfClassifier _unitOfClassifier;
         private readonly IUnitOfDoctor _unitOfDoctor;
         private readonly IValidator<CreateDayPlansFromSchemaDto> _createDayPlansValidator;
+        private readonly IValidator<CreateDayPlansFromWeeklySchemaByIdDto> _createDayPlansByIdValidator;
         private readonly IValidator<DoctorSchemaCreateDto> _doctorSchemaCreateValidator;
 
         public DoctorPlanManagerService(
@@ -19,6 +20,7 @@ namespace MedAppointment.Logics.Implementations.PlanManagerServices
             IUnitOfClassifier unitOfClassifier,
             IUnitOfDoctor unitOfDoctor,
             IValidator<CreateDayPlansFromSchemaDto> createDayPlansValidator,
+            IValidator<CreateDayPlansFromWeeklySchemaByIdDto> createDayPlansByIdValidator,
             IValidator<DoctorSchemaCreateDto> doctorSchemaCreateValidator)
         {
             _logger = logger;
@@ -28,6 +30,7 @@ namespace MedAppointment.Logics.Implementations.PlanManagerServices
             _unitOfClassifier = unitOfClassifier;
             _unitOfDoctor = unitOfDoctor;
             _createDayPlansValidator = createDayPlansValidator;
+            _createDayPlansByIdValidator = createDayPlansByIdValidator;
             _doctorSchemaCreateValidator = doctorSchemaCreateValidator;
         }
 
@@ -178,6 +181,114 @@ namespace MedAppointment.Logics.Implementations.PlanManagerServices
             _logger.LogInformation("CreateDayPlansFromWeeklySchema completed. DoctorId: {DoctorId}, StartDate: {StartDate}",
                 doctorId, dto.StartDate);
             result.Success(HttpStatusCode.Created);
+            return result;
+        }
+
+        public async Task<Result> CreateDayPlansFromWeeklySchemaByIdAsync(CreateDayPlansFromWeeklySchemaByIdDto dto)
+        {
+            _logger.LogTrace("Started CreateDayPlansFromWeeklySchemaById. WeeklySchemaId: {WeeklySchemaId}, StartDate: {StartDate}",
+                dto.WeeklySchemaId, dto.StartDate);
+
+            var result = Result.Create();
+
+            var validationResult = await _createDayPlansByIdValidator.ValidateAsync(dto);
+            if (validationResult == null)
+            {
+                _logger.LogError("Validation result is null for CreateDayPlansFromWeeklySchemaByIdDto.");
+                result.AddMessage("ERR00100", "Unexpected error contact with admin", HttpStatusCode.BadRequest);
+                return result;
+            }
+            if (!validationResult.IsValid)
+            {
+                _logger.LogDebug("CreateDayPlansFromWeeklySchemaById validation failed. Errors: {Errors}", validationResult.Errors);
+                result.SetFluentValidationAndBadRequest(validationResult);
+                return result;
+            }
+            _logger.LogDebug("CreateDayPlansFromWeeklySchemaById DTO validation succeeded.");
+
+            var weeklySchema = await _unitOfDoctor.WeeklySchema.GetByIdAsync(dto.WeeklySchemaId);
+            if (weeklySchema == null)
+            {
+                _logger.LogInformation("Weekly schema not found. WeeklySchemaId: {WeeklySchemaId}", dto.WeeklySchemaId);
+                result.AddMessage("ERR00126", "Weekly schema (template) not found.", HttpStatusCode.NotFound);
+                return result;
+            }
+            _logger.LogDebug("Weekly schema loaded from DB. WeeklySchemaId: {WeeklySchemaId}, DoctorId: {DoctorId}", dto.WeeklySchemaId, weeklySchema.DoctorId);
+
+            var daySchemaEntities = weeklySchema.DayPlans;
+            if (daySchemaEntities.Count == 0)
+            {
+                _logger.LogInformation("No day schemas found for WeeklySchemaId: {WeeklySchemaId}", dto.WeeklySchemaId);
+                result.AddMessage("ERR00127", "Weekly schema must have exactly 7 day schemas (one per weekday).", HttpStatusCode.BadRequest);
+                return result;
+            }
+
+            var daySchemaIds = daySchemaEntities.Select(x => x.Id).ToList();
+            var dayBreakEntities = weeklySchema.DayPlans.SelectMany(x => x.DayBreaks).ToList();
+            var dayBreaksBySchemaId = dayBreakEntities.GroupBy(x => x.DaySchemaId).ToDictionary(g => g.Key, g => g.ToList());
+
+            var periodIds = daySchemaEntities.Select(x => x.PeriodId).Distinct().ToList();
+            var periods = (await _unitOfClassifier.Period.FindAsync(x => periodIds.Contains(x.Id))).ToDictionary(x => x.Id);
+            var paddingTypeIds = daySchemaEntities.Where(x => x.PlanPaddingTypeId.HasValue).Select(x => x.PlanPaddingTypeId!.Value).Distinct().ToList();
+            var paddingTypes = paddingTypeIds.Count > 0
+                ? (await _unitOfClassifier.PlanPaddingType.FindAsync(x => paddingTypeIds.Contains(x.Id))).ToDictionary(x => x.Id)
+                : new Dictionary<long, PlanPaddingTypeEntity>();
+
+            var daySchemaDtos = new List<DaySchemaDto>();
+            foreach (var ds in daySchemaEntities)
+            {
+                var period = periods.GetValueOrDefault(ds.PeriodId);
+                PlanPaddingTypeEntity? paddingType = ds.PlanPaddingTypeId.HasValue && paddingTypes.TryGetValue(ds.PlanPaddingTypeId.Value, out var pt) ? pt : null;
+                var breaks = dayBreaksBySchemaId.GetValueOrDefault(ds.Id) ?? new List<DayBreakEntity>();
+
+                daySchemaDtos.Add(new DaySchemaDto
+                {
+                    Id = ds.Id,
+                    WeeklySchemaId = ds.WeeklySchemaId,
+                    SpecialtyId = ds.SpecialtyId,
+                    PeriodId = ds.PeriodId,
+                    PeriodTimeMinutes = period?.PeriodTime ?? 0,
+                    PlanPaddingTypeId = ds.PlanPaddingTypeId,
+                    PaddingTimeMinutes = (byte?)paddingType?.PaddingTime,
+                    PaddingPosition = paddingType != null && Enum.IsDefined(typeof(PlanPaddingPosition), (PlanPaddingPosition)paddingType.PaddingPosition)
+                        ? (PlanPaddingPosition?)paddingType.PaddingPosition
+                        : null,
+                    DayOfWeek = ds.DayOfWeek,
+                    OpenTime = ds.OpenTime,
+                    PeriodCount = ds.PeriodCount,
+                    IsClosed = ds.IsClosed,
+                    IsOnlineService = ds.IsOnlineService,
+                    IsOnSiteService = ds.IsOnSiteService,
+                    DayBreaks = breaks.Select(b => new DayBreakDto
+                    {
+                        Id = b.Id,
+                        DaySchemaId = b.DaySchemaId,
+                        Name = b.Name,
+                        IsVisible = b.IsVisible,
+                        StartTime = b.StartTime,
+                        EndTime = b.EndTime
+                    }).ToList()
+                });
+            }
+
+            var createDto = new CreateDayPlansFromSchemaDto
+            {
+                WeeklySchema = new WeeklySchemaDto
+                {
+                    Id = weeklySchema.Id,
+                    DoctorId = weeklySchema.DoctorId,
+                    Name = weeklySchema.Name,
+                    ColorHex = weeklySchema.ColorHex,
+                    DaySchemas = daySchemaDtos
+                },
+                StartDate = dto.StartDate,
+                CurrencyId = dto.CurrencyId,
+                PricePerPeriod = dto.PricePerPeriod
+            };
+
+            _logger.LogDebug("Calling CreateDayPlansFromWeeklySchemaAsync with schema loaded from DB.");
+            var createDayPlansResult = await CreateDayPlansFromWeeklySchemaAsync(createDto);
+            result.MergeResult(createDayPlansResult);
             return result;
         }
 

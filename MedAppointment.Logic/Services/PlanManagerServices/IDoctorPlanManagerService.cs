@@ -10,6 +10,12 @@ namespace MedAppointment.Logics.Services.PlanManagerServices
         Task<Result> CreateDayPlansFromWeeklySchemaAsync(CreateDayPlansFromSchemaDto dto);
 
         /// <summary>
+        /// Loads WeeklySchema by id from the database, builds CreateDayPlansFromSchemaDto and creates DayPlans and PeriodPlans.
+        /// Only verified (confirmed) doctors can perform this operation.
+        /// </summary>
+        Task<Result> CreateDayPlansFromWeeklySchemaByIdAsync(CreateDayPlansFromWeeklySchemaByIdDto dto);
+
+        /// <summary>
         /// Adds a new doctor weekly schema (template) with day schemas and day breaks.
         /// Only verified (confirmed) doctors can have schemas added.
         /// </summary>

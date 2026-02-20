@@ -76,5 +76,13 @@ namespace MedAppointment.Api.Controllers.UserControllers
             var result = await _doctorPlanManagerService.AddDoctorSchemaAsync(dto);
             return CustomResult(result);
         }
+
+        [Authorize(Roles = $"{RoleNames.DoctorRole}")]
+        [HttpPost("calendar/fill-from-weekly-schema")]
+        public async Task<IActionResult> CreateDayPlansFromWeeklySchemaByIdAsync([FromBody] CreateDayPlansFromWeeklySchemaByIdDto dto)
+        {
+            var result = await _doctorPlanManagerService.CreateDayPlansFromWeeklySchemaByIdAsync(dto);
+            return CustomResult(result);
+        }
     }
 }

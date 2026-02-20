@@ -1,6 +1,6 @@
 namespace MedAppointment.DataTransferObjects.DoctorDtos
 {
-    public abstract record DaySchemaDto
+    public record DaySchemaDto
     {
         public long Id { get; set; }
         public long WeeklySchemaId { get; set; }
