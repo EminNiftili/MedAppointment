@@ -73,7 +73,15 @@ namespace MedAppointment.Logics.Implementations.ScheduleServices
                     }
                 }
                 if (hasOverlap)
+                {
+                    currentStart = nextStart;
+                    while (breaksList.Any(b => currentStart >= b.Start && currentStart < b.End))
+                    {
+                        var containing = breaksList.First(b => currentStart >= b.Start && currentStart < b.End);
+                        currentStart = containing.End;
+                    }
                     continue;
+                }
 
                 slots.Add((slotStart, slotEnd));
                 currentStart = nextStart;
