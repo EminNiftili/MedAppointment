@@ -138,3 +138,7 @@ Return validation errors like:
 | ERR00147 | Email filter must not exceed 256 characters. | User list email filter length must be **<= 256**. |
 | ERR00148 | Phone filter must not exceed 50 characters. | User list phone filter length must be **<= 50**. |
 | ERR00149 | Doctor weekly schema created successfully. | Success message when a doctor weekly schema (template) is added. |
+| ERR00150 | Doctor id must be greater than 0. | Doctor calendar query requires valid doctor id. |
+| ERR00151 | Week start date is required. | Doctor calendar week start date must be provided. |
+| ERR00152 | Week start date must be a Monday (start of week). | Pagination is by week; week must start on Monday. |
+| ERR00153 | Doctor not found. | The requested doctor does not exist or is not available. |

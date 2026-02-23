@@ -24,6 +24,7 @@ namespace MedAppointment.Logics.AppConfig
             services.AddScoped<IDoctorService, DoctorService>();
 
             services.AddScoped<IDoctorPlanManagerService, DoctorPlanManagerService>();
+            services.AddScoped<IDoctorCalendarService, DoctorCalendarService>();
 
             services.AddScoped<ITimeSlotPaddingStrategy, NoPaddingStrategy>();
             services.AddScoped<ITimeSlotPaddingStrategy, StartOfPeriodPaddingStrategy>();

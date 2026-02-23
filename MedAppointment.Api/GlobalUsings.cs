@@ -27,6 +27,7 @@ global using MedAppointment.DataTransferObjects.PaginationDtos.ClassifierPaginat
 
 
 #region Abstract Logic Services
+global using MedAppointment.Logics.Services.CalendarServices;
 global using MedAppointment.Logics.Services.ClientServices;
 global using MedAppointment.Logics.Services.ClassifierServices;
 global using MedAppointment.Logics.Services.PlanManagerServices;

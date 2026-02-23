@@ -121,11 +121,11 @@ namespace MedAppointment.Logics.Implementations.PlanManagerServices
                     DoctorId = doctorId,
                     SpecialtyId = daySchema.SpecialtyId,
                     PeriodId = daySchema.PeriodId,
-                    BelongDate = belongDate,
+                    BelongDate = belongDate.AddDays(daySchema.DayOfWeek - 1),
                     DayOfWeek = daySchema.DayOfWeek,
                     OpenTime = daySchema.OpenTime,
                     IsClosed = daySchema.IsClosed,
-                    CloseTime = daySchema.OpenTime
+                    CloseTime = daySchema.OpenTime,
                 };
 
                 if (daySchema.IsClosed)
