@@ -143,3 +143,7 @@ Return validation errors like:
 | ERR00152 | Week start date must be a Monday (start of week). | Pagination is by week; week must start on Monday. |
 | ERR00153 | Doctor not found. | The requested doctor does not exist or is not available. |
 | ERR00154 | Weekly schema cannot created. Founded existed day plan | |
+| ERR00155 | Day plan id must be greater than 0. | EditDayPlanDto.DayPlanId required. |
+| ERR00156 | Day plan not found. | Day plan does not exist or does not belong to the doctor. |
+| ERR00157 | Specialty id must be greater than 0. | EditDayPlanDto.SpecialtyId required. |
+| ERR00158 | Specialty not found. | The specialty classifier does not exist. |

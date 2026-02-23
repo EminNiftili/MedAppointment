@@ -19,5 +19,12 @@ namespace MedAppointment.Api.Controllers.ServiceControllers
             var result = await _doctorCalendarService.GetWeeklyCalendarAsync(query);
             return CustomResult(result);
         }
+
+        [HttpPut("day-plan")]
+        public async Task<IActionResult> EditDayPlanAsync([FromBody] EditDayPlanDto dto)
+        {
+            var result = await _doctorCalendarService.EditDayPlanAsync(dto);
+            return CustomResult(result);
+        }
     }
 }
