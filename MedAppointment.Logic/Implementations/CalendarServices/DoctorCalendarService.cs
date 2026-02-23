@@ -5,18 +5,24 @@ namespace MedAppointment.Logics.Implementations.CalendarServices
         private readonly ILogger<DoctorCalendarService> _logger;
         private readonly IUnitOfService _unitOfService;
         private readonly IUnitOfDoctor _unitOfDoctor;
+        private readonly IUnitOfClassifier _unitOfClassifier;
         private readonly IValidator<DoctorCalendarWeekQueryDto> _queryValidator;
+        private readonly IValidator<EditDayPlanDto> _editDayPlanValidator;
 
         public DoctorCalendarService(
             ILogger<DoctorCalendarService> logger,
             IUnitOfService unitOfService,
             IUnitOfDoctor unitOfDoctor,
-            IValidator<DoctorCalendarWeekQueryDto> queryValidator)
+            IUnitOfClassifier unitOfClassifier,
+            IValidator<DoctorCalendarWeekQueryDto> queryValidator,
+            IValidator<EditDayPlanDto> editDayPlanValidator)
         {
             _logger = logger;
             _unitOfService = unitOfService;
             _unitOfDoctor = unitOfDoctor;
+            _unitOfClassifier = unitOfClassifier;
             _queryValidator = queryValidator;
+            _editDayPlanValidator = editDayPlanValidator;
         }
 
         public async Task<Result<DoctorCalendarWeekResponseDto>> GetWeeklyCalendarAsync(DoctorCalendarWeekQueryDto query)
@@ -131,6 +137,64 @@ namespace MedAppointment.Logics.Implementations.CalendarServices
             result.Success(response);
             _logger.LogInformation("GetWeeklyCalendarAsync completed. DoctorId: {DoctorId}, WeekStart: {WeekStart}, DaysWithPlans: {DaysWithPlans}",
                 doctorId, weekStart, dayPlans.Select(dp => dp.BelongDate.Date).Distinct().Count());
+            return result;
+        }
+
+        public async Task<Result> EditDayPlanAsync(EditDayPlanDto dto)
+        {
+            _logger.LogTrace("EditDayPlanAsync started. DayPlanId: {DayPlanId}, DoctorId: {DoctorId}, SpecialtyId: {SpecialtyId}, IsClosed: {IsClosed}",
+                dto.DayPlanId, dto.DoctorId, dto.SpecialtyId, dto.IsClosed);
+
+            var result = Result.Create();
+
+            var validationResult = await _editDayPlanValidator.ValidateAsync(dto);
+            if (validationResult == null)
+            {
+                _logger.LogError("Validation result is null for EditDayPlanDto.");
+                result.AddMessage("ERR00100", "Unexpected error contact with admin", HttpStatusCode.InternalServerError);
+                return result;
+            }
+            if (!validationResult.IsValid)
+            {
+                _logger.LogDebug("EditDayPlanDto validation failed. Errors: {ErrorCount}", validationResult.Errors.Count);
+                result.SetFluentValidationAndBadRequest(validationResult);
+                return result;
+            }
+            _logger.LogDebug("EditDayPlanDto validation succeeded.");
+
+            var dayPlan = await _unitOfService.DayPlan.GetByIdAsync(dto.DayPlanId);
+            if (dayPlan == null || dayPlan.IsDeleted)
+            {
+                _logger.LogInformation("Day plan not found or deleted. DayPlanId: {DayPlanId}", dto.DayPlanId);
+                result.AddMessage("ERR00156", "Day plan not found.", HttpStatusCode.NotFound);
+                return result;
+            }
+            if (dayPlan.DoctorId != dto.DoctorId)
+            {
+                _logger.LogInformation("Day plan does not belong to doctor. DayPlanId: {DayPlanId}, DayPlanDoctorId: {DayPlanDoctorId}, RequestedDoctorId: {DoctorId}",
+                    dto.DayPlanId, dayPlan.DoctorId, dto.DoctorId);
+                result.AddMessage("ERR00156", "Day plan not found.", HttpStatusCode.NotFound);
+                return result;
+            }
+            _logger.LogDebug("Day plan found and belongs to doctor. DayPlanId: {DayPlanId}", dto.DayPlanId);
+
+            var specialty = await _unitOfClassifier.Specialty.GetByIdAsync(dto.SpecialtyId);
+            if (specialty == null || specialty.IsDeleted)
+            {
+                _logger.LogInformation("Specialty not found or deleted. SpecialtyId: {SpecialtyId}", dto.SpecialtyId);
+                result.AddMessage("ERR00158", "Specialty not found.", HttpStatusCode.NotFound);
+                return result;
+            }
+            _logger.LogDebug("Specialty found. SpecialtyId: {SpecialtyId}", dto.SpecialtyId);
+
+            dayPlan.SpecialtyId = dto.SpecialtyId;
+            dayPlan.IsClosed = dto.IsClosed;
+            _unitOfService.DayPlan.Update(dayPlan);
+            await _unitOfService.SaveChangesAsync();
+
+            result.Success();
+            _logger.LogInformation("EditDayPlanAsync completed. DayPlanId: {DayPlanId}, DoctorId: {DoctorId}",
+                dto.DayPlanId, dto.DoctorId);
             return result;
         }
     }
