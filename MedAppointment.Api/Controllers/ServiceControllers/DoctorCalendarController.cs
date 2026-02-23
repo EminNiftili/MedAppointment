@@ -2,6 +2,7 @@ using MedAppointment.DataTransferObjects.DoctorDtos;
 
 namespace MedAppointment.Api.Controllers.ServiceControllers
 {
+    [Authorize(Roles = RoleNames.DoctorRole)]
     public class DoctorCalendarController : BaseApiController
     {
         private readonly IDoctorCalendarService _doctorCalendarService;

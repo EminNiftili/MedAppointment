@@ -20,12 +20,10 @@ namespace MedAppointment.DataAccess.Implementations.EntityFramework.SqlServer.Co
                 .HasColumnType("time(7)");
 
             builder.Property(e => e.IsOnSiteService)
-                .IsRequired()
-                .HasDefaultValueSql("1");
+                .IsRequired();
 
             builder.Property(e => e.IsOnlineService)
-                .IsRequired()
-                .HasDefaultValueSql("1");
+                .IsRequired();
 
             builder.Property(e => e.IsBusy)
                 .IsRequired()

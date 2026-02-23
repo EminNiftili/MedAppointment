@@ -142,3 +142,4 @@ Return validation errors like:
 | ERR00151 | Week start date is required. | Doctor calendar week start date must be provided. |
 | ERR00152 | Week start date must be a Monday (start of week). | Pagination is by week; week must start on Monday. |
 | ERR00153 | Doctor not found. | The requested doctor does not exist or is not available. |
+| ERR00154 | Weekly schema cannot created. Founded existed day plan | |

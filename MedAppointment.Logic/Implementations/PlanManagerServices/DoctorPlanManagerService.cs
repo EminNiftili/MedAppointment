@@ -49,6 +49,13 @@ namespace MedAppointment.Logics.Implementations.PlanManagerServices
             }
             _logger.LogDebug("CreateDayPlansFromSchema DTO validation succeeded.");
 
+            var hasExistedPlan = await _unitOfService.DayPlan.AnyAsync(x => x.DoctorId == dto.WeeklySchema.DoctorId && x.BelongDate >= dto.StartDate && x.BelongDate <= dto.StartDate.AddDays(7));
+            if (hasExistedPlan)
+            {
+                _logger.LogDebug("Weekly schema cannot created. Founded existed day plan");
+                result.AddMessage("ERR00154", "Weekly schema cannot created. Founded existed day plan.", HttpStatusCode.BadRequest);
+                return result;
+            }
             var verifiedDoctorResult = await _doctorService.EnsureDoctorIsVerifiedAsync(doctorId);
             if (!verifiedDoctorResult.IsSuccess())
             {
@@ -169,7 +176,7 @@ namespace MedAppointment.Logics.Implementations.PlanManagerServices
                         IsOnSiteService = daySchema.IsOnSiteService,
                         PricePerPeriod = dto.PricePerPeriod,
                         CurrencyId = dto.CurrencyId,
-                        IsBusy = true
+                        IsBusy = false
                     };
                     _unitOfService.PeriodPlan.Add(periodPlan);
                 }
