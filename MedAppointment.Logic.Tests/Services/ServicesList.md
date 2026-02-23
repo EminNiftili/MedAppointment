@@ -21,10 +21,10 @@ Unit testlər **tək-tək** yazılacaq. Hər servis üçün ayrıca test faylı 
 
 | # | İnterfeys | İmplementasiya | Test faylı (yazılacaq) | Status |
 |---|-----------|----------------|-------------------------|--------|
-| 7 | `IDoctorService` | `DoctorService` | `DoctorServiceTests.cs` | ⬜ |
-| 8 | `IAdminUserService` | `AdminUserService` | `AdminUserServiceTests.cs` | ⬜ |
-| 9 | `IPrivateClientInfoService` | `PrivateClientInfoService` | `PrivateClientInfoServiceTests.cs` | ⬜ |
-| 10 | `IClientRegistrationService` | `ClientRegistrationService` | `ClientRegistrationServiceTests.cs` | ⬜ |
+| 7 | `IDoctorService` | `DoctorService` | `DoctorServiceTests.cs` | ✅ |
+| 8 | `IAdminUserService` | `AdminUserService` | `AdminUserServiceTests.cs` | ✅ |
+| 9 | `IPrivateClientInfoService` | `PrivateClientInfoService` | `PrivateClientInfoServiceTests.cs` | ✅ |
+| 10 | `IClientRegistrationService` | `ClientRegistrationService` | `ClientRegistrationServiceTests.cs` | ✅ |
 
 ---
 
@@ -32,9 +32,9 @@ Unit testlər **tək-tək** yazılacaq. Hər servis üçün ayrıca test faylı 
 
 | # | İnterfeys | İmplementasiya | Test faylı (yazılacaq) | Status |
 |---|-----------|----------------|-------------------------|--------|
-| 11 | `IHashService` | `HashService` | `HashServiceTests.cs` | ⬜ |
-| 12 | `ITokenService` | `JwtBearerTokenService` | `JwtBearerTokenServiceTests.cs` | ⬜ |
-| 13 | `ILoginService` | `LoginService` | `LoginServiceTests.cs` | ⬜ |
+| 11 | `IHashService` | `HashService` | `HashServiceTests.cs` | ✅ |
+| 12 | `ITokenService` | `JwtBearerTokenService` | `JwtBearerTokenServiceTests.cs` | ✅ |
+| 13 | `ILoginService` | `LoginService` | `LoginServiceTests.cs` | ✅ |
 
 ---
 
@@ -42,8 +42,8 @@ Unit testlər **tək-tək** yazılacaq. Hər servis üçün ayrıca test faylı 
 
 | # | İnterfeys | İmplementasiya | Test faylı (yazılacaq) | Status |
 |---|-----------|----------------|-------------------------|--------|
-| 14 | `ILocalizerService` | `LocalizerService` | `LocalizerServiceTests.cs` | ⬜ |
-| 15 | `ITranslationLookupService` | `TranslationLookupService` | `TranslationLookupServiceTests.cs` | ⬜ |
+| 14 | `ILocalizerService` | `LocalizerService` | `LocalizerServiceTests.cs` | ✅ |
+| 15 | `ITranslationLookupService` | `TranslationLookupService` | `TranslationLookupServiceTests.cs` | ✅ |
 
 ---
 
@@ -51,9 +51,9 @@ Unit testlər **tək-tək** yazılacaq. Hər servis üçün ayrıca test faylı 
 
 | # | İnterfeys | İmplementasiya | Test faylı (yazılacaq) | Status |
 |---|-----------|----------------|-------------------------|--------|
-| 16 | `IDoctorCalendarService` | `DoctorCalendarService` | `DoctorCalendarServiceTests.cs` | ⬜ |
-| 17 | `IDoctorPlanManagerService` | `DoctorPlanManagerService` | `DoctorPlanManagerServiceTests.cs` | ⬜ |
-| 18 | `ITimeSlotService` | `TimeSlotService` | `TimeSlotServiceTests.cs` | ⬜ |
+| 16 | `IDoctorCalendarService` | `DoctorCalendarService` | `DoctorCalendarServiceTests.cs` | ✅ |
+| 17 | `IDoctorPlanManagerService` | `DoctorPlanManagerService` | `DoctorPlanManagerServiceTests.cs` | ✅ |
+| 18 | `ITimeSlotService` | `TimeSlotService` | `TimeSlotServiceTests.cs` | ✅ |
 
 ---
 

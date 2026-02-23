@@ -1,7 +1,7 @@
 ﻿using MedAppointment.DataAccess.Implementations.EntityFramework.UnitOfWorks;
 using MedAppointment.Logics.Services.LocalizationServices;
 
-namespace MedAppointment.Logics.Implementations.ClassifierServices
+namespace MedAppointment.Logics.Implementations.LocalizationServices
 {
     internal class TranslationLookupService : ITranslationLookupService
     {

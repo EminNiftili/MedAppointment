@@ -20,5 +20,8 @@ Bu qovluq unit testlər üçün sabit (magic) test məlumatlarını saxlayır. R
 | `MagicPeriod.cs` | Period entity və DTO-lar üçün test dataları |
 | `MagicPaymentType.cs` | PaymentType entity və DTO-lar üçün test dataları |
 | `MagicPlanPaddingType.cs` | PlanPaddingType entity və DTO-lar üçün test dataları |
+| `MagicCalendar.cs` | Calendar/Plan: DoctorId, DayPlan, PeriodPlan, CreateDayPlansFromSchemaDto, DoctorSchemaCreateDto |
+| `MagicClient.cs` | Client: User, Doctor, Person, OrganizationUser, pagination DTOs, TraditionalUserRegister, AdminDoctorSpecialtyCreate |
+| `MagicSecurity.cs` | Security/Login: DeviceDto, TraditionalUserLoginDto, RefreshTokenRequestDto, PersonWithTraditionalUser |
 
 Servis testləri hissə-hissə yazıldıqca bu cədvələ yeni Magic fayllar əlavə edin.

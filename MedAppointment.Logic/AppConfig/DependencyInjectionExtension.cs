@@ -1,4 +1,4 @@
-using MedAppointment.Logics.Implementations;
+using MedAppointment.Logics.Implementations.LocalizationServices;
 using MedAppointment.Logics.Services.LocalizationServices;
 
 namespace MedAppointment.Logics.AppConfig

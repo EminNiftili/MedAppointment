@@ -3,7 +3,7 @@ using MedAppointment.DataTransferObjects.LocalizationDtos;
 using MedAppointment.Logics.Services.LocalizationServices;
 using Microsoft.EntityFrameworkCore.Metadata.Internal;
 
-namespace MedAppointment.Logics.Implementations
+namespace MedAppointment.Logics.Implementations.LocalizationServices
 {
     internal class LocalizerService : ILocalizerService
     {

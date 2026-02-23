@@ -1,5 +1,4 @@
 using System.Reflection;
-using System.Linq;
 
 namespace MedAppointment.Logic.Tests.TestHelpers;
 
@@ -30,6 +29,15 @@ public static class ServiceReflectionHelper
     }
 
     public static TInterface CreateClassifierService<TInterface>(string implementationTypeName, params object?[] constructorArgs)
+        where TInterface : class
+    {
+        return CreateService<TInterface>(implementationTypeName, constructorArgs);
+    }
+
+    /// <summary>
+    /// Creates any internal Logic service by type name (Calendar, PlanManager, Localization, etc.).
+    /// </summary>
+    public static TInterface CreateService<TInterface>(string implementationTypeName, params object?[] constructorArgs)
         where TInterface : class
     {
         var type = LogicAssembly.GetType(implementationTypeName)

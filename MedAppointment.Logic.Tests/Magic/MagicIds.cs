@@ -17,4 +17,9 @@ public static class MagicIds
 
     public const long NameTextId = 5001;
     public const long DescriptionTextId = 5002;
+
+    /// <summary>
+    /// Generic non-existent ID for entities (e.g. WeeklySchema).
+    /// </summary>
+    public const long NonExistentId = 99990;
 }
