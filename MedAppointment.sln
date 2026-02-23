@@ -1,4 +1,4 @@
-﻿
+
 Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 17
 VisualStudioVersion = 17.14.36811.4
@@ -26,6 +26,22 @@ EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Localizations", "Localizations", "{078DA1A7-2094-4939-9BB4-10C9E0B0448D}"
 	ProjectSection(SolutionItems) = preProject
 		Localizations\readme.md = Localizations\readme.md
+	EndProjectSection
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "ApiDocumentation", "ApiDocumentation", "{1A2B3C4D-5E6F-4A5B-8C9D-0E1F2A3B4C5D}"
+	ProjectSection(SolutionItems) = preProject
+		ApiDocumentation\README.md = ApiDocumentation\README.md
+		ApiDocumentation\Endpoints\Login.md = ApiDocumentation\Endpoints\Login.md
+		ApiDocumentation\Endpoints\Registration.md = ApiDocumentation\Endpoints\Registration.md
+		ApiDocumentation\Endpoints\AdminUsers.md = ApiDocumentation\Endpoints\AdminUsers.md
+		ApiDocumentation\Endpoints\Doctors.md = ApiDocumentation\Endpoints\Doctors.md
+		ApiDocumentation\Endpoints\Languages.md = ApiDocumentation\Endpoints\Languages.md
+		ApiDocumentation\Endpoints\Specialties.md = ApiDocumentation\Endpoints\Specialties.md
+		ApiDocumentation\Endpoints\Currencies.md = ApiDocumentation\Endpoints\Currencies.md
+		ApiDocumentation\Endpoints\Periods.md = ApiDocumentation\Endpoints\Periods.md
+		ApiDocumentation\Endpoints\PaymentTypes.md = ApiDocumentation\Endpoints\PaymentTypes.md
+		ApiDocumentation\Endpoints\PlanPaddingTypes.md = ApiDocumentation\Endpoints\PlanPaddingTypes.md
+		ApiDocumentation\Endpoints\DoctorCalendar.md = ApiDocumentation\Endpoints\DoctorCalendar.md
 	EndProjectSection
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MedAppointment.Api", "MedAppointment.Api\MedAppointment.Api.csproj", "{301ED948-16B3-4FF9-9467-C89A727E81D6}"
@@ -67,6 +83,7 @@ Global
 	GlobalSection(NestedProjects) = preSolution
 		{57673996-7E91-42DF-A6A0-C10D985A7F69} = {02EA681E-C7D8-13C7-8484-4AC65E1B71E8}
 		{078DA1A7-2094-4939-9BB4-10C9E0B0448D} = {02EA681E-C7D8-13C7-8484-4AC65E1B71E8}
+		{1A2B3C4D-5E6F-4A5B-8C9D-0E1F2A3B4C5D} = {02EA681E-C7D8-13C7-8484-4AC65E1B71E8}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {9B0C8503-34CF-4379-8B05-91B19F3223D3}
