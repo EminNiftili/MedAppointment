@@ -5,5 +5,7 @@ namespace MedAppointment.Logics.Services.CalendarServices
         Task<Result<DoctorCalendarWeekResponseDto>> GetWeeklyCalendarAsync(DoctorCalendarWeekQueryDto query);
 
         Task<Result> EditDayPlanAsync(EditDayPlanDto dto);
+
+        Task<Result> EditPeriodPlanAsync(EditPeriodPlanDto dto);
     }
 }

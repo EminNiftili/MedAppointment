@@ -8,6 +8,7 @@ namespace MedAppointment.Logics.Implementations.CalendarServices
         private readonly IUnitOfClassifier _unitOfClassifier;
         private readonly IValidator<DoctorCalendarWeekQueryDto> _queryValidator;
         private readonly IValidator<EditDayPlanDto> _editDayPlanValidator;
+        private readonly IValidator<EditPeriodPlanDto> _editPeriodPlanValidator;
 
         public DoctorCalendarService(
             ILogger<DoctorCalendarService> logger,
@@ -15,7 +16,8 @@ namespace MedAppointment.Logics.Implementations.CalendarServices
             IUnitOfDoctor unitOfDoctor,
             IUnitOfClassifier unitOfClassifier,
             IValidator<DoctorCalendarWeekQueryDto> queryValidator,
-            IValidator<EditDayPlanDto> editDayPlanValidator)
+            IValidator<EditDayPlanDto> editDayPlanValidator,
+            IValidator<EditPeriodPlanDto> editPeriodPlanValidator)
         {
             _logger = logger;
             _unitOfService = unitOfService;
@@ -23,6 +25,7 @@ namespace MedAppointment.Logics.Implementations.CalendarServices
             _unitOfClassifier = unitOfClassifier;
             _queryValidator = queryValidator;
             _editDayPlanValidator = editDayPlanValidator;
+            _editPeriodPlanValidator = editPeriodPlanValidator;
         }
 
         public async Task<Result<DoctorCalendarWeekResponseDto>> GetWeeklyCalendarAsync(DoctorCalendarWeekQueryDto query)
@@ -195,6 +198,79 @@ namespace MedAppointment.Logics.Implementations.CalendarServices
             result.Success();
             _logger.LogInformation("EditDayPlanAsync completed. DayPlanId: {DayPlanId}, DoctorId: {DoctorId}",
                 dto.DayPlanId, dto.DoctorId);
+            return result;
+        }
+
+        public async Task<Result> EditPeriodPlanAsync(EditPeriodPlanDto dto)
+        {
+            _logger.LogTrace("EditPeriodPlanAsync started. PeriodPlanId: {PeriodPlanId}, DoctorId: {DoctorId}, PeriodStart: {PeriodStart}, PeriodStop: {PeriodStop}",
+                dto.PeriodPlanId, dto.DoctorId, dto.PeriodStart, dto.PeriodStop);
+
+            var result = Result.Create();
+
+            var validationResult = await _editPeriodPlanValidator.ValidateAsync(dto);
+            if (validationResult == null)
+            {
+                _logger.LogError("Validation result is null for EditPeriodPlanDto.");
+                result.AddMessage("ERR00100", "Unexpected error contact with admin", HttpStatusCode.InternalServerError);
+                return result;
+            }
+            if (!validationResult.IsValid)
+            {
+                _logger.LogDebug("EditPeriodPlanDto validation failed. Errors: {ErrorCount}", validationResult.Errors.Count);
+                result.SetFluentValidationAndBadRequest(validationResult);
+                return result;
+            }
+            _logger.LogDebug("EditPeriodPlanDto validation succeeded.");
+
+            var periodPlan = await _unitOfService.PeriodPlan.GetByIdAsync(dto.PeriodPlanId);
+            if (periodPlan == null || periodPlan.IsDeleted)
+            {
+                _logger.LogInformation("Period plan not found or deleted. PeriodPlanId: {PeriodPlanId}", dto.PeriodPlanId);
+                result.AddMessage("ERR00160", "Period plan not found.", HttpStatusCode.NotFound);
+                return result;
+            }
+            if (periodPlan.DayPlan == null || periodPlan.DayPlan.DoctorId != dto.DoctorId)
+            {
+                _logger.LogInformation("Period plan does not belong to doctor. PeriodPlanId: {PeriodPlanId}, DoctorId: {DoctorId}", dto.PeriodPlanId, dto.DoctorId);
+                result.AddMessage("ERR00160", "Period plan not found.", HttpStatusCode.NotFound);
+                return result;
+            }
+            _logger.LogDebug("Period plan found and belongs to doctor. PeriodPlanId: {PeriodPlanId}, DayPlanId: {DayPlanId}", dto.PeriodPlanId, periodPlan.DayPlanId);
+
+            var currency = await _unitOfClassifier.Currency.GetByIdAsync(dto.CurrencyId);
+            if (currency == null || currency.IsDeleted)
+            {
+                _logger.LogInformation("Currency not found or deleted. CurrencyId: {CurrencyId}", dto.CurrencyId);
+                result.AddMessage("ERR00050", "Classifier item not found.", HttpStatusCode.NotFound);
+                return result;
+            }
+            _logger.LogDebug("Currency found. CurrencyId: {CurrencyId}", dto.CurrencyId);
+
+            var otherPeriodsInDay = (await _unitOfService.PeriodPlan.FindAsync(x =>
+                x.DayPlanId == periodPlan.DayPlanId && x.Id != dto.PeriodPlanId && !x.IsDeleted)).ToList();
+            var overlaps = otherPeriodsInDay.Any(other =>
+                dto.PeriodStart < other.PeriodStop && other.PeriodStart < dto.PeriodStop);
+            if (overlaps)
+            {
+                _logger.LogInformation("Period time overlaps with another period in the same day plan. PeriodPlanId: {PeriodPlanId}, DayPlanId: {DayPlanId}", dto.PeriodPlanId, periodPlan.DayPlanId);
+                result.AddMessage("ERR00163", "Period time overlaps with another period in the same day plan.", HttpStatusCode.BadRequest);
+                return result;
+            }
+            _logger.LogDebug("No overlap with other periods in day plan.");
+
+            periodPlan.PeriodStart = dto.PeriodStart;
+            periodPlan.PeriodStop = dto.PeriodStop;
+            periodPlan.IsOnlineService = dto.IsOnlineService;
+            periodPlan.IsOnSiteService = dto.IsOnSiteService;
+            periodPlan.PricePerPeriod = dto.PricePerPeriod;
+            periodPlan.CurrencyId = dto.CurrencyId;
+            periodPlan.IsBusy = dto.IsBusy;
+            _unitOfService.PeriodPlan.Update(periodPlan);
+            await _unitOfService.SaveChangesAsync();
+
+            result.Success();
+            _logger.LogInformation("EditPeriodPlanAsync completed. PeriodPlanId: {PeriodPlanId}, DoctorId: {DoctorId}", dto.PeriodPlanId, dto.DoctorId);
             return result;
         }
     }
