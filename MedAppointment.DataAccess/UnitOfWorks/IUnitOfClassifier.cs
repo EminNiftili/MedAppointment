@@ -8,5 +8,6 @@
         ISpecialtyRepository Specialty { get; }
         IPlanPaddingTypeRepository PlanPaddingType { get; }
         ILanguageRepository Language { get; }
+        IProfessionRepository Profession { get; }
     }
 }

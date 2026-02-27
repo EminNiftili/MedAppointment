@@ -9,7 +9,8 @@
 
         protected override IQueryable<DoctorEntity> IncludeQuery(IQueryable<DoctorEntity> query)
         {
-            return query.Include(doctor => doctor.User)
+            return query.Include(doctor => doctor.Profession)
+                        .Include(doctor => doctor.User)
                             .ThenInclude(user => user!.Admin)
                         .Include(doctor => doctor.User)
                             .ThenInclude(user => user!.Person)

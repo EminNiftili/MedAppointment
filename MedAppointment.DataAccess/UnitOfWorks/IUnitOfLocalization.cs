@@ -1,4 +1,4 @@
-﻿namespace MedAppointment.DataAccess.Implementations.EntityFramework.UnitOfWorks
+﻿namespace MedAppointment.DataAccess.UnitOfWorks
 {
     public interface IUnitOfLocalization : IUnitOfWork
     {

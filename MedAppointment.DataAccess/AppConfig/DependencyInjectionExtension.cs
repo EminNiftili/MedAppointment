@@ -48,6 +48,7 @@ namespace MedAppointment.DataAccess.AppConfig
             services.AddScoped<IPeriodRepository, PeriodRepository>();
             services.AddScoped<ISpecialtyRepository, SpecialtyRepository>();
             services.AddScoped<IPlanPaddingTypeRepository, PlanPaddingTypeRepository>();
+            services.AddScoped<IProfessionRepository, ProfessionRepository>();
 
             services.AddScoped<IResourceRepository, ResourceRespository>();
             services.AddScoped<ITranslationRepository, TranslationRepository>();

@@ -1,5 +1,4 @@
-﻿using MedAppointment.DataAccess.Implementations.EntityFramework.UnitOfWorks;
-using MedAppointment.Logics.Services.LocalizationServices;
+﻿using MedAppointment.Logics.Services.LocalizationServices;
 
 namespace MedAppointment.Logics.Implementations.LocalizationServices
 {

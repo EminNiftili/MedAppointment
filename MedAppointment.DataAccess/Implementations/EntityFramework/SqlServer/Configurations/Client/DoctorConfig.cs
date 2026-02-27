@@ -33,6 +33,11 @@
                 .WithOne()
                 .HasForeignKey<DoctorEntity>(x => x.DescriptionTextId)
                 .OnDelete(DeleteBehavior.NoAction);
+
+
+            builder.HasOne(x => x.Profession)
+                .WithMany()
+                .HasForeignKey(x => x.ProfessionId);
         }
     }
 }

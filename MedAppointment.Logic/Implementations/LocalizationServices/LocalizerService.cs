@@ -1,5 +1,4 @@
-﻿using MedAppointment.DataAccess.Implementations.EntityFramework.UnitOfWorks;
-using MedAppointment.DataTransferObjects.LocalizationDtos;
+﻿using MedAppointment.DataTransferObjects.LocalizationDtos;
 using MedAppointment.Logics.Services.LocalizationServices;
 using Microsoft.EntityFrameworkCore.Metadata.Internal;
 

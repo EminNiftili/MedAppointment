@@ -1,5 +1,4 @@
-﻿
-namespace MedAppointment.DataAccess.Implementations.EntityFramework.UnitOfWorks
+﻿namespace MedAppointment.DataAccess.Implementations.EntityFramework.UnitOfWorks
 {
     internal class UnitOfClassifier : EfUnitOfWork, IUnitOfClassifier
     {
@@ -9,7 +8,8 @@ namespace MedAppointment.DataAccess.Implementations.EntityFramework.UnitOfWorks
             IPeriodRepository period, 
             ISpecialtyRepository specialty,
             IPlanPaddingTypeRepository planPaddingType,
-            ILanguageRepository language) : base(medicalAppointmentContext)
+            ILanguageRepository language,
+            IProfessionRepository profession) : base(medicalAppointmentContext)
         {
             Currency = currency;
             PaymentType = paymentType;
@@ -17,6 +17,7 @@ namespace MedAppointment.DataAccess.Implementations.EntityFramework.UnitOfWorks
             Specialty = specialty;
             PlanPaddingType = planPaddingType;
             Language = language;
+            Profession = profession;
         }
 
         public ICurrencyRepository Currency { get; private set; }
@@ -30,5 +31,7 @@ namespace MedAppointment.DataAccess.Implementations.EntityFramework.UnitOfWorks
         public IPlanPaddingTypeRepository PlanPaddingType { get; private set; }
 
         public ILanguageRepository Language { get; private set; }
+
+        public IProfessionRepository Profession { get; private set; }
     }
 }
