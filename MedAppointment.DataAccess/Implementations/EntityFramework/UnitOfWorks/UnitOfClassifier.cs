@@ -9,7 +9,8 @@
             ISpecialtyRepository specialty,
             IPlanPaddingTypeRepository planPaddingType,
             ILanguageRepository language,
-            IProfessionRepository profession) : base(medicalAppointmentContext)
+            IProfessionRepository profession,
+            IGenderRepository gender) : base(medicalAppointmentContext)
         {
             Currency = currency;
             PaymentType = paymentType;
@@ -18,6 +19,7 @@
             PlanPaddingType = planPaddingType;
             Language = language;
             Profession = profession;
+            Gender = gender;
         }
 
         public ICurrencyRepository Currency { get; private set; }
@@ -33,5 +35,7 @@
         public ILanguageRepository Language { get; private set; }
 
         public IProfessionRepository Profession { get; private set; }
+
+        public IGenderRepository Gender { get; private set; }
     }
 }

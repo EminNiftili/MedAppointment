@@ -11,6 +11,10 @@
                 .IsRequired()
                 .HasDefaultValueSql("0");
 
+
+            builder.Property(x => x.PresentationVideoUrl)
+                .IsRequired(false);
+
             builder.Property(x => x.TitleTextId)
                 .IsRequired();
 
@@ -34,10 +38,17 @@
                 .HasForeignKey<DoctorEntity>(x => x.DescriptionTextId)
                 .OnDelete(DeleteBehavior.NoAction);
 
-
             builder.HasOne(x => x.Profession)
                 .WithMany()
                 .HasForeignKey(x => x.ProfessionId);
+
+            builder.HasMany(x => x.ServiceGenderTypes)
+                .WithOne()
+                .HasForeignKey(x => x.DoctorId);
+
+            builder.HasMany(x => x.ServiceLanguages)
+                .WithOne()
+                .HasForeignKey(x => x.DoctorId);
         }
     }
 }

@@ -24,6 +24,9 @@
             builder.Property(x => x.ImageId)
                 .IsRequired(false);
 
+            builder.Property(x => x.GenderId)
+                .IsRequired(true);
+
             builder.Property(x => x.Email)
                 .IsRequired()
                 .HasMaxLength(100)
@@ -44,6 +47,10 @@
             builder.HasOne(x => x.Image)
                 .WithOne()
                 .HasForeignKey<PersonEntity>(x => x.ImageId);
+
+            builder.HasOne(x => x.Gender)
+                .WithMany()
+                .HasForeignKey(x => x.GenderId);
         }
     }
 }

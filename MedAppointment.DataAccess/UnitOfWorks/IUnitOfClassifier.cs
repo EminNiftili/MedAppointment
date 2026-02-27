@@ -9,5 +9,6 @@
         IPlanPaddingTypeRepository PlanPaddingType { get; }
         ILanguageRepository Language { get; }
         IProfessionRepository Profession { get; }
+        IGenderRepository Gender { get; }
     }
 }

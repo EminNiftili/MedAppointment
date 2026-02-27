@@ -18,6 +18,7 @@
         {
             return query
                 .Include(person => person.Image)
+                .Include(person => person.Gender)
                 .Include(person => person.User)
                     .ThenInclude(user => user!.Admin)
                 .Include(person => person.User)

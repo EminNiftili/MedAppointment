@@ -9,7 +9,9 @@
         public string Email { get; set; } = null!;
         public string PhoneNumber { get; set; } = null!;
         public DateTime BirthDate { get; set; }
+        public long GenderId { get; set; }
 
+        public GenderEntity? Gender { get; set; }
         public ImageEntity? Image { get; set; }
         public UserEntity? User { get; set; }
     }
