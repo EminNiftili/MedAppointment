@@ -1,4 +1,4 @@
-﻿namespace MedAppointment.Logics.Implementations.ClientServices
+namespace MedAppointment.Logics.Implementations.ClientServices
 {
     internal class ClientRegistrationService : IClientRegistrationService
     {
@@ -84,6 +84,7 @@
                 Name = traditionalUserRegister.Name,
                 Surname = traditionalUserRegister.Surname,
                 FatherName = traditionalUserRegister.FatherName,
+                GenderId = traditionalUserRegister.GenderId,
                 Email = traditionalUserRegister.Email,
                 PhoneNumber = traditionalUserRegister.PhoneNumber,
                 BirthDate = traditionalUserRegister.BirthDate,

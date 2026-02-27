@@ -1,4 +1,4 @@
-﻿namespace MedAppointment.Validations.DtoValidations.UserValidations
+namespace MedAppointment.Validations.DtoValidations.UserValidations
 {
     public class TraditionalUserRegisterValidation : BaseValidator<TraditionalUserRegisterDto>
     {
@@ -44,6 +44,11 @@
                 .LessThan(DateTime.Today)
                     .WithErrorCode("ERR00011")
                     .WithMessage("Birth date cannot be in the future.");
+
+            RuleFor(x => x.GenderId)
+                .GreaterThan(0L)
+                    .WithErrorCode("ERR00164")
+                    .WithMessage("Gender id must be greater than 0.");
 
             RuleFor(x => x.Email)
                 .NotEmpty()

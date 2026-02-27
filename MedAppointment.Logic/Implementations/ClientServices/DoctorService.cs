@@ -1,5 +1,6 @@
 using MedAppointment.Logics.Extensions;
 using MedAppointment.Logics.Services.LocalizationServices;
+using MedAppointment.Entities.Composition;
 
 namespace MedAppointment.Logics.Implementations.ClientServices
 {
@@ -323,12 +324,24 @@ namespace MedAppointment.Logics.Implementations.ClientServices
             {
                 TitleTextId = titleResult.Model,
                 DescriptionTextId = descriptionResult.Model,
+                ProfessionId = doctorRegister.ProfessionId,
+                PresentationVideoUrl = doctorRegister.PresentationVideoUrl,
                 IsConfirm = false,
                 Specialties = doctorRegister.Specialties.Select(x => new DoctorSpecialtyEntity
                 {
                     SpecialtyId = x,
                     IsConfirm = false
-                }).ToList()
+                }).ToList(),
+                ServiceGenderTypes = doctorRegister.ServiceGenderIds
+                    .Select(genderId => new DoctorServiceGenderTypeEntity
+                    {
+                        GenderId = genderId
+                    }).ToList(),
+                ServiceLanguages = doctorRegister.ServiceLanguageIds
+                    .Select(languageId => new DoctorServiceLanguageEntity
+                    {
+                        LanguageId = languageId
+                    }).ToList()
             };
             Logger.LogInformation("Doctor entity created.");
             UnitOfClient.User.Update(userEntity);

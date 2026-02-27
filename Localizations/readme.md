@@ -151,3 +151,4 @@ Return validation errors like:
 | ERR00160 | Period plan not found. | Period plan does not exist or does not belong to the doctor. |
 | ERR00162 | Period stop must be after period start. | EditPeriodPlanDto time range must be valid. |
 | ERR00163 | Period time overlaps with another period in the same day plan. | Period start/stop must not overlap other periods in the same day plan. |
+| ERR00164 | Gender id must be greater than 0. | `GenderId` required for user registration. |
