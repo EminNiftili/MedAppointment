@@ -41,7 +41,7 @@ namespace MedAppointment.Logics.Implementations.ClassifierServices
         {
             Logger.LogTrace("Getting currency list with pagination and filters. PageNumber: {PageNumber}, PageSize: {PageSize}, NameFilter: {NameFilter}, CoefficentMin: {CoefficentMin}, CoefficentMax: {CoefficentMax}", query.PageNumber, query.PageSize, query.NameFilter, query.CoefficentMin, query.CoefficentMax);
             var result = Result<CurrencyPagedResultDto>.Create();
-
+            // its somethoing
             if (!await ValidateModelAsync(CurrencyPaginationQueryValidator, query, result))
             {
                 Logger.LogDebug("Pagination query validation failed for GetCurrenciesAsync.");
