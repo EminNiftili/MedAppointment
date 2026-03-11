@@ -1,3 +1,4 @@
+using MedAppointment.Logics.Implementations.ClientServices.CurrentUserMe;
 using MedAppointment.Logics.Implementations.LocalizationServices;
 using MedAppointment.Logics.Services.LocalizationServices;
 
@@ -21,7 +22,12 @@ namespace MedAppointment.Logics.AppConfig
             services.AddScoped<IClientRegistrationService, ClientRegistrationService>();
             services.AddScoped<IPrivateClientInfoService, PrivateClientInfoService>();
             services.AddScoped<IAdminUserService, AdminUserService>();
+            services.AddScoped<ICurrentUserMeService, CurrentUserMeService>();
             services.AddScoped<IDoctorService, DoctorService>();
+
+            services.AddScoped<IUserMeResponseStrategy, DoctorUserMeStrategy>();
+            services.AddScoped<IUserMeResponseStrategy, AdminUserMeStrategy>();
+            services.AddScoped<IUserMeResponseStrategy, PlainUserMeStrategy>();
 
             services.AddScoped<IDoctorPlanManagerService, DoctorPlanManagerService>();
             services.AddScoped<IDoctorCalendarService, DoctorCalendarService>();

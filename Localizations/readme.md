@@ -153,3 +153,4 @@ Return validation errors like:
 | ERR00163 | Period time overlaps with another period in the same day plan. | Period start/stop must not overlap other periods in the same day plan. |
 | ERR00164 | Gender id must be greater than 0. | `GenderId` required for user registration. |
 | ERR00165 | Access token is required for logout. | Logout endpoint requires a valid Bearer access token. |
+| ERR00166 | Invalid or missing user identity. | users/me requires a valid JWT with user id (NameIdentifier) claim. |

@@ -74,10 +74,12 @@ namespace MedAppointment.Logics.Implementations.SecurityServices
             }
 
             var userTypes = await PrivateClientInfoService.GetUserTypesAsync(person.User.Id);
-            var claims = new Dictionary<string, object>();
-            Logger.LogInformation("Retrieve user types");
-            var roleNames = userTypes.Select(userType => userType.ToString()).ToArray();
-            claims.Add(ClaimTypes.Role, roleNames);
+            var claims = new Dictionary<string, object>
+            {
+                { ClaimTypes.NameIdentifier, person.User.Id.ToString() },
+                { ClaimTypes.Role, userTypes.Select(userType => userType.ToString()).ToArray() }
+            };
+            Logger.LogInformation("Retrieve user types and build claims for user {UserId}", person.User.Id);
             Logger.LogTrace("All claims generated");
 
             var accessToken = TokenService.GetToken(out var expiredDate, claims);
@@ -142,11 +144,14 @@ namespace MedAppointment.Logics.Implementations.SecurityServices
                 return result;
             }
 
-            var userTypes = await PrivateClientInfoService.GetUserTypesAsync(oldTokenEntity.Session.UserId);
-            var claims = new Dictionary<string, object>();
-            Logger.LogInformation("Retrieve user types");
-            var roleNames = userTypes.Select(userType => userType.ToString()).ToArray();
-            claims.Add(ClaimTypes.Role, roleNames);
+            var userId = oldTokenEntity.Session.UserId;
+            var userTypes = await PrivateClientInfoService.GetUserTypesAsync(userId);
+            var claims = new Dictionary<string, object>
+            {
+                { ClaimTypes.NameIdentifier, userId.ToString() },
+                { ClaimTypes.Role, userTypes.Select(userType => userType.ToString()).ToArray() }
+            };
+            Logger.LogInformation("Retrieve user types and build claims for user {UserId}", userId);
             Logger.LogTrace("All claims generated");
 
             var accessToken = TokenService.GetToken(out var expiredDate, claims);
