@@ -1,4 +1,4 @@
-﻿namespace MedAppointment.Logics.Implementations.SecurityServices
+namespace MedAppointment.Logics.Implementations.SecurityServices
 {
     internal class LoginService : ILoginService
     {
@@ -168,6 +168,39 @@
 
             result.Success(new TokenDto(accessToken, refreshToken));
             Logger.LogTrace("Finished refresh token workflow");
+            return result;
+        }
+
+        public async Task<Result> LogoutAsync(string accessToken)
+        {
+            var result = Result.Create();
+            Logger.LogTrace("Started logout workflow for access token");
+
+            if (string.IsNullOrWhiteSpace(accessToken))
+            {
+                Logger.LogDebug("Logout called with empty access token");
+                result.AddMessage("ERR00165", "Access token is required for logout.", HttpStatusCode.Unauthorized);
+                return result;
+            }
+
+            var tokenEntity = await UnitOfSecurity.Token.FindFirstAsync(
+                token => token.AccessToken == accessToken && !token.IsExpired,
+                true);
+
+            if (tokenEntity == null)
+            {
+                Logger.LogInformation("No active token found for logout; treating as idempotent success");
+                result.Success(HttpStatusCode.NoContent);
+                return result;
+            }
+
+            tokenEntity.IsExpired = true;
+            UnitOfSecurity.Token.Update(tokenEntity);
+            await UnitOfSecurity.SaveChangesAsync();
+            Logger.LogDebug("Refresh token soft-deleted (IsExpired set) for session {SessionId}", tokenEntity.SessionId);
+
+            result.Success(HttpStatusCode.NoContent);
+            Logger.LogTrace("Finished logout workflow");
             return result;
         }
     }

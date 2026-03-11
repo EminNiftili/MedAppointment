@@ -1,4 +1,4 @@
-﻿using MedAppointment.DataTransferObjects.CredentialDtos;
+using MedAppointment.DataTransferObjects.CredentialDtos;
 using MedAppointment.Logics.Services.SecurityServices;
 
 namespace MedAppointment.Api.Controllers.UserControllers
@@ -34,6 +34,23 @@ namespace MedAppointment.Api.Controllers.UserControllers
             var result = await _loginService.RefreshTokenAsync(request);
 
             return SuccessAuthResult(result);
+        }
+
+        [Authorize]
+        [HttpPost("logout")]
+        public async Task<IActionResult> LogoutAsync()
+        {
+            var authHeader = HttpContext.Request.Headers.Authorization.FirstOrDefault();
+            var accessToken = authHeader?.StartsWith("Bearer ", StringComparison.OrdinalIgnoreCase) == true
+                ? authHeader["Bearer ".Length..]
+                : string.Empty;
+            var result = await _loginService.LogoutAsync(accessToken);
+            if (result.IsSuccess())
+            {
+                HttpContext.Response.Cookies.Delete("RefreshToken");
+                return NoContent();
+            }
+            return CustomResult(result);
         }
     }
 }
