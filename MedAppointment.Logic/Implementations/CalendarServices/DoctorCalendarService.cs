@@ -72,6 +72,10 @@ namespace MedAppointment.Logics.Implementations.CalendarServices
             _logger.LogDebug("Day plans loaded for week. Count: {Count}", dayPlans.Count);
 
             var dayPlanIds = dayPlans.Select(x => x.Id).ToList();
+            var dayPlanSpecialties = dayPlanIds.Count > 0
+                ? (await _unitOfService.DayPlanSpecialty.FindAsync(x =>
+                    dayPlanIds.Contains(x.DayPlanId) && !x.IsDeleted)).ToList()
+                : new List<DayPlanSpecialtyEntity>();
             var periodPlans = dayPlanIds.Count > 0
                 ? (await _unitOfService.PeriodPlan.FindAsync(x =>
                     dayPlanIds.Contains(x.DayPlanId) && !x.IsDeleted)).ToList()
@@ -80,6 +84,9 @@ namespace MedAppointment.Logics.Implementations.CalendarServices
             _logger.LogDebug("Period plans loaded. Count: {Count}", periodPlans.Count);
 
             var dayPlanById = dayPlans.ToDictionary(x => x.Id);
+            var specialtiesByDayPlanId = dayPlanSpecialties
+                .GroupBy(x => x.DayPlanId)
+                .ToDictionary(g => g.Key, g => g.Select(s => s.SpecialtyId).ToList());
             var periodPlansByDayPlanId = periodPlans
                 .Where(pp => pp.DayPlan != null)
                 .GroupBy(pp => pp.DayPlanId)
@@ -98,7 +105,7 @@ namespace MedAppointment.Logics.Implementations.CalendarServices
                     if (!periodPlansByDayPlanId.TryGetValue(dayPlan.Id, out var periods))
                         continue;
                     var periodEntity = dayPlan.Period;
-                    var specialtyEntity = dayPlan.Specialty;
+                    var specialtyIds = specialtiesByDayPlanId.GetValueOrDefault(dayPlan.Id) ?? new List<long>();
                     foreach (var pp in periods.OrderBy(p => p.PeriodStart))
                     {
                         var currency = pp.Currency;
@@ -112,7 +119,7 @@ namespace MedAppointment.Logics.Implementations.CalendarServices
                             CurrencyKey = currency?.Key ?? string.Empty,
                             PeriodId = dayPlan.PeriodId,
                             PeriodTimeMinutes = periodEntity?.PeriodTime ?? 0,
-                            SpecialtyId = dayPlan.SpecialtyId,
+                            SpecialtyIds = specialtyIds,
                             IsBusy = pp.IsBusy,
                             IsOnlineService = pp.IsOnlineService,
                             IsOnSiteService = pp.IsOnSiteService
@@ -145,8 +152,8 @@ namespace MedAppointment.Logics.Implementations.CalendarServices
 
         public async Task<Result> EditDayPlanAsync(EditDayPlanDto dto)
         {
-            _logger.LogTrace("EditDayPlanAsync started. DayPlanId: {DayPlanId}, DoctorId: {DoctorId}, SpecialtyId: {SpecialtyId}, IsClosed: {IsClosed}",
-                dto.DayPlanId, dto.DoctorId, dto.SpecialtyId, dto.IsClosed);
+            _logger.LogTrace("EditDayPlanAsync started. DayPlanId: {DayPlanId}, DoctorId: {DoctorId}, SpecialtyIds: {SpecialtyIds}, IsClosed: {IsClosed}",
+                dto.DayPlanId, dto.DoctorId, string.Join(",", dto.SpecialtyIds), dto.IsClosed);
 
             var result = Result.Create();
 
@@ -181,16 +188,33 @@ namespace MedAppointment.Logics.Implementations.CalendarServices
             }
             _logger.LogDebug("Day plan found and belongs to doctor. DayPlanId: {DayPlanId}", dto.DayPlanId);
 
-            var specialty = await _unitOfClassifier.Specialty.GetByIdAsync(dto.SpecialtyId);
-            if (specialty == null || specialty.IsDeleted)
+            var specialtyIds = dto.SpecialtyIds.ToList();
+            var specialties = (await _unitOfClassifier.Specialty.FindAsync(x => specialtyIds.Contains(x.Id))).ToDictionary(x => x.Id);
+            foreach (var sid in specialtyIds)
             {
-                _logger.LogInformation("Specialty not found or deleted. SpecialtyId: {SpecialtyId}", dto.SpecialtyId);
-                result.AddMessage("ERR00158", "Specialty not found.", HttpStatusCode.NotFound);
-                return result;
+                if (!specialties.ContainsKey(sid))
+                {
+                    _logger.LogInformation("Specialty not found. SpecialtyId: {SpecialtyId}", sid);
+                    result.AddMessage("ERR00158", "Specialty not found.", HttpStatusCode.NotFound);
+                    return result;
+                }
             }
-            _logger.LogDebug("Specialty found. SpecialtyId: {SpecialtyId}", dto.SpecialtyId);
+            _logger.LogDebug("All specialties found. Count: {Count}", specialties.Count);
 
-            dayPlan.SpecialtyId = dto.SpecialtyId;
+            var existingSpecialties = (await _unitOfService.DayPlanSpecialty.FindAsync(x => x.DayPlanId == dto.DayPlanId && !x.IsDeleted)).ToList();
+            foreach (var existing in existingSpecialties)
+            {
+                _unitOfService.DayPlanSpecialty.Remove(existing.Id);
+            }
+            foreach (var sid in specialtyIds)
+            {
+                _unitOfService.DayPlanSpecialty.Add(new DayPlanSpecialtyEntity
+                {
+                    DayPlanId = dto.DayPlanId,
+                    SpecialtyId = sid
+                });
+            }
+
             dayPlan.IsClosed = dto.IsClosed;
             _unitOfService.DayPlan.Update(dayPlan);
             await _unitOfService.SaveChangesAsync();

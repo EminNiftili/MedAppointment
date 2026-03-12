@@ -126,13 +126,16 @@ namespace MedAppointment.Logics.Implementations.PlanManagerServices
                 var dayPlan = new DayPlanEntity
                 {
                     DoctorId = doctorId,
-                    SpecialtyId = daySchema.SpecialtyId,
                     PeriodId = daySchema.PeriodId,
                     BelongDate = belongDate.AddDays(daySchema.DayOfWeek - 1),
                     DayOfWeek = daySchema.DayOfWeek,
                     OpenTime = daySchema.OpenTime,
                     IsClosed = daySchema.IsClosed,
                     CloseTime = daySchema.OpenTime,
+                    DayPlanSpecialties = dto.WeeklySchema.SpecialtyIds.Select(sid => new DayPlanSpecialtyEntity
+                    {
+                        SpecialtyId = sid
+                    }).ToList()
                 };
 
                 if (daySchema.IsClosed)
@@ -231,6 +234,8 @@ namespace MedAppointment.Logics.Implementations.PlanManagerServices
             }
 
             var daySchemaIds = daySchemaEntities.Select(x => x.Id).ToList();
+            var weeklySchemaSpecialties = (await _unitOfDoctor.WeeklySchemaSpecialty.FindAsync(x => x.WeeklySchemaId == dto.WeeklySchemaId && !x.IsDeleted)).ToList();
+            var specialtyIds = weeklySchemaSpecialties.Select(x => x.SpecialtyId).ToList();
             var dayBreakEntities = weeklySchema.DayPlans.SelectMany(x => x.DayBreaks).ToList();
             var dayBreaksBySchemaId = dayBreakEntities.GroupBy(x => x.DaySchemaId).ToDictionary(g => g.Key, g => g.ToList());
 
@@ -252,7 +257,6 @@ namespace MedAppointment.Logics.Implementations.PlanManagerServices
                 {
                     Id = ds.Id,
                     WeeklySchemaId = ds.WeeklySchemaId,
-                    SpecialtyId = ds.SpecialtyId,
                     PeriodId = ds.PeriodId,
                     PeriodTimeMinutes = period?.PeriodTime ?? 0,
                     PlanPaddingTypeId = ds.PlanPaddingTypeId,
@@ -286,6 +290,7 @@ namespace MedAppointment.Logics.Implementations.PlanManagerServices
                     DoctorId = weeklySchema.DoctorId,
                     Name = weeklySchema.Name,
                     ColorHex = weeklySchema.ColorHex,
+                    SpecialtyIds = specialtyIds,
                     DaySchemas = daySchemaDtos
                 },
                 StartDate = dto.StartDate,
@@ -331,7 +336,7 @@ namespace MedAppointment.Logics.Implementations.PlanManagerServices
             _logger.LogDebug("Doctor is verified. DoctorId: {DoctorId}", doctorId);
 
             var daySchemasList = dto.DaySchemas?.ToList() ?? new List<DaySchemaCreateDto>();
-            var specialtyIds = daySchemasList.Select(x => x.SpecialtyId).Distinct().ToList();
+            var specialtyIds = dto.SpecialtyIds.ToList();
             var periodIds = daySchemasList.Select(x => x.PeriodId).Distinct().ToList();
             var paddingTypeIds = daySchemasList.Where(x => x.PlanPaddingTypeId.HasValue).Select(x => x.PlanPaddingTypeId!.Value).Distinct().ToList();
 
@@ -377,9 +382,12 @@ namespace MedAppointment.Logics.Implementations.PlanManagerServices
                 DoctorId = doctorId,
                 Name = dto.Name,
                 ColorHex = dto.ColorHex,
+                WeeklySchemaSpecialties = specialtyIds.Select(sid => new WeeklySchemaSpecialtyEntity
+                {
+                    SpecialtyId = sid
+                }).ToList(),
                 DayPlans = daySchemasList.Select(ds => new DaySchemaEntity
                 {
-                    SpecialtyId = ds.SpecialtyId,
                     PeriodId = ds.PeriodId,
                     PlanPaddingTypeId = ds.PlanPaddingTypeId,
                     DayOfWeek = ds.DayOfWeek,

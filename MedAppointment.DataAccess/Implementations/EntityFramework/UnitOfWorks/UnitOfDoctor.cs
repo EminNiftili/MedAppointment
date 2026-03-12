@@ -1,4 +1,4 @@
-﻿namespace MedAppointment.DataAccess.Implementations.EntityFramework.UnitOfWorks
+namespace MedAppointment.DataAccess.Implementations.EntityFramework.UnitOfWorks
 {
     internal class UnitOfDoctor : EfUnitOfWork, IUnitOfDoctor
     {
@@ -6,6 +6,7 @@
             IDaySchemaRepository daySchema, 
             IWeeklySchemaRepository weeklySchema, 
             IDayBreakRepository dayBreak,
+            IWeeklySchemaSpecialtyRepository weeklySchemaSpecialty,
             MedicalAppointmentContext medicalAppointmentContext) 
             : base(medicalAppointmentContext)
         {
@@ -13,6 +14,7 @@
             DaySchema = daySchema;
             WeeklySchema = weeklySchema;
             DayBreak = dayBreak;
+            WeeklySchemaSpecialty = weeklySchemaSpecialty;
         }
 
         public IDoctorRepository Doctor { get; private set; }
@@ -22,5 +24,7 @@
         public IWeeklySchemaRepository WeeklySchema { get; private set; }
 
         public IDayBreakRepository DayBreak { get; private set; }
+
+        public IWeeklySchemaSpecialtyRepository WeeklySchemaSpecialty { get; private set; }
     }
 }

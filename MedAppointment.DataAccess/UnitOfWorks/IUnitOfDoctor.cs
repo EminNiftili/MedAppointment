@@ -1,4 +1,4 @@
-﻿namespace MedAppointment.DataAccess.UnitOfWorks
+namespace MedAppointment.DataAccess.UnitOfWorks
 {
     public interface IUnitOfDoctor : IUnitOfWork
     {
@@ -6,5 +6,6 @@
         IDaySchemaRepository DaySchema { get; }
         IWeeklySchemaRepository WeeklySchema { get; }
         IDayBreakRepository DayBreak { get; }
+        IWeeklySchemaSpecialtyRepository WeeklySchemaSpecialty { get; }
     }
 }

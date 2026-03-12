@@ -10,7 +10,6 @@ global using MedAppointment.Entities.Security;
 global using MedAppointment.Entities.Doctor;
 global using MedAppointment.Entities.Localization;
 global using MedAppointment.Entities.Service;
-global using MedAppointment.Entities.Localization;
 #endregion
 
 #region Abstract DataAccess
@@ -44,7 +43,7 @@ global using MedAppointment.DataAccess.Implementations.EntityFramework.Repositor
 global using MedAppointment.DataAccess.Implementations.EntityFramework.Repositories.Classifier;
 global using MedAppointment.DataAccess.Implementations.EntityFramework.Repositories.Client;
 global using MedAppointment.DataAccess.Implementations.EntityFramework.Repositories.Communication;
-global using MedAppointment.DataAccess.Implementations.EntityFramework.Repositories.Compositon;
+global using MedAppointment.DataAccess.Implementations.EntityFramework.Repositories.Composition;
 global using MedAppointment.DataAccess.Implementations.EntityFramework.Repositories.File;
 global using MedAppointment.DataAccess.Implementations.EntityFramework.Repositories.Payment;
 global using MedAppointment.DataAccess.Implementations.EntityFramework.Repositories.Security;

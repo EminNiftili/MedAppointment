@@ -1,9 +1,8 @@
-﻿namespace MedAppointment.Entities.Service
+namespace MedAppointment.Entities.Service
 {
     public class DayPlanEntity : BaseEntity
     {
         public long DoctorId { get; set; }
-        public long SpecialtyId { get; set; }
         public long PeriodId { get; set; }
         public DateTime BelongDate { get; set; }
         /// <summary>
@@ -15,7 +14,7 @@
         public bool IsClosed { get; set; }
 
         public DoctorEntity? Doctor { get; set; }
-        public SpecialtyEntity? Specialty { get; set; }
         public PeriodEntity? Period { get; set; }
+        public ICollection<DayPlanSpecialtyEntity> DayPlanSpecialties { get; set; } = new List<DayPlanSpecialtyEntity>();
     }
 }

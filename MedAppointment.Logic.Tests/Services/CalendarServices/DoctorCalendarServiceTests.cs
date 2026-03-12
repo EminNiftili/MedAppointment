@@ -130,7 +130,8 @@ public class DoctorCalendarServiceTests
         var dayPlan = MagicCalendar.DayPlanOne;
         _editDayPlanValidator.ValidateAsync(dto, Arg.Any<CancellationToken>()).Returns(new FluentValidation.Results.ValidationResult());
         _dayPlanRepo.GetByIdAsync(dto.DayPlanId, Arg.Any<bool>()).Returns(dayPlan);
-        _specialtyRepo.GetByIdAsync(dto.SpecialtyId, Arg.Any<bool>()).Returns((SpecialtyEntity?)null);
+        _specialtyRepo.FindAsync(Arg.Any<Expression<Func<SpecialtyEntity, bool>>>(), Arg.Any<bool>())
+            .Returns(Task.FromResult<IEnumerable<SpecialtyEntity>>(new List<SpecialtyEntity>()));
 
         var result = await _sut.EditDayPlanAsync(dto);
 
@@ -145,9 +146,14 @@ public class DoctorCalendarServiceTests
         var dto = MagicCalendar.ValidEditDayPlanDto;
         var dayPlan = MagicCalendar.DayPlanOne;
         var specialty = MagicSpecialty.EntityOneWithLocalization;
+        var dayPlanSpecialtyRepo = Substitute.For<IDayPlanSpecialtyRepository>();
+        _unitOfService.DayPlanSpecialty.Returns(dayPlanSpecialtyRepo);
         _editDayPlanValidator.ValidateAsync(dto, Arg.Any<CancellationToken>()).Returns(new FluentValidation.Results.ValidationResult());
         _dayPlanRepo.GetByIdAsync(dto.DayPlanId, Arg.Any<bool>()).Returns(dayPlan);
-        _specialtyRepo.GetByIdAsync(dto.SpecialtyId, Arg.Any<bool>()).Returns(specialty);
+        _specialtyRepo.FindAsync(Arg.Any<Expression<Func<SpecialtyEntity, bool>>>(), Arg.Any<bool>())
+            .Returns(Task.FromResult<IEnumerable<SpecialtyEntity>>(new List<SpecialtyEntity> { specialty }));
+        dayPlanSpecialtyRepo.FindAsync(Arg.Any<Expression<Func<DayPlanSpecialtyEntity, bool>>>(), Arg.Any<bool>())
+            .Returns(Task.FromResult<IEnumerable<DayPlanSpecialtyEntity>>(new List<DayPlanSpecialtyEntity>()));
 
         var result = await _sut.EditDayPlanAsync(dto);
 

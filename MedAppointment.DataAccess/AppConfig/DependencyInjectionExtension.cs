@@ -31,6 +31,7 @@ namespace MedAppointment.DataAccess.AppConfig
             services.AddScoped<IDayBreakRepository, DayBreakRepository>();
             services.AddScoped<IDaySchemaRepository, DaySchemaRepository>();
             services.AddScoped<IWeeklySchemaRepository, WeeklySchemaRepository>();
+            services.AddScoped<IWeeklySchemaSpecialtyRepository, WeeklySchemaSpecialtyRepository>();
 
             services.AddScoped<IPaymentRepository, PaymentRepository>();
 
@@ -42,6 +43,7 @@ namespace MedAppointment.DataAccess.AppConfig
             services.AddScoped<IAppointmentRepository, AppointmentRepository>();
             services.AddScoped<IDayPlanRepository, DayPlanRepository>();
             services.AddScoped<IPeriodPlanRepository, PeriodPlanRepository>();
+            services.AddScoped<IDayPlanSpecialtyRepository, DayPlanSpecialtyRepository>();
 
             services.AddScoped<ICurrencyRepository, CurrencyRepository>();
             services.AddScoped<IPaymentTypeRepository, PaymentTypeRepository>();

@@ -2,7 +2,6 @@ namespace MedAppointment.DataTransferObjects.DoctorDtos
 {
     public record DaySchemaCreateDto
     {
-        public long SpecialtyId { get; set; }
         public long PeriodId { get; set; }
         public long? PlanPaddingTypeId { get; set; }
         /// <summary>

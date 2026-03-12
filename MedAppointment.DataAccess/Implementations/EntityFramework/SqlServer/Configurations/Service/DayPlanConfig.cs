@@ -1,4 +1,4 @@
-﻿
+
 namespace MedAppointment.DataAccess.Implementations.EntityFramework.SqlServer.Configurations.Service
 {
     public class DayPlanConfig : BaseConfig<DayPlanEntity>
@@ -9,8 +9,7 @@ namespace MedAppointment.DataAccess.Implementations.EntityFramework.SqlServer.Co
 
             builder.Property(e => e.DoctorId)
                 .IsRequired();
-            builder.Property(e => e.SpecialtyId)
-                .IsRequired();
+
             builder.Property(e => e.PeriodId)
                 .IsRequired();
 
@@ -25,6 +24,7 @@ namespace MedAppointment.DataAccess.Implementations.EntityFramework.SqlServer.Co
             builder.Property(e => e.OpenTime)
                 .IsRequired()
                 .HasColumnType("time(7)");
+
             builder.Property(e => e.CloseTime)
                 .IsRequired()
                 .HasColumnType("time(7)");
@@ -37,14 +37,9 @@ namespace MedAppointment.DataAccess.Implementations.EntityFramework.SqlServer.Co
                 .WithMany()
                 .HasForeignKey(x => x.DoctorId);
 
-            builder.HasOne(x => x.Specialty)
-                .WithMany()
-                .HasForeignKey(x => x.SpecialtyId);
-
             builder.HasOne(x => x.Period)
                 .WithMany()
                 .HasForeignKey(x => x.PeriodId);
-
         }
     }
 }

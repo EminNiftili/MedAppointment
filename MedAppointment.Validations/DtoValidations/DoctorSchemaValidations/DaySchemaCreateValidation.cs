@@ -4,11 +4,6 @@ namespace MedAppointment.Validations.DtoValidations.DoctorSchemaValidations
     {
         public DaySchemaCreateValidation()
         {
-            RuleFor(x => x.SpecialtyId)
-                .GreaterThan(0L)
-                .WithErrorCode("ERR00111")
-                .WithMessage("Day schema SpecialtyId must be greater than 0.");
-
             RuleFor(x => x.PeriodId)
                 .GreaterThan(0L)
                 .WithErrorCode("ERR00112")

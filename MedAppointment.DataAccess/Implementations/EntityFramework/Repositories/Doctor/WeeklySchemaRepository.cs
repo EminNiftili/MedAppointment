@@ -14,8 +14,8 @@ namespace MedAppointment.DataAccess.Implementations.EntityFramework.Repositories
                             .ThenInclude(d => d.DayBreaks)
                         .Include(x => x.DayPlans)
                             .ThenInclude(d => d.PlanPaddingType)
-                        .Include(x => x.DayPlans)
-                            .ThenInclude(d => d.Specialty)
+                        .Include(x => x.WeeklySchemaSpecialties)
+                            .ThenInclude(wss => wss.Specialty)
                         .Include(x => x.Doctor)
                             .ThenInclude(x => x!.User);
         }

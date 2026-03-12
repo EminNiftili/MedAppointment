@@ -154,3 +154,4 @@ Return validation errors like:
 | ERR00164 | Gender id must be greater than 0. | `GenderId` required for user registration. |
 | ERR00165 | Access token is required for logout. | Logout endpoint requires a valid Bearer access token. |
 | ERR00166 | Invalid or missing user identity. | users/me requires a valid JWT with user id (NameIdentifier) claim. |
+| ERR00167 | Each SpecialtyId in Day schema must be greater than 0. | When providing multiple specialties, each id must be valid (positive). |

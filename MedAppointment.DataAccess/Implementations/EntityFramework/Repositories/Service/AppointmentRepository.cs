@@ -1,4 +1,4 @@
-﻿namespace MedAppointment.DataAccess.Implementations.EntityFramework.Repositories.Service
+namespace MedAppointment.DataAccess.Implementations.EntityFramework.Repositories.Service
 {
     internal class AppointmentRepository : EfGenericRepository<AppointmentEntity>, IAppointmentRepository
     {
@@ -23,7 +23,8 @@
                     .ThenInclude(specialty => specialty.Specialty)
                 .Include(appointment => appointment.PeriodPlan)
                     .ThenInclude(periodPlan => periodPlan!.DayPlan)
-                    .ThenInclude(dayPlan => dayPlan!.Specialty)
+                    .ThenInclude(dayPlan => dayPlan!.DayPlanSpecialties)
+                    .ThenInclude(dps => dps.Specialty)
                 .Include(appointment => appointment.PeriodPlan)
                     .ThenInclude(periodPlan => periodPlan!.DayPlan)
                     .ThenInclude(dayPlan => dayPlan!.Period)

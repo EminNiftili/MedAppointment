@@ -1,4 +1,4 @@
-﻿namespace MedAppointment.Entities.Doctor
+namespace MedAppointment.Entities.Doctor
 {
     public class WeeklySchemaEntity : BaseEntity
     {
@@ -8,6 +8,6 @@
 
         public DoctorEntity? Doctor { get; set; }
         public ICollection<DaySchemaEntity> DayPlans { get; set; } = new List<DaySchemaEntity>();
-
+        public ICollection<WeeklySchemaSpecialtyEntity> WeeklySchemaSpecialties { get; set; } = new List<WeeklySchemaSpecialtyEntity>();
     }
 }

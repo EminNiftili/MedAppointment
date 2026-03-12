@@ -8,6 +8,7 @@ namespace MedAppointment.DataTransferObjects.DoctorDtos
         /// Color in RGBA hex format (#RRGGBBAA).
         /// </summary>
         public string ColorHex { get; set; } = null!;
+        public IEnumerable<long> SpecialtyIds { get; set; } = new List<long>();
         public IEnumerable<DaySchemaCreateDto> DaySchemas { get; set; } = new List<DaySchemaCreateDto>();
     }
 }

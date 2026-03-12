@@ -8,10 +8,10 @@ namespace MedAppointment.DataAccess.Implementations.EntityFramework.SqlServer.Co
 
             builder.Property(e => e.WeeklySchemaId)
                 .IsRequired();
-            builder.Property(e => e.SpecialtyId)
-                .IsRequired();
+
             builder.Property(e => e.PeriodId)
                 .IsRequired();
+
             builder.Property(e => e.PlanPaddingTypeId)
                 .IsRequired(false);
 
@@ -41,12 +41,8 @@ namespace MedAppointment.DataAccess.Implementations.EntityFramework.SqlServer.Co
                 .HasDefaultValueSql("1");
 
             builder.HasOne(x => x.WeeklySchema)
-                .WithMany()
+                .WithMany(x => x.DayPlans)
                 .HasForeignKey(x => x.WeeklySchemaId);
-
-            builder.HasOne(x => x.Specialty)
-                .WithMany()
-                .HasForeignKey(x => x.SpecialtyId);
 
             builder.HasOne(x => x.Period)
                 .WithMany()

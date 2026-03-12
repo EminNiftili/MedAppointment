@@ -4,7 +4,6 @@ namespace MedAppointment.DataTransferObjects.DoctorDtos
     {
         public long Id { get; set; }
         public long WeeklySchemaId { get; set; }
-        public long SpecialtyId { get; set; }
         public long PeriodId { get; set; }
         /// <summary>
         /// Period duration in minutes (for slot generation without loading Period from DB).

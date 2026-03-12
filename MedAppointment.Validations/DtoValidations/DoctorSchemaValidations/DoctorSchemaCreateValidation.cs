@@ -28,6 +28,16 @@ namespace MedAppointment.Validations.DtoValidations.DoctorSchemaValidations
                 .WithErrorCode("ERR00108")
                 .WithMessage("Weekly schema ColorHex must be 9 characters in format #RRGGBBAA.");
 
+            RuleFor(x => x.SpecialtyIds)
+                .NotEmpty()
+                .WithErrorCode("ERR00111")
+                .WithMessage("Weekly schema SpecialtyIds must contain at least one specialty.");
+
+            RuleForEach(x => x.SpecialtyIds)
+                .GreaterThan(0L)
+                .WithErrorCode("ERR00167")
+                .WithMessage("Each SpecialtyId in Weekly schema must be greater than 0.");
+
             RuleForEach(x => x.DaySchemas)
                 .SetValidator(new DaySchemaCreateValidation())
                 .When(x => x.DaySchemas != null);

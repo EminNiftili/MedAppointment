@@ -21,11 +21,11 @@ public static class MagicCalendar
             Id = 1,
             Name = "Default",
             ColorHex = "#000000FF",
+            SpecialtyIds = new List<long> { MagicIds.SpecialtyIdOne },
             DaySchemas = Enumerable.Range(1, 7).Select(d => new DaySchemaDto
             {
                 Id = d,
                 WeeklySchemaId = 1,
-                SpecialtyId = MagicIds.SpecialtyIdOne,
                 PeriodId = MagicPeriod.PeriodIdOne,
                 PeriodTimeMinutes = 30,
                 PlanPaddingTypeId = null,
@@ -51,9 +51,9 @@ public static class MagicCalendar
         DoctorId = DoctorIdOne,
         Name = "Default Week",
         ColorHex = "#000000FF",
+        SpecialtyIds = new List<long> { MagicIds.SpecialtyIdOne },
         DaySchemas = Enumerable.Range(1, 7).Select(d => new DaySchemaCreateDto
         {
-            SpecialtyId = MagicIds.SpecialtyIdOne,
             PeriodId = MagicPeriod.PeriodIdOne,
             PlanPaddingTypeId = null,
             DayOfWeek = (byte)d,
@@ -82,7 +82,7 @@ public static class MagicCalendar
     {
         DayPlanId = DayPlanIdOne,
         DoctorId = DoctorIdOne,
-        SpecialtyId = MagicIds.SpecialtyIdOne,
+        SpecialtyIds = new List<long> { MagicIds.SpecialtyIdOne },
         IsClosed = false
     };
 
@@ -111,7 +111,6 @@ public static class MagicCalendar
     {
         Id = DayPlanIdOne,
         DoctorId = DoctorIdOne,
-        SpecialtyId = MagicIds.SpecialtyIdOne,
         PeriodId = MagicPeriod.PeriodIdOne,
         BelongDate = ValidWeekQuery.WeekStartDate,
         DayOfWeek = 1,
@@ -119,7 +118,11 @@ public static class MagicCalendar
         CloseTime = TimeSpan.FromHours(17),
         IsClosed = false,
         IsDeleted = false,
-        CreatedAt = DateTime.UtcNow
+        CreatedAt = DateTime.UtcNow,
+        DayPlanSpecialties = new List<DayPlanSpecialtyEntity>
+        {
+            new() { SpecialtyId = MagicIds.SpecialtyIdOne, DayPlanId = DayPlanIdOne }
+        }
     };
 
     public static PeriodPlanEntity PeriodPlanOne => new()

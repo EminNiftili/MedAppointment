@@ -10,7 +10,7 @@ namespace MedAppointment.DataTransferObjects.DoctorDtos
         public string CurrencyKey { get; init; } = null!;
         public long PeriodId { get; init; }
         public byte PeriodTimeMinutes { get; init; }
-        public long SpecialtyId { get; init; }
+        public IEnumerable<long> SpecialtyIds { get; init; } = new List<long>();
         public bool IsBusy { get; init; }
         public bool IsOnlineService { get; init; }
         public bool IsOnSiteService { get; init; }

@@ -4,7 +4,7 @@ namespace MedAppointment.DataTransferObjects.DoctorDtos
     {
         public long DayPlanId { get; init; }
         public long DoctorId { get; init; }
-        public long SpecialtyId { get; init; }
+        public IEnumerable<long> SpecialtyIds { get; init; } = new List<long>();
         public bool IsClosed { get; init; }
     }
 }

@@ -1,4 +1,4 @@
-﻿namespace MedAppointment.DataAccess.Implementations.EntityFramework.Repositories.Compositon
+namespace MedAppointment.DataAccess.Implementations.EntityFramework.Repositories.Composition
 {
     internal class OrganizationUserRepository : EfGenericRepository<OrganizationUserEntity>, IOrganizationUserRepository
     {
