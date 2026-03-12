@@ -43,6 +43,7 @@ global using MedAppointment.Entities.Composition;
 global using MedAppointment.Entities.Localization;
 global using MedAppointment.Entities.Doctor;
 global using MedAppointment.Entities.Security;
+global using MedAppointment.Entities.File;
 #endregion
 
 #region Logic Services (Calendar, PlanManager, Schedule, Client, Security)
