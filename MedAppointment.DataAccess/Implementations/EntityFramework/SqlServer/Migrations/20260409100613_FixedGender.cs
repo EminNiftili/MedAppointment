@@ -6,7 +6,7 @@ using Microsoft.EntityFrameworkCore.Migrations;
 namespace MedAppointment.DataAccess.Implementations.EntityFramework.SqlServer.Migrations
 {
     /// <inheritdoc />
-    public partial class WeeklySchemaMultiSpecialtySupport : Migration
+    public partial class FixedGender : Migration
     {
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)
@@ -244,8 +244,7 @@ namespace MedAppointment.DataAccess.Implementations.EntityFramework.SqlServer.Mi
                         column: x => x.GenderId,
                         principalSchema: "Classifier",
                         principalTable: "Genders",
-                        principalColumn: "Id",
-                        onDelete: ReferentialAction.Cascade);
+                        principalColumn: "Id");
                 });
 
             migrationBuilder.CreateIndex(
@@ -369,8 +368,7 @@ namespace MedAppointment.DataAccess.Implementations.EntityFramework.SqlServer.Mi
                 column: "GenderId",
                 principalSchema: "Classifier",
                 principalTable: "Genders",
-                principalColumn: "Id",
-                onDelete: ReferentialAction.Cascade);
+                principalColumn: "Id");
         }
 
         /// <inheritdoc />

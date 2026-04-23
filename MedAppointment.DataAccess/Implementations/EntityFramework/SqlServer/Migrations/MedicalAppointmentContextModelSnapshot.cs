@@ -1717,7 +1717,7 @@ namespace MedAppointment.DataAccess.Implementations.EntityFramework.SqlServer.Mi
                     b.HasOne("MedAppointment.Entities.Classifier.GenderEntity", "Gender")
                         .WithMany()
                         .HasForeignKey("GenderId")
-                        .OnDelete(DeleteBehavior.Cascade)
+                        .OnDelete(DeleteBehavior.NoAction)
                         .IsRequired();
 
                     b.HasOne("MedAppointment.Entities.File.ImageEntity", "Image")
@@ -1827,7 +1827,7 @@ namespace MedAppointment.DataAccess.Implementations.EntityFramework.SqlServer.Mi
                     b.HasOne("MedAppointment.Entities.Classifier.GenderEntity", "Gender")
                         .WithMany()
                         .HasForeignKey("GenderId")
-                        .OnDelete(DeleteBehavior.Cascade)
+                        .OnDelete(DeleteBehavior.NoAction)
                         .IsRequired();
 
                     b.Navigation("Doctor");

@@ -12,8 +12,8 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace MedAppointment.DataAccess.Implementations.EntityFramework.SqlServer.Migrations
 {
     [DbContext(typeof(MedicalAppointmentContext))]
-    [Migration("20260312200747_WeeklySchemaMultiSpecialtySupport")]
-    partial class WeeklySchemaMultiSpecialtySupport
+    [Migration("20260409100613_FixedGender")]
+    partial class FixedGender
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -1720,7 +1720,7 @@ namespace MedAppointment.DataAccess.Implementations.EntityFramework.SqlServer.Mi
                     b.HasOne("MedAppointment.Entities.Classifier.GenderEntity", "Gender")
                         .WithMany()
                         .HasForeignKey("GenderId")
-                        .OnDelete(DeleteBehavior.Cascade)
+                        .OnDelete(DeleteBehavior.NoAction)
                         .IsRequired();
 
                     b.HasOne("MedAppointment.Entities.File.ImageEntity", "Image")
@@ -1830,7 +1830,7 @@ namespace MedAppointment.DataAccess.Implementations.EntityFramework.SqlServer.Mi
                     b.HasOne("MedAppointment.Entities.Classifier.GenderEntity", "Gender")
                         .WithMany()
                         .HasForeignKey("GenderId")
-                        .OnDelete(DeleteBehavior.Cascade)
+                        .OnDelete(DeleteBehavior.NoAction)
                         .IsRequired();
 
                     b.Navigation("Doctor");

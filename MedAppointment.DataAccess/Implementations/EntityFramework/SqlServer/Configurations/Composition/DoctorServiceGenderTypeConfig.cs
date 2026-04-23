@@ -17,7 +17,8 @@
 
             builder.HasOne(x => x.Gender)
                 .WithMany()
-                .HasForeignKey(x => x.GenderId);
+                .HasForeignKey(x => x.GenderId)
+                .OnDelete(DeleteBehavior.NoAction);
 
         }
     }
