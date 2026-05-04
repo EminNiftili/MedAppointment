@@ -3,5 +3,6 @@
     public interface IUnitOfFile : IUnitOfWork
     {
         IImageRepository Image { get; }
+        IDocumentRepository Document { get; }
     }
 }

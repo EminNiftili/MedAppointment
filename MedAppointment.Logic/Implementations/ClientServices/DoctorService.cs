@@ -1,6 +1,5 @@
 using MedAppointment.Logics.Extensions;
 using MedAppointment.Logics.Services.LocalizationServices;
-using MedAppointment.Entities.Composition;
 
 namespace MedAppointment.Logics.Implementations.ClientServices
 {
@@ -11,31 +10,49 @@ namespace MedAppointment.Logics.Implementations.ClientServices
         protected readonly IUnitOfDoctor UnitOfDoctor;
         protected readonly IUnitOfClient UnitOfClient;
         protected readonly IUnitOfClassifier UnitOfClassifier;
+        protected readonly IUnitOfSecurity UnitOfSecurity;
         protected readonly IClientRegistrationService ClientRegistration;
+        protected readonly ITokenService TokenService;
+        protected readonly IPrivateClientInfoService PrivateClientInfoService;
         protected readonly IValidator<PaginationQueryDto> PaginationQueryValidator;
         protected readonly IValidator<AdminDoctorSpecialtyCreateDto> AdminDoctorSpecialtyCreateValidator;
         protected readonly IMapper Mapper;
+        protected readonly ITokenService TokenService;
+        protected readonly IPrivateClientInfoService PrivateClientInfoService;
+        protected readonly IUnitOfSecurity UnitOfSecurity;
 
         public DoctorService(
-            ILocalizerService localizerService, 
+            ILocalizerService localizerService,
             ILogger<DoctorService> logger,
             IUnitOfDoctor unitOfDoctor,
             IUnitOfClient unitOfClient,
             IUnitOfClassifier unitOfClassifier,
+            IUnitOfSecurity unitOfSecurity,
             IClientRegistrationService clientRegistration,
+            ITokenService tokenService,
+            IPrivateClientInfoService privateClientInfoService,
             IValidator<PaginationQueryDto> paginationQueryValidator,
             IValidator<AdminDoctorSpecialtyCreateDto> adminDoctorSpecialtyCreateValidator,
-            IMapper mapper)
+            IMapper mapper,
+            ITokenService tokenService,
+            IPrivateClientInfoService privateClientInfoService,
+            IUnitOfSecurity unitOfSecurity)
         {
             LocalizerService = localizerService;
             Logger = logger;
             UnitOfClient = unitOfClient;
             UnitOfDoctor = unitOfDoctor;
             UnitOfClassifier = unitOfClassifier;
+            UnitOfSecurity = unitOfSecurity;
             ClientRegistration = clientRegistration;
+            TokenService = tokenService;
+            PrivateClientInfoService = privateClientInfoService;
             PaginationQueryValidator = paginationQueryValidator;
             AdminDoctorSpecialtyCreateValidator = adminDoctorSpecialtyCreateValidator;
             Mapper = mapper;
+            TokenService = tokenService;
+            PrivateClientInfoService = privateClientInfoService;
+            UnitOfSecurity = unitOfSecurity;
         }
 
         public async Task<Result> AddDoctorSpecialtyAsync(long doctorId, AdminDoctorSpecialtyCreateDto specialty)
@@ -289,25 +306,38 @@ namespace MedAppointment.Logics.Implementations.ClientServices
             return result;
         }
 
-        public async Task<Result> RegisterAsync(DoctorRegisterDto<TraditionalUserRegisterDto> doctorRegister)
+        public async Task<Result<TokenDto>> RegisterAsync(DoctorRegisterDto<TraditionalUserRegisterDto> doctorRegister)
         {
-            Result result = Result.Create();
+<<<<<<< HEAD
             Logger.LogTrace("Started Doctor registration");
             var userRegisterResult = await ClientRegistration.RegisterUserAsync(doctorRegister.User);
             Logger.LogInformation("Doctor user registration completed. IsSuccess {0}", userRegisterResult.IsSuccess());
-            result.MergeResult(userRegisterResult);
+            if (!userRegisterResult.IsSuccess())
+=======
+            var result = Result<TokenDto>.Create();
+            Logger.LogTrace("Started Doctor registration");
+            var userRegisterResult = await ClientRegistration.RegisterUserAsync(doctorRegister.User);
+            Logger.LogInformation("Doctor user registration completed. IsSuccess {0}", userRegisterResult.IsSuccess());
+            result.MergeMessages(userRegisterResult);
+            result.MergeStatusCode(userRegisterResult);
             if (!result.IsSuccess())
+>>>>>>> e038d6701358b0b4c616fb46616b20bb6e12397a
             {
                 Logger.LogDebug("User registration is failed");
-                return result;
+                var failUser = Result<TokenDto>.Create();
+                failUser.MergeMessages(userRegisterResult);
+                failUser.MergeStatusCode(userRegisterResult);
+                return failUser;
             }
+
             Logger.LogTrace("Fetching registering user. User Id: {0}", userRegisterResult.Model);
             var userEntity = await UnitOfClient.User.FindFirstAsync(x => x.Id == userRegisterResult.Model);
-            if(userEntity == null)
+            if (userEntity == null)
             {
                 Logger.LogError("Doctor user registered but cannot found user entity.");
-                result.AddMessage("ERR00024", "User cannot found", HttpStatusCode.Conflict);
-                return result;
+                var failMissing = Result<TokenDto>.Create();
+                failMissing.AddMessage("ERR00024", "User cannot found", HttpStatusCode.Conflict);
+                return failMissing;
             }
             Logger.LogInformation("Registered user found");
 
@@ -316,10 +346,22 @@ namespace MedAppointment.Logics.Implementations.ClientServices
 
             if (!titleResult.IsSuccess() || !descriptionResult.IsSuccess())
             {
-                result.MergeResult(titleResult);
-                result.MergeResult(descriptionResult);
+<<<<<<< HEAD
+                var failLoc = Result<TokenDto>.Create();
+                failLoc.MergeMessages(titleResult);
+                failLoc.MergeStatusCode(titleResult);
+                failLoc.MergeMessages(descriptionResult);
+                failLoc.MergeStatusCode(descriptionResult);
+                return failLoc;
+=======
+                result.MergeMessages(titleResult);
+                result.MergeStatusCode(titleResult);
+                result.MergeMessages(descriptionResult);
+                result.MergeStatusCode(descriptionResult);
                 return result;
+>>>>>>> e038d6701358b0b4c616fb46616b20bb6e12397a
             }
+
             userEntity.Doctor = new DoctorEntity
             {
                 TitleTextId = titleResult.Model,
@@ -347,8 +389,110 @@ namespace MedAppointment.Logics.Implementations.ClientServices
             UnitOfClient.User.Update(userEntity);
             await UnitOfDoctor.SaveChangesAsync();
             Logger.LogInformation("Doctor entity added");
-            result.AddMessage("ERR00055", "Doctor registered successfully", HttpStatusCode.OK);
+
+<<<<<<< HEAD
+            var userTypes = await PrivateClientInfoService.GetUserTypesAsync(userEntity.Id);
+            var claims = new Dictionary<string, object>
+            {
+                { ClaimTypes.NameIdentifier, userEntity.Id.ToString() },
+                { ClaimTypes.Role, userTypes.Select(userType => userType.ToString()).ToArray() }
+            };
+            if (userEntity.Doctor?.Id > 0)
+            {
+                claims["DoctorId"] = userEntity.Doctor.Id.ToString();
+            }
+
+            var accessToken = TokenService.GetToken(out var expiredDate, claims);
+            var refreshToken = TokenService.GenerateRefreshToken();
+            var deviceDto = doctorRegister.DeviceInfo
+                ?? doctorRegister.User.DeviceInfo
+                ?? new DeviceDto
+            {
+                Name = "Web registration",
+                DeviceType = DeviceType.Windows,
+                AppType = ApplicationType.Web,
+                OSName = null,
+                OSVersion = null,
+                UUID = "doctor-registration"
+            };
+            var newSession = new SessionEntity
+            {
+                UserId = userEntity.Id,
+                Device = new DeviceEntity
+                {
+                    Name = deviceDto.Name,
+                    AppType = (byte)deviceDto.AppType,
+                    DeviceType = (byte)deviceDto.DeviceType,
+                    OSName = deviceDto.OSName,
+                    OSVersion = deviceDto.OSVersion,
+                    UUID = deviceDto.UUID
+=======
+            var tokenResult = await GenerateTokenForDoctorAsync(userRegisterResult.Model, doctorRegister.User.DeviceInfo);
+            result.MergeResult(tokenResult);
+            if (result.IsSuccess())
+            {
+                result.Model = tokenResult.Model;
+            }
             return result;
+        }
+
+        private async Task<Result<TokenDto>> GenerateTokenForDoctorAsync(long userId, DeviceDto deviceInfo)
+        {
+            var result = Result<TokenDto>.Create();
+
+            var userTypes = await PrivateClientInfoService.GetUserTypesAsync(userId);
+            var claims = new Dictionary<string, object>
+            {
+                { ClaimTypes.NameIdentifier, userId.ToString() },
+                { ClaimTypes.Role, userTypes.Select(ut => ut.ToString()).ToArray() }
+            };
+
+            var accessToken = TokenService.GetToken(out var expiredDate, claims);
+            var refreshToken = TokenService.GenerateRefreshToken();
+
+            var newSession = new SessionEntity
+            {
+                UserId = userId,
+                Device = new DeviceEntity
+                {
+                    Name = deviceInfo.Name,
+                    AppType = (byte)deviceInfo.AppType,
+                    DeviceType = (byte)deviceInfo.DeviceType,
+                    OSName = deviceInfo.OSName,
+                    OSVersion = deviceInfo.OSVersion,
+                    UUID = deviceInfo.UUID,
+>>>>>>> e038d6701358b0b4c616fb46616b20bb6e12397a
+                },
+                Tokens = new List<TokenEntity>
+                {
+                    new TokenEntity
+                    {
+                        AccessToken = accessToken,
+                        RefreshToken = refreshToken,
+                        IsExpired = false,
+<<<<<<< HEAD
+                        ExpiredDate = expiredDate
+=======
+                        ExpiredDate = expiredDate,
+>>>>>>> e038d6701358b0b4c616fb46616b20bb6e12397a
+                    }
+                }
+            };
+            UnitOfSecurity.Session.Add(newSession);
+            await UnitOfSecurity.SaveChangesAsync();
+<<<<<<< HEAD
+
+            var ok = Result<TokenDto>.Create();
+            ok.Success(new TokenDto(accessToken, refreshToken), HttpStatusCode.OK);
+            ok.AddMessage("ERR00055", "Doctor registered successfully", HttpStatusCode.OK);
+            Logger.LogTrace("Doctor registration finished with session.");
+            return ok;
+=======
+            Logger.LogInformation("Doctor registration session created for UserId {UserId}", userId);
+
+            result.Success(new TokenDto(accessToken, refreshToken));
+            return result;
+>>>>>>> e038d6701358b0b4c616fb46616b20bb6e12397a
         }
 
         private async Task<DoctorEntity?> GetDoctorOrFailAsync(long doctorId, Result result)

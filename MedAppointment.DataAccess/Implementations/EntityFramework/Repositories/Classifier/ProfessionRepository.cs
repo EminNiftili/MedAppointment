@@ -3,13 +3,18 @@
     internal class ProfessionRepository : EfGenericRepository<ProfessionEntity>, IProfessionRepository
     {
         public ProfessionRepository(MedicalAppointmentContext medicalAppointmentContext) 
-            : base(medicalAppointmentContext, medicalAppointmentContext.Set<ProfessionEntity>(), false)
+            : base(medicalAppointmentContext, medicalAppointmentContext.Set<ProfessionEntity>(), true)
         {
         }
 
         protected override IQueryable<ProfessionEntity> IncludeQuery(IQueryable<ProfessionEntity> query)
         {
-            throw new NotImplementedException();
+            return query.Include(x => x.Name)
+                            .ThenInclude(r => r!.Translations)
+                                .ThenInclude(t => t.Language)
+                        .Include(x => x.Description)
+                            .ThenInclude(r => r!.Translations)
+                                .ThenInclude(t => t.Language);
         }
     }
 }

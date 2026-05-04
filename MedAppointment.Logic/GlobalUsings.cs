@@ -56,6 +56,7 @@ global using System.Text;
 #region Data Transfer Objects
 global using MedAppointment.DataTransferObjects.Enums;
 global using MedAppointment.DataTransferObjects.CredentialDtos;
+global using MedAppointment.DataTransferObjects.FileDtos;
 global using MedAppointment.DataTransferObjects.UserDtos;
 global using MedAppointment.DataTransferObjects.ClassifierDtos;
 global using MedAppointment.DataTransferObjects.PaginationDtos;
@@ -71,6 +72,7 @@ global using MedAppointment.Logics.CustomExpressions.ClassifierExpressions;
 #region Abstract Logic Services
 global using MedAppointment.Logics.Services.ClientServices;
 global using MedAppointment.Logics.Services.CalendarServices;
+global using MedAppointment.Logics.Services.FileServices;
 global using MedAppointment.Logics.Services.SecurityServices;
 global using MedAppointment.Logics.Services.ClassifierServices;
 global using MedAppointment.Logics.Services.PlanManagerServices;
@@ -80,6 +82,7 @@ global using MedAppointment.Logics.Services.ScheduleServices;
 #region Implementation Logic Services
 global using MedAppointment.Logics.Implementations.ClientServices;
 global using MedAppointment.Logics.Implementations.CalendarServices;
+global using MedAppointment.Logics.Implementations.FileServices;
 global using MedAppointment.Logics.Implementations.SecurityServices;
 global using MedAppointment.Logics.Implementations.ClassifierServices;
 global using MedAppointment.Logics.Implementations.PlanManagerServices;

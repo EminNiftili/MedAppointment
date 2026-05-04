@@ -1,8 +1,10 @@
+using MedAppointment.DataTransferObjects.CredentialDtos;
+
 namespace MedAppointment.Validations.DtoValidations.UserValidations
 {
     public class TraditionalUserRegisterValidation : BaseValidator<TraditionalUserRegisterDto>
     {
-        public TraditionalUserRegisterValidation()
+        public TraditionalUserRegisterValidation(IValidator<DeviceDto> deviceValidator)
         {
             RuleFor(x => x.Name)
                 .NotEmpty()
@@ -85,6 +87,12 @@ namespace MedAppointment.Validations.DtoValidations.UserValidations
                 .Must(ContainsSpecial)
                     .WithErrorCode("ERR00021")
                     .WithMessage("Password must contain at least one special character.");
+
+            RuleFor(x => x.DeviceInfo)
+                .NotNull()
+                    .WithErrorCode("ERR00037")
+                    .WithMessage("Device information is required.")
+                .SetValidator(deviceValidator!);
         }
     }
 }

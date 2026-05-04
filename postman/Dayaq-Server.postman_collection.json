@@ -1,0 +1,627 @@
+{
+  "info": {
+    "_postman_id": "a1b2c3d4-e5f6-7890-abcd-ef1234567890",
+    "name": "Dayaq Server API",
+    "description": "MedAppointment API (`api/[controller]` routes). Set `baseUrl` (e.g. `http://localhost:5066` or `https://localhost:7022`). Collection `accessToken` is filled automatically from successful **Login — Traditional** / **Refresh** responses (test script). Bearer auth applies to requests that do not override auth to **No Auth**.\n\nPOST/PUT bodies use **example JSON** aligned with `MedAppointment.DataTransferObjects` (camelCase). Replace IDs, keys, and foreign keys with values that exist in your database.",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+  },
+  "variable": [
+    { "key": "baseUrl", "value": "http://localhost:5066" },
+    { "key": "accessToken", "value": "" }
+  ],
+  "auth": {
+    "type": "bearer",
+    "bearer": [{ "key": "token", "value": "{{accessToken}}", "type": "string" }]
+  },
+  "item": [
+    {
+      "name": "Docs",
+      "item": [
+        {
+          "name": "Swagger UI",
+          "request": {
+            "auth": { "type": "noauth" },
+            "method": "GET",
+            "header": [],
+            "url": "{{baseUrl}}/swagger/index.html"
+          }
+        },
+        {
+          "name": "Swagger JSON (v1)",
+          "request": {
+            "auth": { "type": "noauth" },
+            "method": "GET",
+            "header": [],
+            "url": "{{baseUrl}}/swagger/v1/swagger.json"
+          }
+        },
+        {
+          "name": "OpenAPI JSON (.NET)",
+          "request": {
+            "auth": { "type": "noauth" },
+            "method": "GET",
+            "header": [],
+            "url": "{{baseUrl}}/openapi/v1.json"
+          }
+        }
+      ]
+    },
+    {
+      "name": "Auth",
+      "item": [
+        {
+          "name": "Login — Traditional",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "try {",
+                  "  const j = pm.response.json();",
+                  "  if (j.accessToken) pm.collectionVariables.set('accessToken', j.accessToken);",
+                  "} catch (e) {}"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "auth": { "type": "noauth" },
+            "method": "POST",
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"username\": \"user@example.com\",\n  \"password\": \"your-password\",\n  \"deviceInfo\": {\n    \"name\": \"Postman\",\n    \"deviceType\": 2,\n    \"appType\": 0,\n    \"osName\": \"macOS\",\n    \"osVersion\": \"14\",\n    \"uuid\": \"postman-device-uuid\"\n  }\n}"
+            },
+            "url": "{{baseUrl}}/api/Login"
+          }
+        },
+        {
+          "name": "Login — Refresh token",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "try {",
+                  "  const j = pm.response.json();",
+                  "  if (j.accessToken) pm.collectionVariables.set('accessToken', j.accessToken);",
+                  "} catch (e) {}"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "auth": { "type": "noauth" },
+            "method": "POST",
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"refreshToken\": \"\"\n}"
+            },
+            "url": "{{baseUrl}}/api/Login/refresh"
+          }
+        },
+        {
+          "name": "Logout",
+          "request": {
+            "method": "POST",
+            "header": [],
+            "url": "{{baseUrl}}/api/Login/logout"
+          }
+        }
+      ]
+    },
+    {
+      "name": "Users",
+      "item": [
+        {
+          "name": "Get current user (me)",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": "{{baseUrl}}/api/Users/me"
+          }
+        }
+      ]
+    },
+    {
+      "name": "Registration",
+      "item": [
+        {
+          "name": "Register — Traditional",
+          "request": {
+            "auth": { "type": "noauth" },
+            "method": "POST",
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"name\": \"Jane\",\n  \"surname\": \"Doe\",\n  \"fatherName\": \"John\",\n  \"birthDate\": \"1995-05-15T00:00:00.000Z\",\n  \"genderId\": 1,\n  \"email\": \"jane@example.com\",\n  \"phoneNumber\": \"+994501234567\",\n  \"password\": \"SecurePwd123!\"\n}"
+            },
+            "url": "{{baseUrl}}/api/Registration"
+          }
+        },
+        {
+          "name": "Register — Google (stub)",
+          "request": {
+            "auth": { "type": "noauth" },
+            "method": "POST",
+            "header": [],
+            "url": "{{baseUrl}}/api/Registration/Google"
+          }
+        },
+        {
+          "name": "Register — Facebook (stub)",
+          "request": {
+            "auth": { "type": "noauth" },
+            "method": "POST",
+            "header": [],
+            "url": "{{baseUrl}}/api/Registration/Facebook"
+          }
+        },
+        {
+          "name": "Register — Apple (stub)",
+          "request": {
+            "auth": { "type": "noauth" },
+            "method": "POST",
+            "header": [],
+            "url": "{{baseUrl}}/api/Registration/Apple"
+          }
+        }
+      ]
+    },
+    {
+      "name": "Doctors",
+      "item": [
+        {
+          "name": "List doctors (paginated)",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": "{{baseUrl}}/api/Doctors?PageNumber=1&PageSize=20"
+          }
+        },
+        {
+          "name": "Get doctor by id",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": "{{baseUrl}}/api/Doctors/:id",
+            "description": "Replace `:id` path segment or use Params tab."
+          }
+        },
+        {
+          "name": "Register doctor (traditional)",
+          "request": {
+            "auth": { "type": "noauth" },
+            "method": "POST",
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"user\": {\n    \"name\": \"Huseyn\",\n    \"surname\": \"Aliyev\",\n    \"fatherName\": \"Father\",\n    \"birthDate\": \"1985-05-15T00:00:00.000Z\",\n    \"genderId\": 1,\n    \"email\": \"doctor@example.com\",\n    \"phoneNumber\": \"+994501111111\",\n    \"password\": \"SecurePwd123!\"\n  },\n  \"professionId\": 1,\n  \"presentationVideoUrl\": null,\n  \"specialties\": [1],\n  \"serviceGenderIds\": [1],\n  \"serviceLanguageIds\": [1],\n  \"title\": [{ \"languageId\": 1, \"text\": \"MD\" }],\n  \"description\": [{ \"languageId\": 1, \"text\": \"General practice\" }]\n}"
+            },
+            "url": "{{baseUrl}}/api/Doctors/register"
+          }
+        },
+        {
+          "name": "Confirm doctor",
+          "request": {
+            "method": "PUT",
+            "header": [],
+            "url": "{{baseUrl}}/api/Doctors/confirm/:doctorId"
+          }
+        },
+        {
+          "name": "Confirm doctor specialty",
+          "request": {
+            "method": "PUT",
+            "header": [],
+            "url": "{{baseUrl}}/api/Doctors/confirmSpecialty/:doctorId/:specialtyId"
+          }
+        },
+        {
+          "name": "Add doctor specialty",
+          "request": {
+            "method": "POST",
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"specialtyId\": 1,\n  \"isConfirmed\": false\n}"
+            },
+            "url": "{{baseUrl}}/api/Doctors/:doctorId/specialties"
+          }
+        },
+        {
+          "name": "Remove doctor specialty",
+          "request": {
+            "method": "DELETE",
+            "header": [],
+            "url": "{{baseUrl}}/api/Doctors/:doctorId/specialties/:specialtyId"
+          }
+        },
+        {
+          "name": "Add doctor schema",
+          "request": {
+            "method": "POST",
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"doctorId\": 1,\n  \"name\": \"Weekday template\",\n  \"colorHex\": \"#6366F180\",\n  \"specialtyIds\": [1],\n  \"daySchemas\": [\n    {\n      \"periodId\": 1,\n      \"planPaddingTypeId\": null,\n      \"dayOfWeek\": 1,\n      \"openTime\": \"09:00:00\",\n      \"periodCount\": 8,\n      \"isClosed\": false,\n      \"isOnlineService\": true,\n      \"isOnSiteService\": false,\n      \"dayBreaks\": []\n    }\n  ]\n}"
+            },
+            "url": "{{baseUrl}}/api/Doctors/schemas"
+          }
+        },
+        {
+          "name": "Fill calendar from weekly schema",
+          "request": {
+            "method": "POST",
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"weeklySchemaId\": 1,\n  \"startDate\": \"2026-03-30T00:00:00.000Z\",\n  \"currencyId\": 1,\n  \"pricePerPeriod\": 50.00\n}"
+            },
+            "url": "{{baseUrl}}/api/Doctors/calendar/fill-from-weekly-schema"
+          }
+        }
+      ]
+    },
+    {
+      "name": "Admin users",
+      "item": [
+        {
+          "name": "List users (paginated)",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": "{{baseUrl}}/api/AdminUsers?PageNumber=1&PageSize=20"
+          }
+        },
+        {
+          "name": "Get user by id",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": "{{baseUrl}}/api/AdminUsers/:userId"
+          }
+        },
+        {
+          "name": "Delete user",
+          "request": {
+            "method": "DELETE",
+            "header": [],
+            "url": "{{baseUrl}}/api/AdminUsers/:userId"
+          }
+        }
+      ]
+    },
+    {
+      "name": "Doctor calendar",
+      "item": [
+        {
+          "name": "Get weekly calendar",
+          "request": {
+            "auth": { "type": "noauth" },
+            "method": "GET",
+            "header": [],
+            "url": "{{baseUrl}}/api/DoctorCalendar/week?DoctorId=1&WeekStartDate=2026-03-30"
+          }
+        },
+        {
+          "name": "Edit day plan",
+          "request": {
+            "method": "PUT",
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"dayPlanId\": 1,\n  \"doctorId\": 1,\n  \"specialtyIds\": [1],\n  \"isClosed\": false\n}"
+            },
+            "url": "{{baseUrl}}/api/DoctorCalendar/day-plan"
+          }
+        },
+        {
+          "name": "Edit period plan",
+          "request": {
+            "method": "PUT",
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"periodPlanId\": 1,\n  \"doctorId\": 1,\n  \"periodStart\": \"09:00:00\",\n  \"periodStop\": \"10:00:00\",\n  \"isOnlineService\": true,\n  \"isOnSiteService\": false,\n  \"pricePerPeriod\": 50,\n  \"currencyId\": 1,\n  \"isBusy\": false\n}"
+            },
+            "url": "{{baseUrl}}/api/DoctorCalendar/period-plan"
+          }
+        }
+      ]
+    },
+    {
+      "name": "Classifiers — Languages",
+      "item": [
+        {
+          "name": "List languages",
+          "request": {
+            "auth": { "type": "noauth" },
+            "method": "GET",
+            "header": [],
+            "url": "{{baseUrl}}/api/Languages?PageNumber=1&PageSize=20"
+          }
+        },
+        {
+          "name": "Get language by id",
+          "request": {
+            "auth": { "type": "noauth" },
+            "method": "GET",
+            "header": [],
+            "url": "{{baseUrl}}/api/Languages/:id"
+          }
+        },
+        {
+          "name": "Create language",
+          "request": {
+            "method": "POST",
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"name\": \"English\",\n  \"isDefault\": false\n}"
+            },
+            "url": "{{baseUrl}}/api/Languages"
+          }
+        },
+        {
+          "name": "Update language",
+          "request": {
+            "method": "PUT",
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"name\": \"English (US)\",\n  \"isDefault\": true\n}"
+            },
+            "url": "{{baseUrl}}/api/Languages/:id"
+          }
+        },
+        {
+          "name": "Delete language",
+          "request": {
+            "method": "DELETE",
+            "header": [],
+            "url": "{{baseUrl}}/api/Languages/:id"
+          }
+        }
+      ]
+    },
+    {
+      "name": "Classifiers — Specialties",
+      "item": [
+        {
+          "name": "List specialties",
+          "request": {
+            "auth": { "type": "noauth" },
+            "method": "GET",
+            "header": [],
+            "url": "{{baseUrl}}/api/Specialties?PageNumber=1&PageSize=20"
+          }
+        },
+        {
+          "name": "Get specialty by id",
+          "request": {
+            "auth": { "type": "noauth" },
+            "method": "GET",
+            "header": [],
+            "url": "{{baseUrl}}/api/Specialties/:id"
+          }
+        },
+        {
+          "name": "Create specialty",
+          "request": {
+            "method": "POST",
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"key\": \"cardiology\",\n  \"name\": [{ \"languageId\": 1, \"text\": \"Cardiology\" }],\n  \"description\": [{ \"languageId\": 1, \"text\": \"Heart and cardiovascular system\" }]\n}"
+            },
+            "url": "{{baseUrl}}/api/Specialties"
+          }
+        },
+        {
+          "name": "Update specialty",
+          "request": {
+            "method": "PUT",
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"key\": \"cardiology\",\n  \"name\": [{ \"key\": \"cardiology-name-1\", \"languageId\": 1, \"text\": \"Cardiology\" }],\n  \"description\": [{ \"key\": \"cardiology-desc-1\", \"languageId\": 1, \"text\": \"Heart specialist\" }]\n}"
+            },
+            "url": "{{baseUrl}}/api/Specialties/:id"
+          }
+        }
+      ]
+    },
+    {
+      "name": "Classifiers — Currencies",
+      "item": [
+        {
+          "name": "List currencies",
+          "request": {
+            "auth": { "type": "noauth" },
+            "method": "GET",
+            "header": [],
+            "url": "{{baseUrl}}/api/Currencies?PageNumber=1&PageSize=20"
+          }
+        },
+        {
+          "name": "Get currency by id",
+          "request": {
+            "auth": { "type": "noauth" },
+            "method": "GET",
+            "header": [],
+            "url": "{{baseUrl}}/api/Currencies/:id"
+          }
+        },
+        {
+          "name": "Create currency",
+          "request": {
+            "method": "POST",
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"key\": \"USD\",\n  \"coefficent\": 1.0,\n  \"name\": [{ \"languageId\": 1, \"text\": \"US Dollar\" }],\n  \"description\": [{ \"languageId\": 1, \"text\": \"United States Dollar\" }]\n}"
+            },
+            "url": "{{baseUrl}}/api/Currencies"
+          }
+        },
+        {
+          "name": "Update currency",
+          "request": {
+            "method": "PUT",
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"coefficent\": 1.02\n}"
+            },
+            "url": "{{baseUrl}}/api/Currencies/:id"
+          }
+        }
+      ]
+    },
+    {
+      "name": "Classifiers — Payment types",
+      "item": [
+        {
+          "name": "List payment types",
+          "request": {
+            "auth": { "type": "noauth" },
+            "method": "GET",
+            "header": [],
+            "url": "{{baseUrl}}/api/PaymentTypes?PageNumber=1&PageSize=20"
+          }
+        },
+        {
+          "name": "Get payment type by id",
+          "request": {
+            "auth": { "type": "noauth" },
+            "method": "GET",
+            "header": [],
+            "url": "{{baseUrl}}/api/PaymentTypes/:id"
+          }
+        },
+        {
+          "name": "Create payment type",
+          "request": {
+            "method": "POST",
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"key\": \"card\",\n  \"name\": [{ \"languageId\": 1, \"text\": \"Card\" }],\n  \"description\": [{ \"languageId\": 1, \"text\": \"Credit or debit card\" }]\n}"
+            },
+            "url": "{{baseUrl}}/api/PaymentTypes"
+          }
+        },
+        {
+          "name": "Update payment type",
+          "request": {
+            "method": "PUT",
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"key\": \"card\",\n  \"name\": [{ \"key\": \"card-name-1\", \"languageId\": 1, \"text\": \"Bank card\" }],\n  \"description\": [{ \"key\": \"card-desc-1\", \"languageId\": 1, \"text\": \"Visa, Mastercard, …\" }]\n}"
+            },
+            "url": "{{baseUrl}}/api/PaymentTypes/:id"
+          }
+        }
+      ]
+    },
+    {
+      "name": "Classifiers — Periods",
+      "item": [
+        {
+          "name": "List periods",
+          "request": {
+            "auth": { "type": "noauth" },
+            "method": "GET",
+            "header": [],
+            "url": "{{baseUrl}}/api/Periods?PageNumber=1&PageSize=20"
+          }
+        },
+        {
+          "name": "Get period by id",
+          "request": {
+            "auth": { "type": "noauth" },
+            "method": "GET",
+            "header": [],
+            "url": "{{baseUrl}}/api/Periods/:id"
+          }
+        },
+        {
+          "name": "Create period",
+          "request": {
+            "method": "POST",
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"key\": \"slot-30\",\n  \"periodTime\": 30,\n  \"name\": [{ \"languageId\": 1, \"text\": \"30 minutes\" }],\n  \"description\": [{ \"languageId\": 1, \"text\": \"Half-hour slot\" }]\n}"
+            },
+            "url": "{{baseUrl}}/api/Periods"
+          }
+        },
+        {
+          "name": "Update period",
+          "request": {
+            "method": "PUT",
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"periodTime\": 45\n}"
+            },
+            "url": "{{baseUrl}}/api/Periods/:id"
+          }
+        }
+      ]
+    },
+    {
+      "name": "Classifiers — Plan padding types",
+      "item": [
+        {
+          "name": "List plan padding types",
+          "request": {
+            "auth": { "type": "noauth" },
+            "method": "GET",
+            "header": [],
+            "url": "{{baseUrl}}/api/PlanPaddingTypes?PageNumber=1&PageSize=20"
+          }
+        },
+        {
+          "name": "Get plan padding type by id",
+          "request": {
+            "auth": { "type": "noauth" },
+            "method": "GET",
+            "header": [],
+            "url": "{{baseUrl}}/api/PlanPaddingTypes/:id"
+          }
+        },
+        {
+          "name": "Create plan padding type",
+          "request": {
+            "method": "POST",
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"key\": \"padding-between-5\",\n  \"paddingPosition\": 3,\n  \"paddingTime\": 5,\n  \"name\": [{ \"languageId\": 1, \"text\": \"5 min between slots\" }],\n  \"description\": [{ \"languageId\": 1, \"text\": \"Linear gap between consecutive periods\" }]\n}"
+            },
+            "url": "{{baseUrl}}/api/PlanPaddingTypes"
+          }
+        },
+        {
+          "name": "Update plan padding type",
+          "request": {
+            "method": "PUT",
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"paddingPosition\": 3,\n  \"paddingTime\": 10\n}"
+            },
+            "url": "{{baseUrl}}/api/PlanPaddingTypes/:id"
+          }
+        }
+      ]
+    }
+  ]
+}

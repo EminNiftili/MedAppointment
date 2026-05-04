@@ -27,6 +27,7 @@ namespace MedAppointment.DataAccess.AppConfig
             services.AddScoped<IOrganizationUserRepository, OrganizationUserRepository>();
 
             services.AddScoped<IImageRepository, ImageRepository>();
+            services.AddScoped<IDocumentRepository, DocumentRepository>();
 
             services.AddScoped<IDayBreakRepository, DayBreakRepository>();
             services.AddScoped<IDaySchemaRepository, DaySchemaRepository>();

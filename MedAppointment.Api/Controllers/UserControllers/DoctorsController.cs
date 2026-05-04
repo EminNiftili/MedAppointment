@@ -33,7 +33,7 @@ namespace MedAppointment.Api.Controllers.UserControllers
         public async Task<IActionResult> RegisterTraditionalDoctorAsync(DoctorRegisterDto<TraditionalUserRegisterDto> doctorRegister)
         {
             var result = await _doctorService.RegisterAsync(doctorRegister);
-            return CustomResult(result);
+            return SuccessAuthResult(result);
         }
 
         [Authorize(Roles = RoleNames.SystemAdminRole)]

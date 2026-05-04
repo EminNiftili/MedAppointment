@@ -3,19 +3,28 @@ namespace MedAppointment.Logics.Implementations.ClientServices
     internal class ClientRegistrationService : IClientRegistrationService
     {
         protected readonly IUnitOfClient unitOfClient;
+        protected readonly IUnitOfSecurity UnitOfSecurity;
         protected readonly IValidator<TraditionalUserRegisterDto> TraditionalUserRegisterValidator;
         protected readonly ILogger<ClientRegistrationService> Logger;
         protected readonly IHashService Hasher;
+        protected readonly ITokenService TokenService;
+        protected readonly IPrivateClientInfoService PrivateClientInfoService;
 
         public ClientRegistrationService(IUnitOfClient unitOfClient,
             ILogger<ClientRegistrationService> logger,
             IValidator<TraditionalUserRegisterDto> traditionalUserRegister,
-            IHashService hasher)
+            IHashService hasher,
+            ITokenService tokenService,
+            IPrivateClientInfoService privateClientInfoService,
+            IUnitOfSecurity unitOfSecurity)
         {
             this.TraditionalUserRegisterValidator = traditionalUserRegister;
             this.Logger = logger;
             this.unitOfClient = unitOfClient;
             Hasher = hasher;
+            TokenService = tokenService;
+            PrivateClientInfoService = privateClientInfoService;
+            UnitOfSecurity = unitOfSecurity;
         }
 
         public async Task<Result<long>> RegisterUserAsync(BaseRegisterDto userRegister)
@@ -40,6 +49,66 @@ namespace MedAppointment.Logics.Implementations.ClientServices
                 result.AddMessage("ERR00101", "Object type is unknown", HttpStatusCode.Conflict);
                 return result;
             }
+        }
+
+        public async Task<Result<TokenDto>> RegisterAndLoginAsync(BaseRegisterDto userRegister)
+        {
+            var result = Result<TokenDto>.Create();
+
+            var registerResult = await RegisterUserAsync(userRegister);
+            result.MergeMessages(registerResult);
+            result.MergeStatusCode(registerResult);
+            if (!result.IsSuccess())
+            {
+                return result;
+            }
+
+            var userId = registerResult.Model;
+            return await GenerateTokenForUserAsync(userId, userRegister.DeviceInfo);
+        }
+
+        protected async Task<Result<TokenDto>> GenerateTokenForUserAsync(long userId, DeviceDto deviceInfo)
+        {
+            var result = Result<TokenDto>.Create();
+
+            var userTypes = await PrivateClientInfoService.GetUserTypesAsync(userId);
+            var claims = new Dictionary<string, object>
+            {
+                { ClaimTypes.NameIdentifier, userId.ToString() },
+                { ClaimTypes.Role, userTypes.Select(ut => ut.ToString()).ToArray() }
+            };
+
+            var accessToken = TokenService.GetToken(out var expiredDate, claims);
+            var refreshToken = TokenService.GenerateRefreshToken();
+
+            var newSession = new SessionEntity
+            {
+                UserId = userId,
+                Device = new DeviceEntity
+                {
+                    Name = deviceInfo.Name,
+                    AppType = (byte)deviceInfo.AppType,
+                    DeviceType = (byte)deviceInfo.DeviceType,
+                    OSName = deviceInfo.OSName,
+                    OSVersion = deviceInfo.OSVersion,
+                    UUID = deviceInfo.UUID,
+                },
+                Tokens = new List<TokenEntity>
+                {
+                    new TokenEntity
+                    {
+                        AccessToken = accessToken,
+                        RefreshToken = refreshToken,
+                        IsExpired = false,
+                        ExpiredDate = expiredDate,
+                    }
+                }
+            };
+            UnitOfSecurity.Session.Add(newSession);
+            await UnitOfSecurity.SaveChangesAsync();
+
+            result.Success(new TokenDto(accessToken, refreshToken));
+            return result;
         }
 
         private async Task<Result<long>> TraditionalUserRegistrationAsync(TraditionalUserRegisterDto traditionalUserRegister)

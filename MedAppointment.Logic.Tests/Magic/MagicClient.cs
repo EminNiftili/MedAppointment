@@ -154,8 +154,37 @@ public static class MagicClient
         Surname = "User",
         FatherName = "Father",
         BirthDate = new DateTime(1995, 5, 15, 0, 0, 0, DateTimeKind.Utc),
+        GenderId = 1,
         Email = "newuser@example.com",
+<<<<<<< HEAD
+        PhoneNumber = "+994501234567",
+        Password = "SecurePwd123!",
+        DeviceInfo = MagicSecurity.ValidDeviceDto,
+=======
         PhoneNumber = "+9999999999",
-        Password = "SecurePwd123!"
+        Password = "SecurePwd123!",
+        DeviceInfo = MagicSecurity.ValidDeviceDto
+    };
+
+    /// <summary>
+    /// Valid DoctorRegisterDto for doctor registration tests.
+    /// </summary>
+    public static DoctorRegisterDto<TraditionalUserRegisterDto> ValidDoctorRegister => new()
+    {
+        User = ValidTraditionalUserRegister,
+        ProfessionId = MagicIds.ProfessionIdOne,
+        PresentationVideoUrl = null,
+        Specialties = new List<long>(),
+        ServiceGenderIds = new List<long>(),
+        ServiceLanguageIds = new List<long>(),
+        Title = new List<CreateLocalizationDto>
+        {
+            new() { LanguageId = 1, Text = "Cardiologist" }
+        },
+        Description = new List<CreateLocalizationDto>
+        {
+            new() { LanguageId = 1, Text = "Experienced doctor" }
+        }
+>>>>>>> e038d6701358b0b4c616fb46616b20bb6e12397a
     };
 }

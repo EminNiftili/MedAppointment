@@ -35,6 +35,7 @@ namespace MedAppointment.DataAccess.Implementations.EntityFramework.SqlServer.Co
 
 
         internal DbSet<ImageEntity> Images { get; private set; }
+        internal DbSet<DocumentEntity> Documents { get; private set; }
 
 
 

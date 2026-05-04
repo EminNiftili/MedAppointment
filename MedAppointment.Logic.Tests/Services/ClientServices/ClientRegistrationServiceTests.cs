@@ -8,7 +8,11 @@ public class ClientRegistrationServiceTests
     private readonly IValidator<TraditionalUserRegisterDto> _traditionalUserRegisterValidator;
     private readonly ILogger _logger;
     private readonly IHashService _hasher;
+    private readonly ITokenService _tokenService;
+    private readonly IPrivateClientInfoService _privateClientInfoService;
+    private readonly IUnitOfSecurity _unitOfSecurity;
     private readonly IPersonRepository _personRepo;
+    private readonly ISessionRepository _sessionRepo;
     private readonly IClientRegistrationService _sut;
 
     public ClientRegistrationServiceTests()
@@ -17,16 +21,26 @@ public class ClientRegistrationServiceTests
         _traditionalUserRegisterValidator = Substitute.For<IValidator<TraditionalUserRegisterDto>>();
         _logger = ServiceReflectionHelper.CreateLoggerFor(ServiceTypeName);
         _hasher = Substitute.For<IHashService>();
+        _tokenService = Substitute.For<ITokenService>();
+        _privateClientInfoService = Substitute.For<IPrivateClientInfoService>();
+        _unitOfSecurity = Substitute.For<IUnitOfSecurity>();
         _personRepo = Substitute.For<IPersonRepository>();
+        _sessionRepo = Substitute.For<ISessionRepository>();
 
         _unitOfClient.Person.Returns(_personRepo);
+        _unitOfSecurity.Session.Returns(_sessionRepo);
 
         _sut = ServiceReflectionHelper.CreateService<IClientRegistrationService>(ServiceTypeName,
             _unitOfClient,
             _logger,
             _traditionalUserRegisterValidator,
-            _hasher);
+            _hasher,
+            _tokenService,
+            _privateClientInfoService,
+            _unitOfSecurity);
     }
+
+    #region RegisterUserAsync
 
     [Fact]
     public async Task RegisterUserAsync_WhenInputIsNull_ReturnsBadRequest()
@@ -124,6 +138,98 @@ public class ClientRegistrationServiceTests
             p.User.TraditionalUser.PasswordHash == "hashed"));
         await _unitOfClient.Received(1).SaveChangesAsync();
     }
+
+    #endregion
+
+    #region RegisterAndLoginAsync
+
+    [Fact]
+    public async Task RegisterAndLoginAsync_WhenInputIsNull_ReturnsBadRequest()
+    {
+        var result = await _sut.RegisterAndLoginAsync(null!);
+
+        Assert.False(result.IsSuccess());
+        Assert.Equal(HttpStatusCode.BadRequest, result.HttpStatus);
+        Assert.Contains(result.Messages, m => m.TextCode == "ERR00101");
+    }
+
+    [Fact]
+    public async Task RegisterAndLoginAsync_WhenValidationFails_ReturnsBadRequest()
+    {
+        var dto = MagicClient.ValidTraditionalUserRegister;
+        _traditionalUserRegisterValidator.ValidateAsync(dto, Arg.Any<CancellationToken>())
+            .Returns(new FluentValidation.Results.ValidationResult(new[] { new FluentValidation.Results.ValidationFailure("Email", "Invalid") }));
+
+        var result = await _sut.RegisterAndLoginAsync(dto);
+
+        Assert.False(result.IsSuccess());
+        Assert.Equal(HttpStatusCode.BadRequest, result.HttpStatus);
+        _sessionRepo.DidNotReceive().Add(Arg.Any<SessionEntity>());
+    }
+
+    [Fact]
+    public async Task RegisterAndLoginAsync_WhenEmailAlreadyExists_ReturnsBadRequest()
+    {
+        var dto = MagicClient.ValidTraditionalUserRegister;
+        _traditionalUserRegisterValidator.ValidateAsync(dto, Arg.Any<CancellationToken>()).Returns(new FluentValidation.Results.ValidationResult());
+        _personRepo.FindByUsernameAsync(dto.Email, Arg.Any<bool>()).Returns(new PersonEntity { Id = 1, Email = dto.Email });
+
+        var result = await _sut.RegisterAndLoginAsync(dto);
+
+        Assert.False(result.IsSuccess());
+        Assert.Contains(result.Messages, m => m.TextCode == "ERR00022");
+        _sessionRepo.DidNotReceive().Add(Arg.Any<SessionEntity>());
+    }
+
+    [Fact]
+    public async Task RegisterAndLoginAsync_WhenValid_ReturnsTokenAndCreatesSession()
+    {
+        var dto = MagicClient.ValidTraditionalUserRegister;
+        _traditionalUserRegisterValidator.ValidateAsync(dto, Arg.Any<CancellationToken>()).Returns(new FluentValidation.Results.ValidationResult());
+        _personRepo.FindByUsernameAsync(dto.Email, Arg.Any<bool>()).Returns((PersonEntity?)null);
+        _personRepo.FindByUsernameAsync(dto.PhoneNumber, Arg.Any<bool>()).Returns((PersonEntity?)null);
+        _hasher.HashText(dto.Password, dto.Email).Returns("hashed");
+        _privateClientInfoService.GetUserTypesAsync(Arg.Any<long>()).Returns(new[] { UserType.User });
+        _tokenService.GetToken(out Arg.Any<DateTime>(), Arg.Any<IDictionary<string, object>>())
+            .Returns(callInfo =>
+            {
+                callInfo[0] = DateTime.UtcNow.AddMinutes(15);
+                return "access-token";
+            });
+        _tokenService.GenerateRefreshToken().Returns("refresh-token");
+
+        var result = await _sut.RegisterAndLoginAsync(dto);
+
+        Assert.True(result.IsSuccess());
+        Assert.NotNull(result.Model);
+        Assert.Equal("access-token", result.Model!.AccessToken);
+        Assert.Equal("refresh-token", result.Model.RefreshToken);
+        _sessionRepo.Received(1).Add(Arg.Any<SessionEntity>());
+        await _unitOfSecurity.Received(1).SaveChangesAsync();
+    }
+
+    [Fact]
+    public async Task RegisterAndLoginAsync_WhenValid_SessionDeviceMatchesRegistrationDeviceInfo()
+    {
+        var dto = MagicClient.ValidTraditionalUserRegister;
+        _traditionalUserRegisterValidator.ValidateAsync(dto, Arg.Any<CancellationToken>()).Returns(new FluentValidation.Results.ValidationResult());
+        _personRepo.FindByUsernameAsync(dto.Email, Arg.Any<bool>()).Returns((PersonEntity?)null);
+        _personRepo.FindByUsernameAsync(dto.PhoneNumber, Arg.Any<bool>()).Returns((PersonEntity?)null);
+        _hasher.HashText(dto.Password, dto.Email).Returns("hashed");
+        _privateClientInfoService.GetUserTypesAsync(Arg.Any<long>()).Returns(new[] { UserType.User });
+        _tokenService.GetToken(out Arg.Any<DateTime>(), Arg.Any<IDictionary<string, object>>())
+            .Returns(callInfo => { callInfo[0] = DateTime.UtcNow.AddMinutes(15); return "access-token"; });
+        _tokenService.GenerateRefreshToken().Returns("refresh-token");
+
+        await _sut.RegisterAndLoginAsync(dto);
+
+        _sessionRepo.Received(1).Add(Arg.Is<SessionEntity>(s =>
+            s.Device != null &&
+            s.Device.Name == dto.DeviceInfo.Name &&
+            s.Device.UUID == dto.DeviceInfo.UUID));
+    }
+
+    #endregion
 
     /// <summary>
     /// DTO type not handled by ClientRegistrationService (simulates unknown registration type).

@@ -46,12 +46,15 @@ namespace MedAppointment.Logics.AppConfig
             services.AddScoped<IPeriodService, PeriodService>();
             services.AddScoped<ISpecialtyService, SpecialtyService>();
             services.AddScoped<IPlanPaddingTypeService, PlanPaddingTypeService>();
+            services.AddScoped<IProfessionService, ProfessionService>();
 
             services.AddScoped<ILocalizerService, LocalizerService>();
 
 
             services.AddScoped<ITranslationLookupService, TranslationLookupService>();
             AddClassifierPaginationExpressionStrategies(services);
+
+            services.AddScoped<IDocumentService, DocumentService>();
 
             services.AddScoped<IHashService, HashService>();
             services.AddScoped<ILoginService, LoginService>();
@@ -65,6 +68,7 @@ namespace MedAppointment.Logics.AppConfig
             services.AddScoped<IClassifierFilterExpressionStrategy<PeriodEntity, PeriodPaginationQueryDto>, PeriodFilterExpressionStrategy>();
             services.AddScoped<IClassifierFilterExpressionStrategy<CurrencyEntity, CurrencyPaginationQueryDto>, CurrencyFilterExpressionStrategy>();
             services.AddScoped<IClassifierFilterExpressionStrategy<PlanPaddingTypeEntity, PlanPaddingTypePaginationQueryDto>, PlanPaddingTypeFilterExpressionStrategy>();
+            services.AddScoped<IClassifierFilterExpressionStrategy<ProfessionEntity, ClassifierPaginationQueryDto>, ClassifierFilterExpressionStrategy<ProfessionEntity>>();
         }
     }
 }

@@ -19,6 +19,7 @@ global using Serilog;
 
 
 #region Data Transfer Objects
+global using MedAppointment.DataTransferObjects.FileDtos;
 global using MedAppointment.DataTransferObjects.UserDtos;
 global using MedAppointment.DataTransferObjects.ClassifierDtos;
 global using MedAppointment.DataTransferObjects.PaginationDtos;
@@ -30,6 +31,7 @@ global using MedAppointment.DataTransferObjects.PaginationDtos.ClassifierPaginat
 global using MedAppointment.Logics.Services.CalendarServices;
 global using MedAppointment.Logics.Services.ClientServices;
 global using MedAppointment.Logics.Services.ClassifierServices;
+global using MedAppointment.Logics.Services.FileServices;
 global using MedAppointment.Logics.Services.PlanManagerServices;
 #endregion
 

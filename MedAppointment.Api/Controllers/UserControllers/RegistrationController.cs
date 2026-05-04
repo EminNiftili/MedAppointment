@@ -13,8 +13,8 @@
         [HttpPost]
         public async Task<IActionResult> TraditionalAsync(TraditionalUserRegisterDto traditionalUserRegister)
         {
-            var result = await _registrationService.RegisterUserAsync(traditionalUserRegister);
-            return CustomResult(result);
+            var result = await _registrationService.RegisterAndLoginAsync(traditionalUserRegister);
+            return SuccessAuthResult(result);
         }
 
         [HttpPost("Google")]

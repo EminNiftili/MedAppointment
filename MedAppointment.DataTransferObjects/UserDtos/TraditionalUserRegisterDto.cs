@@ -1,3 +1,5 @@
+using MedAppointment.DataTransferObjects.CredentialDtos;
+
 namespace MedAppointment.DataTransferObjects.UserDtos
 {
     public record TraditionalUserRegisterDto : BaseRegisterDto
@@ -10,5 +12,7 @@ namespace MedAppointment.DataTransferObjects.UserDtos
         public string Email { get; set; } = null!;
         public string PhoneNumber { get; set; } = null!;
         public string Password { get; set; } = null!;
+        /// <summary>Same shape as login; required for model binding under <c>User</c> on doctor registration.</summary>
+        public DeviceDto DeviceInfo { get; set; } = null!;
     }
 }

@@ -15,8 +15,17 @@ public static class MagicIds
     public const long SpecialtyIdOne = 3001;
     public const long SpecialtyIdNonExistent = 99997;
 
+    public const long ProfessionIdOne = 4001;
+    public const long ProfessionIdNonExistent = 99996;
+
     public const long NameTextId = 5001;
     public const long DescriptionTextId = 5002;
+
+    public const long DoctorIdOne = 6001;
+    public const long DoctorIdTwo = 6002;
+
+    public const long DocumentIdOne = 7001;
+    public const long DocumentIdTwo = 7002;
 
     /// <summary>
     /// Generic non-existent ID for entities (e.g. WeeklySchema).

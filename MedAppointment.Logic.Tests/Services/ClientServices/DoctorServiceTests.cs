@@ -13,8 +13,13 @@ public class DoctorServiceTests
     private readonly IValidator<PaginationQueryDto> _paginationQueryValidator;
     private readonly IValidator<AdminDoctorSpecialtyCreateDto> _adminDoctorSpecialtyCreateValidator;
     private readonly IMapper _mapper;
+    private readonly ITokenService _tokenService;
+    private readonly IPrivateClientInfoService _privateClientInfoService;
+    private readonly IUnitOfSecurity _unitOfSecurity;
     private readonly IDoctorRepository _doctorRepo;
     private readonly ISpecialtyRepository _specialtyRepo;
+    private readonly IUserRepository _userRepo;
+    private readonly ISessionRepository _sessionRepo;
     private readonly IDoctorService _sut;
 
     public DoctorServiceTests()
@@ -28,11 +33,18 @@ public class DoctorServiceTests
         _paginationQueryValidator = Substitute.For<IValidator<PaginationQueryDto>>();
         _adminDoctorSpecialtyCreateValidator = Substitute.For<IValidator<AdminDoctorSpecialtyCreateDto>>();
         _mapper = Substitute.For<IMapper>();
+        _tokenService = Substitute.For<ITokenService>();
+        _privateClientInfoService = Substitute.For<IPrivateClientInfoService>();
+        _unitOfSecurity = Substitute.For<IUnitOfSecurity>();
         _doctorRepo = Substitute.For<IDoctorRepository>();
         _specialtyRepo = Substitute.For<ISpecialtyRepository>();
+        _userRepo = Substitute.For<IUserRepository>();
+        _sessionRepo = Substitute.For<ISessionRepository>();
 
         _unitOfDoctor.Doctor.Returns(_doctorRepo);
         _unitOfClassifier.Specialty.Returns(_specialtyRepo);
+        _unitOfClient.User.Returns(_userRepo);
+        _unitOfSecurity.Session.Returns(_sessionRepo);
 
         _sut = ServiceReflectionHelper.CreateService<IDoctorService>(ServiceTypeName,
             _localizerService,
@@ -43,7 +55,10 @@ public class DoctorServiceTests
             _clientRegistration,
             _paginationQueryValidator,
             _adminDoctorSpecialtyCreateValidator,
-            _mapper);
+            _mapper,
+            _tokenService,
+            _privateClientInfoService,
+            _unitOfSecurity);
     }
 
     [Fact]
@@ -337,4 +352,141 @@ public class DoctorServiceTests
         Assert.True(specialty.IsConfirm);
         await _unitOfDoctor.Received(1).SaveChangesAsync();
     }
+
+    #region RegisterAsync
+
+    [Fact]
+    public async Task RegisterAsync_WhenUserRegistrationFails_ReturnsBadRequest()
+    {
+        var dto = MagicClient.ValidDoctorRegister;
+        var failedResult = Result<long>.Create();
+        failedResult.AddMessage("ERR00022", "Email already registered!", HttpStatusCode.BadRequest);
+        _clientRegistration.RegisterUserAsync(dto.User).Returns(failedResult);
+
+        var result = await _sut.RegisterAsync(dto);
+
+        Assert.False(result.IsSuccess());
+        Assert.Equal(HttpStatusCode.BadRequest, result.HttpStatus);
+        Assert.Contains(result.Messages, m => m.TextCode == "ERR00022");
+        await _unitOfDoctor.DidNotReceive().SaveChangesAsync();
+    }
+
+    [Fact]
+    public async Task RegisterAsync_WhenUserEntityNotFoundAfterRegistration_ReturnsConflict()
+    {
+        var dto = MagicClient.ValidDoctorRegister;
+        var userRegisterResult = Result<long>.Create();
+        userRegisterResult.Success(MagicClient.UserIdOne);
+        _clientRegistration.RegisterUserAsync(dto.User).Returns(userRegisterResult);
+        _userRepo.FindFirstAsync(Arg.Any<Expression<Func<UserEntity, bool>>>(), Arg.Any<bool>()).Returns((UserEntity?)null);
+
+        var result = await _sut.RegisterAsync(dto);
+
+        Assert.False(result.IsSuccess());
+        Assert.Equal(HttpStatusCode.Conflict, result.HttpStatus);
+        Assert.Contains(result.Messages, m => m.TextCode == "ERR00024");
+    }
+
+    [Fact]
+    public async Task RegisterAsync_WhenLocalizerFails_ReturnsFailed()
+    {
+        var dto = MagicClient.ValidDoctorRegister;
+        var userRegisterResult = Result<long>.Create();
+        userRegisterResult.Success(MagicClient.UserIdOne);
+        _clientRegistration.RegisterUserAsync(dto.User).Returns(userRegisterResult);
+        _userRepo.FindFirstAsync(Arg.Any<Expression<Func<UserEntity, bool>>>(), Arg.Any<bool>())
+            .Returns(new UserEntity { Id = MagicClient.UserIdOne });
+
+        var failedLocalize = Result<long>.Create();
+        failedLocalize.AddMessage("ERR00200", "Localization failed", HttpStatusCode.InternalServerError);
+        _localizerService.AddResourceAsync(Arg.Any<string>(), Arg.Any<IEnumerable<CreateLocalizationDto>>())
+            .Returns(failedLocalize);
+
+        var result = await _sut.RegisterAsync(dto);
+
+        Assert.False(result.IsSuccess());
+        await _unitOfDoctor.DidNotReceive().SaveChangesAsync();
+        _sessionRepo.DidNotReceive().Add(Arg.Any<SessionEntity>());
+    }
+
+    [Fact]
+    public async Task RegisterAsync_WhenValid_RegistersDoctorAndReturnsToken()
+    {
+        var dto = MagicClient.ValidDoctorRegister;
+        var userRegisterResult = Result<long>.Create();
+        userRegisterResult.Success(MagicClient.UserIdOne);
+        _clientRegistration.RegisterUserAsync(dto.User).Returns(userRegisterResult);
+
+        var userEntity = new UserEntity { Id = MagicClient.UserIdOne };
+        _userRepo.FindFirstAsync(Arg.Any<Expression<Func<UserEntity, bool>>>(), Arg.Any<bool>())
+            .Returns(userEntity);
+
+        var titleResult = Result<long>.Create();
+        titleResult.Success(MagicIds.NameTextId);
+        var descResult = Result<long>.Create();
+        descResult.Success(MagicIds.DescriptionTextId);
+        _localizerService.AddResourceAsync(Arg.Is<string>(s => s.Contains("title")), Arg.Any<IEnumerable<CreateLocalizationDto>>())
+            .Returns(titleResult);
+        _localizerService.AddResourceAsync(Arg.Is<string>(s => s.Contains("desc")), Arg.Any<IEnumerable<CreateLocalizationDto>>())
+            .Returns(descResult);
+
+        _privateClientInfoService.GetUserTypesAsync(MagicClient.UserIdOne).Returns(new[] { UserType.Doctor });
+        _tokenService.GetToken(out Arg.Any<DateTime>(), Arg.Any<IDictionary<string, object>>())
+            .Returns(callInfo =>
+            {
+                callInfo[0] = DateTime.UtcNow.AddMinutes(15);
+                return "access-token";
+            });
+        _tokenService.GenerateRefreshToken().Returns("refresh-token");
+
+        var result = await _sut.RegisterAsync(dto);
+
+        Assert.True(result.IsSuccess());
+        Assert.NotNull(result.Model);
+        Assert.Equal("access-token", result.Model!.AccessToken);
+        Assert.Equal("refresh-token", result.Model.RefreshToken);
+        _userRepo.Received(1).Update(Arg.Any<UserEntity>());
+        await _unitOfDoctor.Received(1).SaveChangesAsync();
+        _sessionRepo.Received(1).Add(Arg.Is<SessionEntity>(s =>
+            s.UserId == MagicClient.UserIdOne &&
+            s.Device != null &&
+            s.Device.UUID == dto.User.DeviceInfo.UUID));
+        await _unitOfSecurity.Received(1).SaveChangesAsync();
+    }
+
+    [Fact]
+    public async Task RegisterAsync_WhenValid_TokenClaimsContainDoctorRole()
+    {
+        var dto = MagicClient.ValidDoctorRegister;
+        var userRegisterResult = Result<long>.Create();
+        userRegisterResult.Success(MagicClient.UserIdOne);
+        _clientRegistration.RegisterUserAsync(dto.User).Returns(userRegisterResult);
+        _userRepo.FindFirstAsync(Arg.Any<Expression<Func<UserEntity, bool>>>(), Arg.Any<bool>())
+            .Returns(new UserEntity { Id = MagicClient.UserIdOne });
+
+        var titleResult = Result<long>.Create(); titleResult.Success(MagicIds.NameTextId);
+        var descResult = Result<long>.Create(); descResult.Success(MagicIds.DescriptionTextId);
+        _localizerService.AddResourceAsync(Arg.Is<string>(s => s.Contains("title")), Arg.Any<IEnumerable<CreateLocalizationDto>>()).Returns(titleResult);
+        _localizerService.AddResourceAsync(Arg.Is<string>(s => s.Contains("desc")), Arg.Any<IEnumerable<CreateLocalizationDto>>()).Returns(descResult);
+
+        _privateClientInfoService.GetUserTypesAsync(MagicClient.UserIdOne).Returns(new[] { UserType.Doctor });
+        IDictionary<string, object>? capturedClaims = null;
+        _tokenService.GetToken(out Arg.Any<DateTime>(), Arg.Any<IDictionary<string, object>>())
+            .Returns(callInfo =>
+            {
+                capturedClaims = (IDictionary<string, object>?)callInfo[1];
+                callInfo[0] = DateTime.UtcNow.AddMinutes(15);
+                return "access-token";
+            });
+        _tokenService.GenerateRefreshToken().Returns("refresh-token");
+
+        await _sut.RegisterAsync(dto);
+
+        Assert.NotNull(capturedClaims);
+        var roles = capturedClaims![ClaimTypes.Role] as string[];
+        Assert.NotNull(roles);
+        Assert.Contains(UserType.Doctor.ToString(), roles!);
+    }
+
+    #endregion
 }

@@ -15,6 +15,7 @@ global using MedAppointment.Logics.CustomExpressions.ClassifierExpressions;
 global using MedAppointment.DataAccess.UnitOfWorks;
 global using MedAppointment.DataAccess.Implementations.EntityFramework.UnitOfWorks;
 global using MedAppointment.DataAccess.Repositories.Classifier;
+global using MedAppointment.DataAccess.Repositories.File;
 global using MedAppointment.DataAccess.Repositories.Service;
 global using MedAppointment.DataAccess.Repositories.Client;
 global using MedAppointment.DataAccess.Repositories.Localization;
@@ -25,6 +26,7 @@ global using MedAppointment.DataAccess.Repositories.Security;
 
 #region DTOs
 global using MedAppointment.DataTransferObjects.ClassifierDtos;
+global using MedAppointment.DataTransferObjects.FileDtos;
 global using MedAppointment.DataTransferObjects.PaginationDtos;
 global using MedAppointment.DataTransferObjects.PaginationDtos.ClassifierPagination;
 global using MedAppointment.DataTransferObjects.PaginationDtos.UserPagination;
@@ -46,8 +48,9 @@ global using MedAppointment.Entities.Security;
 global using MedAppointment.Entities.File;
 #endregion
 
-#region Logic Services (Calendar, PlanManager, Schedule, Client, Security)
+#region Logic Services (Calendar, PlanManager, Schedule, Client, Security, File)
 global using MedAppointment.Logics.Services.CalendarServices;
+global using MedAppointment.Logics.Services.FileServices;
 global using MedAppointment.Logics.Services.PlanManagerServices;
 global using MedAppointment.Logics.Services.ScheduleServices;
 global using MedAppointment.Logics.Services.ClientServices;
@@ -68,6 +71,7 @@ global using System.Net;
 global using System.Linq.Expressions;
 global using System.Security.Claims;
 global using FluentValidation;
+global using FluentValidation.Results;
 global using Microsoft.Extensions.Logging;
 global using Microsoft.Extensions.Configuration;
 #endregion
